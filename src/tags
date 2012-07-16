@@ -1,0 +1,377 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.7	//
+ADDRESS	global.h	/^typedef unsigned ADDRESS;$/;"	t
+ADDR_LIST_SIZE	basicblock.h	57;"	d
+ALL_FUNCTION_SIZE	function.h	27;"	d
+BASICBLOCK_H	basicblock.h	22;"	d
+BASIC_BLOCK	basicblock.h	72;"	d
+BB_B_LINK	basicblock.h	/^    BB_B_LINK,          \/* branch and link, bal *\/$/;"	e	enum:__anon3
+BB_B_NO_LINK	basicblock.h	/^    BB_B_NO_LINK,       \/* branch, bne *\/$/;"	e	enum:__anon3
+BB_CLASS	basicblock.h	/^}BB_CLASS;$/;"	t	typeref:enum:__anon3
+BB_FREQ_H	bb_freq.h	22;"	d
+BB_JR_LINK	basicblock.h	/^    BB_JR_LINK,         \/* jump and link, jalr *\/$/;"	e	enum:__anon3
+BB_JR_NO_LINK	basicblock.h	/^    BB_JR_NO_LINK,      \/* jump, jar *\/$/;"	e	enum:__anon3
+BB_J_LINK	basicblock.h	/^    BB_J_LINK,          \/* jump and link, jal *\/$/;"	e	enum:__anon3
+BB_J_NO_LINK	basicblock.h	/^    BB_J_NO_LINK,       \/* jump, j *\/$/;"	e	enum:__anon3
+BB_NORMAL	basicblock.h	/^    BB_NORMAL,          \/* normal instruction *\/$/;"	e	enum:__anon3
+BB_SINGLE	basicblock.h	/^    BB_SINGLE,$/;"	e	enum:__anon3
+BB_SIZE	basicblock.h	49;"	d
+BINARY_H	binary.h	22;"	d
+BROFFSET	isa.h	44;"	d
+B_INSN	make_new_function.h	/^	B_INSN,$/;"	e	enum:instrument_type
+B_LINK	isa.h	/^    B_LINK,      \/* branch and link, bal *\/$/;"	e	enum:__anon1
+B_NO_LINK	isa.h	/^    B_NO_LINK,   \/* normal branch instruction , bne *\/$/;"	e	enum:__anon1
+CC	Makefile	/^CC = gcc$/;"	m
+CODECACHE_H	codecache.h	22;"	d
+CODECACHE_SIZE	codecache.h	26;"	d
+CONTEXT_SWITCH_H	context_switch.h	22;"	d
+CONTROL_TRANS_H	control_trans.h	22;"	d
+C_FLAG	Makefile	/^C_FLAG = -g -O0 -fPIC -shared $/;"	m
+D_REG	isa.h	42;"	d
+EHTRE_H	entre.h	22;"	d
+EXT_OP	isa.h	39;"	d
+Executable	binary.c	/^struct struct_executable Executable;$/;"	v	typeref:struct:struct_executable
+FOR_EACH_BB	basicblock.h	71;"	d
+FOR_EACH_FUNCTION	binary.h	52;"	d
+FOR_EACH_INSN_IN_FUN	binary.h	54;"	d
+FUNCTION_H	function.h	22;"	d
+FUNCTION_NUMS	function.h	49;"	d
+FUNCTION_SIZE	function.h	51;"	d
+FUNCTION_START_ADDRESS	function.h	50;"	d
+FUN_CALL	make_new_function.h	/^	FUN_CALL,$/;"	e	enum:instrument_type
+GET_CONTEXT	context_switch.h	71;"	d
+GLOBAL_H	global.h	22;"	d
+GOT_H	got.h	22;"	d
+GOT_NEW_ADDR_FINAL	got.h	49;"	d
+GOT_NEW_ADDR_FUNC	got.h	48;"	d
+GOT_NEW_ADDR_ORIG	got.h	46;"	d
+GOT_NEW_ADDR_T9	got.h	47;"	d
+GOT_OLD_ADDR	got.h	44;"	d
+INDEX	global.h	/^typedef int INDEX;$/;"	t
+INSN_AT	isa.h	48;"	d
+INSN_BYTES	global.h	27;"	d
+INSN_CLASS	isa.h	/^}INSN_CLASS;$/;"	t	typeref:enum:__anon1
+INSN_D_REG	isa.h	53;"	d
+INSN_MAIN_OP	isa.h	50;"	d
+INSN_SUB_OP	isa.h	54;"	d
+INSN_S_REG	isa.h	51;"	d
+INSN_T	global.h	/^typedef unsigned INSN_T;$/;"	t
+INSN_TARGET	isa.h	55;"	d
+INSN_T_REG	isa.h	52;"	d
+INSTRUMENT_OMIT_SIZE	make_new_function.h	29;"	d
+INT32	global.h	/^typedef int INT32;$/;"	t
+IN_CODE_BYTES	in_code.h	27;"	d
+IN_CODE_H	in_code.h	22;"	d
+IN_CODE_LW_NUM	in_code.h	28;"	d
+IN_CODE_SIZE	in_code.h	26;"	d
+ISA_H	isa.h	22;"	d
+JR_LINK	isa.h	/^    JR_LINK,     \/* jump and link , jalr *\/$/;"	e	enum:__anon1
+JR_NO_LINK	isa.h	/^    JR_NO_LINK,  \/* jump , jr *\/$/;"	e	enum:__anon1
+J_LINK	isa.h	/^    J_LINK,      \/* jal *\/$/;"	e	enum:__anon1
+J_NO_LINK	isa.h	/^    J_NO_LINK,   \/* jump , j *\/$/;"	e	enum:__anon1
+LIBDIR	Makefile	/^LIBDIR = ..\/lib\/$/;"	m
+LINK_FLAG	Makefile	/^LINK_FLAG = -ldl $/;"	m
+LOAD_T9_BYTES	make_new_function.h	28;"	d
+LOAD_T9_NUM	make_new_function.h	27;"	d
+MAIN_ENTRY_H	redirect.h	22;"	d
+MAIN_OP	isa.h	37;"	d
+MAKE_NEW_FUNCTION_H	make_new_function.h	22;"	d
+MEGA_1	global.h	26;"	d
+MEM_ACCESS	make_new_function.h	/^	MEM_ACCESS$/;"	e	enum:instrument_type
+MIN_ADDR	basicblock.h	59;"	d
+MIPS_REG	reg.h	/^}MIPS_REG;$/;"	t	typeref:enum:__anon2
+NORMAL	isa.h	/^    NORMAL,      \/* normal instruction *\/$/;"	e	enum:__anon1
+NULL_INDEX	basicblock.h	58;"	d
+OBJ	Makefile	/^OBJ = entre.o top_level.o global.o binary.o basicblock.o \\$/;"	m
+OBJDIR	Makefile	/^OBJDIR = ..\/lib\/$/;"	m
+OFFSET	isa.h	45;"	d
+OOPROFILE_H	OOprofile.h	22;"	d
+OPCONTROL_FINI	OOprofile.h	42;"	d
+OPCONTROL_INIT	OOprofile.h	30;"	d
+OPCONTROL_REPORT	OOprofile.h	39;"	d
+OPCONTROL_SETUP	OOprofile.h	33;"	d
+PARAMS_START_MAIN	entre.h	25;"	d
+PUT_CONTEXT	context_switch.h	72;"	d
+REG_A0	reg.h	/^    REG_A0,		\/\/4-7$/;"	e	enum:__anon2
+REG_A1	reg.h	/^    REG_A1,$/;"	e	enum:__anon2
+REG_A2	reg.h	/^	REG_A2,$/;"	e	enum:__anon2
+REG_A3	reg.h	/^	REG_A3,$/;"	e	enum:__anon2
+REG_AT	reg.h	/^    REG_AT,		\/\/1$/;"	e	enum:__anon2
+REG_FP	reg.h	/^	REG_FP,		\/\/30$/;"	e	enum:__anon2
+REG_GP	reg.h	/^	REG_GP,		\/\/28$/;"	e	enum:__anon2
+REG_H	reg.h	22;"	d
+REG_K0	reg.h	/^	REG_K0,		\/\/26,27$/;"	e	enum:__anon2
+REG_K1	reg.h	/^	REG_K1,$/;"	e	enum:__anon2
+REG_RA	reg.h	/^	REG_RA		\/\/31$/;"	e	enum:__anon2
+REG_S0	reg.h	/^	REG_S0,		\/\/16-23$/;"	e	enum:__anon2
+REG_S1	reg.h	/^	REG_S1,$/;"	e	enum:__anon2
+REG_S2	reg.h	/^	REG_S2,$/;"	e	enum:__anon2
+REG_S3	reg.h	/^	REG_S3,$/;"	e	enum:__anon2
+REG_S4	reg.h	/^	REG_S4,$/;"	e	enum:__anon2
+REG_S5	reg.h	/^	REG_S5,$/;"	e	enum:__anon2
+REG_S6	reg.h	/^	REG_S6,$/;"	e	enum:__anon2
+REG_S7	reg.h	/^	REG_S7,$/;"	e	enum:__anon2
+REG_SP	reg.h	/^	REG_SP,		\/\/29$/;"	e	enum:__anon2
+REG_T	global.h	/^typedef int REG_T;$/;"	t
+REG_T0	reg.h	/^	REG_T0,		\/\/8-15$/;"	e	enum:__anon2
+REG_T1	reg.h	/^	REG_T1,		$/;"	e	enum:__anon2
+REG_T2	reg.h	/^	REG_T2,		$/;"	e	enum:__anon2
+REG_T3	reg.h	/^	REG_T3,		$/;"	e	enum:__anon2
+REG_T4	reg.h	/^	REG_T4,		$/;"	e	enum:__anon2
+REG_T5	reg.h	/^	REG_T5,		$/;"	e	enum:__anon2
+REG_T6	reg.h	/^	REG_T6,		$/;"	e	enum:__anon2
+REG_T7	reg.h	/^	REG_T7,	$/;"	e	enum:__anon2
+REG_T8	reg.h	/^    REG_T8,		\/\/24,25$/;"	e	enum:__anon2
+REG_T9	reg.h	/^	REG_T9,	$/;"	e	enum:__anon2
+REG_V0	reg.h	/^    REG_V0,		\/\/2,3$/;"	e	enum:__anon2
+REG_V1	reg.h	/^    REG_V1,$/;"	e	enum:__anon2
+REG_ZERO	reg.h	/^    REG_ZERO,	\/\/0$/;"	e	enum:__anon2
+SCODE_SIZE	context_switch.h	26;"	d
+SHIFT	isa.h	43;"	d
+SOURCE	Makefile	/^SOURCE = entre.c top_level.c global.c binary.c basicblock.c \\$/;"	m
+STACK_H	stack.h	22;"	d
+SUB_OP	isa.h	38;"	d
+S_REG	isa.h	40;"	d
+TARGET	isa.h	46;"	d
+TOOL_FLAG	Makefile	/^TOOL_FLAG = -DBB_FREQ$/;"	m
+TOP_LEVEL_H	top_level.h	22;"	d
+TRACE_H	trace.h	22;"	d
+T_REG	isa.h	41;"	d
+UINT32	global.h	/^typedef unsigned UINT32;$/;"	t
+UINT64	global.h	/^typedef long long UINT64;$/;"	t
+_GNU_SOURCE	entre.c	26;"	d	file:
+__libc_start_main	entre.c	/^void __libc_start_main(PARAMS_START_MAIN)$/;"	f
+a0	context_switch.h	/^    UINT64  a0;    $/;"	m	struct:context
+a1	context_switch.h	/^    UINT64  a1;    $/;"	m	struct:context
+a2	context_switch.h	/^    UINT64  a2;     $/;"	m	struct:context
+a3	context_switch.h	/^    UINT64  a3;    $/;"	m	struct:context
+addr	basicblock.h	/^    ADDRESS addr;$/;"	m	struct:address_list
+addr	make_new_function.h	/^	ADDRESS addr;$/;"	m	struct:instrument_point
+addr_list	basicblock.c	/^struct address_list addr_list[ADDR_LIST_SIZE]; \/* contain all BB addr *\/$/;"	v	typeref:struct:address_list
+addr_list_n	basicblock.c	/^unsigned addr_list_n;      \/* the real address  number *\/$/;"	v
+address_list	basicblock.h	/^struct address_list$/;"	s
+all_bb	basicblock.c	/^struct bb all_bb[BB_SIZE];  \/* contain all basic block *\/$/;"	v	typeref:struct:bb
+all_bb_n	basicblock.c	/^unsigned all_bb_n;          \/* the real basic block num *\/$/;"	v
+all_bb_size	basicblock.c	/^unsigned all_bb_size;       \/* the basic block array size *\/$/;"	v
+all_function	function.c	/^struct function all_function[ALL_FUNCTION_SIZE];$/;"	v	typeref:struct:function
+all_function_n	function.c	/^int all_function_n;$/;"	v
+all_function_size	function.c	/^int all_function_size;$/;"	v
+at	context_switch.h	/^    UINT64  at;    $/;"	m	struct:context
+bb	basicblock.h	/^struct bb$/;"	s
+codecache	codecache.c	/^unsigned codecache[CODECACHE_SIZE];$/;"	v
+codecache_n	codecache.c	/^unsigned codecache_n;$/;"	v
+codecache_size	codecache.c	/^unsigned codecache_size;$/;"	v
+context	context_switch.h	/^struct context$/;"	s
+counter	basicblock.h	/^    UINT32 counter;        \/* executable times *\/$/;"	m	struct:bb
+current_fun	basicblock.c	/^Elf32_Sym *current_fun;$/;"	v
+entre_BinaryLoad	binary.c	/^void entre_BinaryLoad(void* start_fp)$/;"	f
+entre_IRMarkFunctions	binary.c	/^void entre_IRMarkFunctions(void)$/;"	f
+entre_OOprofile_fini	OOprofile.c	/^void entre_OOprofile_fini()$/;"	f
+entre_OOprofile_init	OOprofile.c	/^void entre_OOprofile_init()$/;"	f
+entre_OOprofile_record	OOprofile.c	/^void entre_OOprofile_record(struct context * context)$/;"	f
+entre_add_bb_entry_to_addr_list	basicblock.c	/^int entre_add_bb_entry_to_addr_list(ADDRESS entry_addr)$/;"	f
+entre_add_branch_insn	basicblock.c	/^void entre_add_branch_insn(ADDRESS addr, INSN_T insn)$/;"	f
+entre_add_jr_no_link_insn	basicblock.c	/^void entre_add_jr_no_link_insn(ADDRESS addr, INSN_T insn)$/;"	f
+entre_add_jump_no_link_insn	basicblock.c	/^void entre_add_jump_no_link_insn(ADDRESS addr, INSN_T insn)$/;"	f
+entre_bb_freq_record	bb_freq.c	/^void entre_bb_freq_record(struct context * context)$/;"	f
+entre_branch_offset_cvt	isa.c	/^ADDRESS entre_branch_offset_cvt(ADDRESS pc, ADDRESS target)$/;"	f
+entre_branch_target	isa.c	/^ADDRESS entre_branch_target(ADDRESS pc, INSN_T br)$/;"	f
+entre_broffset_cvt	isa.c	/^ADDRESS entre_broffset_cvt(ADDRESS broffset)$/;"	f
+entre_call_for_all_function	function.c	/^void entre_call_for_all_function(void (*my_fun)(struct function *))$/;"	f
+entre_call_redirect	redirect.c	/^void entre_call_redirect(struct context * context)$/;"	f
+entre_can_instrument_here	make_new_function.c	/^int entre_can_instrument_here(ADDRESS instrument_addr)$/;"	f
+entre_cc_add_code	codecache.c	/^void entre_cc_add_code(unsigned* code, unsigned len)$/;"	f
+entre_cc_flush	codecache.c	/^void entre_cc_flush()$/;"	f
+entre_cc_get_top_address	codecache.c	/^ADDRESS entre_cc_get_top_address()$/;"	f
+entre_cc_replace	codecache.c	/^void entre_cc_replace(ADDRESS addr, INSN_T insn)$/;"	f
+entre_collection	top_level.c	/^void entre_collection()$/;"	f
+entre_control_transfer	control_trans.c	/^void entre_control_transfer()$/;"	f
+entre_dump_bb	basicblock.c	/^void entre_dump_bb()$/;"	f
+entre_dump_context	context_switch.c	/^void entre_dump_context(struct context * context)$/;"	f
+entre_dump_function	binary.c	/^void entre_dump_function()$/;"	f
+entre_dump_one_bb	basicblock.c	/^void entre_dump_one_bb(struct bb * bb_p)$/;"	f
+entre_executable_flush	binary.c	/^void entre_executable_flush(void)$/;"	f
+entre_find_function	function.c	/^struct function * entre_find_function(char * name)$/;"	f
+entre_fini	entre.c	/^void entre_fini()$/;"	f
+entre_fini_addr_list	basicblock.c	/^void entre_fini_addr_list(void)$/;"	f
+entre_for_all_function	function.c	/^void entre_for_all_function(void (*my_fun)(struct function *))$/;"	f
+entre_func_begine_OOprofile	OOprofile.c	/^void entre_func_begine_OOprofile(struct context * context)$/;"	f
+entre_func_end_OOprofile	OOprofile.c	/^void entre_func_end_OOprofile(struct context * context)$/;"	f
+entre_function_next_address	function.c	/^ADDRESS entre_function_next_address(struct function * fun)$/;"	f
+entre_function_num	function.c	/^inline int entre_function_num()$/;"	f
+entre_function_size	function.c	/^int entre_function_size(struct function * fun)$/;"	f
+entre_function_sort	binary.c	/^static void entre_function_sort(Elf32_Sym * sym, Elf32_Sym ** rank, int n)$/;"	f	file:
+entre_function_start_address	function.c	/^ADDRESS entre_function_start_address(struct function * fun)$/;"	f
+entre_get_b_new_target	redirect.c	/^int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call_num)$/;"	f
+entre_get_bb_counter_addr	basicblock.c	/^ADDRESS entre_get_bb_counter_addr(ADDRESS addr)$/;"	f
+entre_get_bb_index	basicblock.c	/^int entre_get_bb_index(ADDRESS addr)$/;"	f
+entre_get_mem_access_addr	trace.c	/^ADDRESS entre_get_mem_access_addr(struct context * context)$/;"	f
+entre_global_env_init	global.c	/^void entre_global_env_init(void)$/;"	f
+entre_global_file_close	global.c	/^void entre_global_file_close()$/;"	f
+entre_global_file_open	global.c	/^void entre_global_file_open()$/;"	f
+entre_got_add_entry	got.c	/^void entre_got_add_entry(ADDRESS old_addr, ADDRESS new_addr)$/;"	f
+entre_got_find_final	got.c	/^ADDRESS entre_got_find_final(ADDRESS old_address)$/;"	f
+entre_got_find_func	got.c	/^ADDRESS entre_got_find_func(ADDRESS old_address)$/;"	f
+entre_got_find_orig	got.c	/^ADDRESS entre_got_find_orig(ADDRESS old_address)$/;"	f
+entre_got_find_t9	got.c	/^ADDRESS entre_got_find_t9(ADDRESS old_address)$/;"	f
+entre_got_init	got.c	/^void entre_got_init(int size)$/;"	f
+entre_in_code_OOprofile_get	in_code.c	/^int entre_in_code_OOprofile_get(INSN_T ** code_array)$/;"	f
+entre_in_code_bb_freq_get	in_code.c	/^int entre_in_code_bb_freq_get(INSN_T ** code_array)$/;"	f
+entre_in_code_call_get	in_code.c	/^int entre_in_code_call_get(INSN_T ** code_array)$/;"	f
+entre_in_code_mem_get	in_code.c	/^int entre_in_code_mem_get(INSN_T ** code_array)$/;"	f
+entre_initExecutable	binary.c	/^void entre_initExecutable(int fp)$/;"	f
+entre_init_addr_list	basicblock.c	/^void entre_init_addr_list(void)$/;"	f
+entre_init_cc	codecache.c	/^void entre_init_cc(void)$/;"	f
+entre_init_function	function.c	/^void entre_init_function(void)$/;"	f
+entre_init_mark_bb	basicblock.c	/^void entre_init_mark_bb(void)$/;"	f
+entre_init_one_function	function.c	/^void entre_init_one_function(Elf32_Sym *sym, unsigned first_bb, unsigned bb_num)$/;"	f
+entre_init_stack	stack.c	/^void entre_init_stack(void)$/;"	f
+entre_insn_type	basicblock.c	/^INSN_CLASS entre_insn_type(INSN_T insn)$/;"	f
+entre_instrument_omit_init	make_new_function.c	/^void entre_instrument_omit_init()$/;"	f
+entre_instrument_omit_record	make_new_function.c	/^void entre_instrument_omit_record(ADDRESS omit_addr)$/;"	f
+entre_is_b	isa.c	/^inline int entre_is_b(INSN_T insn)$/;"	f
+entre_is_bb_begine	basicblock.c	/^int entre_is_bb_begine(ADDRESS addr)$/;"	f
+entre_is_before_main	function.c	/^int entre_is_before_main(struct function * fun)$/;"	f
+entre_is_call_instruction	isa.h	97;"	d
+entre_is_instrument_instruction	isa.h	115;"	d
+entre_is_instrument_instruction	isa.h	123;"	d
+entre_is_instrument_instruction	isa.h	130;"	d
+entre_is_instrument_instruction	isa.h	137;"	d
+entre_is_j	isa.c	/^inline int entre_is_j(INSN_T insn)$/;"	f
+entre_is_jal	isa.c	/^inline int entre_is_jal(INSN_T insn)$/;"	f
+entre_is_jalr	isa.c	/^inline int entre_is_jalr(INSN_T insn)$/;"	f
+entre_is_jr	isa.c	/^inline int entre_is_jr(INSN_T insn)$/;"	f
+entre_is_jr_call	isa.c	/^inline int entre_is_jr_call(INSN_T insn)$/;"	f
+entre_is_jr_ra	isa.c	/^inline int entre_is_jr_ra(INSN_T insn)$/;"	f
+entre_is_lb	isa.c	/^inline int entre_is_lb(INSN_T insn)$/;"	f
+entre_is_ldc1	isa.c	/^inline int entre_is_ldc1(INSN_T insn)$/;"	f
+entre_is_lh	isa.c	/^inline int entre_is_lh(INSN_T insn)$/;"	f
+entre_is_lui	isa.c	/^inline int entre_is_lui(INSN_T insn)$/;"	f
+entre_is_lw	isa.c	/^inline int entre_is_lw(INSN_T insn)$/;"	f
+entre_is_lwc1	isa.c	/^inline int entre_is_lwc1(INSN_T insn)$/;"	f
+entre_is_mem_instruction	isa.h	106;"	d
+entre_is_return_instruction	isa.h	100;"	d
+entre_is_sb	isa.c	/^inline int entre_is_sb(INSN_T insn)$/;"	f
+entre_is_sdc1	isa.c	/^inline int entre_is_sdc1(INSN_T insn)$/;"	f
+entre_is_sh	isa.c	/^inline int entre_is_sh(INSN_T insn)$/;"	f
+entre_is_sw	isa.c	/^inline int entre_is_sw(INSN_T insn)$/;"	f
+entre_is_swc1	isa.c	/^inline int entre_is_swc1(INSN_T insn)$/;"	f
+entre_is_t9_instruction	isa.h	103;"	d
+entre_jal_b_redirect	redirect.c	/^void entre_jal_b_redirect(struct function * fun)$/;"	f
+entre_lr_num	function.c	/^int entre_lr_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr)$/;"	f
+entre_make_a_new_function	make_new_function.c	/^void entre_make_a_new_function(struct function * fun)$/;"	f
+entre_make_addiu	isa.c	/^inline INSN_T entre_make_addiu(REG_T d, REG_T s, int j)$/;"	f
+entre_make_b	isa.c	/^inline INSN_T entre_make_b(INSN_T insn, unsigned broffset)$/;"	f
+entre_make_context_switch_code	context_switch.c	/^ADDRESS entre_make_context_switch_code(ADDRESS target_addr)$/;"	f
+entre_make_in_code_OOprofile	in_code.c	/^void entre_make_in_code_OOprofile(ADDRESS context_switch_addr)$/;"	f
+entre_make_in_code_bb_freq	in_code.c	/^void entre_make_in_code_bb_freq(ADDRESS bb_counter_addr)$/;"	f
+entre_make_in_code_call	in_code.c	/^void entre_make_in_code_call(ADDRESS context_switch_addr)$/;"	f
+entre_make_in_code_mem	in_code.c	/^void entre_make_in_code_mem(ADDRESS context_switch_addr)$/;"	f
+entre_make_inc_x	isa.c	/^inline INSN_T entre_make_inc_x(REG_T s, unsigned x)$/;"	f
+entre_make_j	isa.c	/^inline INSN_T entre_make_j(INSN_T t)$/;"	f
+entre_make_jal	isa.c	/^inline INSN_T entre_make_jal(INSN_T t)$/;"	f
+entre_make_jalr	isa.c	/^inline INSN_T entre_make_jalr(REG_T s)$/;"	f
+entre_make_jr	isa.c	/^inline INSN_T entre_make_jr(REG_T s)$/;"	f
+entre_make_ld	isa.c	/^inline INSN_T entre_make_ld(REG_T b, REG_T t, unsigned offset)$/;"	f
+entre_make_lui	isa.c	/^inline INSN_T entre_make_lui(REG_T d, unsigned c)$/;"	f
+entre_make_move	isa.h	90;"	d
+entre_make_new_functions	make_new_function.c	/^void entre_make_new_functions()$/;"	f
+entre_make_nop	isa.c	/^inline INSN_T entre_make_nop()$/;"	f
+entre_make_or	isa.c	/^inline INSN_T entre_make_or(REG_T d, REG_T s, REG_T t)$/;"	f
+entre_make_sd	isa.c	/^inline INSN_T entre_make_sd(REG_T b, REG_T t, unsigned offset)$/;"	f
+entre_mark_bb	basicblock.c	/^void entre_mark_bb(void)$/;"	f
+entre_mark_bb_in_function	basicblock.c	/^void entre_mark_bb_in_function(void)$/;"	f
+entre_mem_access_addr	isa.c	/^ADDRESS entre_mem_access_addr(ADDRESS b_reg, ADDRESS offset)$/;"	f
+entre_my_error	global.c	/^void entre_my_error(char *msg)$/;"	f
+entre_offset_cvt	isa.c	/^ADDRESS entre_offset_cvt(ADDRESS offset)$/;"	f
+entre_optimize	top_level.c	/^void entre_optimize(int fp)$/;"	f
+entre_redirect_jalr	redirect.c	/^void entre_redirect_jalr(struct context * context)$/;"	f
+entre_redirect_jr_call	redirect.c	/^void entre_redirect_jr_call(struct context * context)$/;"	f
+entre_trace_record	trace.c	/^void entre_trace_record(struct context * context)$/;"	f
+entre_transfer_redirect	redirect.c	/^void entre_transfer_redirect()$/;"	f
+f_address	function.h	/^    ADDRESS f_address;     \/* function start address *\/$/;"	m	struct:function
+f_codesize	function.h	/^    unsigned f_codesize;   \/* function's instuction size or code size*\/$/;"	m	struct:function
+f_firstBB	function.h	/^    unsigned f_firstBB;    \/* first basic block id in the basic block array *\/$/;"	m	struct:function
+f_name	function.h	/^    char *f_name;          \/* function name *\/$/;"	m	struct:function
+f_numBB	function.h	/^    unsigned f_numBB;      \/* basic block number of this function *\/$/;"	m	struct:function
+fp	context_switch.h	/^    UINT64  fp;$/;"	m	struct:context
+function	function.h	/^struct function$/;"	s
+got	got.c	/^struct got * got;$/;"	v	typeref:struct:got
+got	got.h	/^struct got$/;"	s
+got_n	got.c	/^int got_n;$/;"	v
+got_size	got.c	/^int got_size;$/;"	v
+gp	context_switch.h	/^    UINT64  gp;     $/;"	m	struct:context
+i1	basicblock.h	/^    INSN_T i1;$/;"	m	struct:bb
+i2	basicblock.h	/^    INSN_T i2;$/;"	m	struct:bb
+in_code_OOprofile	in_code.c	/^static INSN_T in_code_OOprofile[IN_CODE_SIZE];$/;"	v	file:
+in_code_bb_freq	in_code.c	/^static INSN_T in_code_bb_freq[IN_CODE_SIZE];$/;"	v	file:
+in_code_call	in_code.c	/^static INSN_T in_code_call[IN_CODE_SIZE];$/;"	v	file:
+in_code_mem	in_code.c	/^static INSN_T in_code_mem[IN_CODE_SIZE];$/;"	v	file:
+in_point	basicblock.h	/^    ADDRESS in_point;$/;"	m	struct:bb
+insn_num	basicblock.h	/^    int insn_num;          \/* instructions in BB *\/$/;"	m	struct:bb
+instrument_omit	make_new_function.c	/^struct instrument_point instrument_omit[INSTRUMENT_OMIT_SIZE];$/;"	v	typeref:struct:instrument_point
+instrument_omit_num	make_new_function.c	/^int instrument_omit_num;$/;"	v
+instrument_omit_size	make_new_function.c	/^int instrument_omit_size;$/;"	v
+instrument_point	make_new_function.h	/^struct instrument_point$/;"	s
+instrument_type	make_new_function.h	/^enum instrument_type$/;"	g
+k0	context_switch.h	/^    UINT64  k0;     $/;"	m	struct:context
+k1	context_switch.h	/^    UINT64  k1;     $/;"	m	struct:context
+nDynamicStrTab	binary.h	/^    UINT32 nDynamicStrTab;      \/* size of Dynamic String Table *\/$/;"	m	struct:struct_executable
+nDynamicSymTab	binary.h	/^    UINT32 nDynamicSymTab;      \/* number of Dynamic Symbol Table entries*\/$/;"	m	struct:struct_executable
+nGot	binary.h	/^    UINT32 nGot;    \/* number of GOT entries *\/$/;"	m	struct:struct_executable
+nSectionNameStrTab	binary.h	/^    UINT32 nSectionNameStrTab;   \/* size of section name string table *\/$/;"	m	struct:struct_executable
+nStrTab	binary.h	/^	UINT32 nStrTab;       \/* size of String Table *\/$/;"	m	struct:struct_executable
+nSymTab	binary.h	/^    UINT32 nSymTab;       \/* number of Symbol Table entries *\/$/;"	m	struct:struct_executable
+new_addr_final	got.h	/^	ADDRESS new_addr_final;	\/\/function start addr finally$/;"	m	struct:got
+new_addr_func	got.h	/^    ADDRESS new_addr_func;	\/\/function start addr with function begine and end instrument code$/;"	m	struct:got
+new_addr_orig	got.h	/^    ADDRESS new_addr_orig;	\/\/function start addr without new instruction$/;"	m	struct:got
+new_addr_t9	got.h	/^    ADDRESS new_addr_t9;	\/\/function start addr with t9 dealing code$/;"	m	struct:got
+next	basicblock.h	/^    int next;$/;"	m	struct:address_list
+old_addr	got.h	/^    ADDRESS old_addr;$/;"	m	struct:got
+old_ra	context_switch.h	/^    UINT64  old_ra;    $/;"	m	struct:context
+old_sp	context_switch.h	/^	UINT64  old_sp;$/;"	m	struct:context
+old_t9	context_switch.h	/^    UINT64  old_t9;$/;"	m	struct:context
+pCodeEnd	binary.h	/^	ADDRESS pCodeEnd;    \/* code segment end address *\/$/;"	m	struct:struct_executable
+pCodeStart	binary.h	/^    ADDRESS pCodeStart;  \/* code segment start address *\/$/;"	m	struct:struct_executable
+pDynamicStrTab	binary.h	/^    char* pDynamicStrTab;      \/* point to Dynamic String Table *\/$/;"	m	struct:struct_executable
+pDynamicSymTab	binary.h	/^    Elf32_Sym* pDynamicSymTab; \/* point to Dynamic Symbol Table entries *\/$/;"	m	struct:struct_executable
+pGot	binary.h	/^    ADDRESS* pGot;  \/* point to GOT entries *\/$/;"	m	struct:struct_executable
+pSectionNameStrTab	binary.h	/^    char* pSectionNameStrTab;   \/* point to section name string table *\/$/;"	m	struct:struct_executable
+pStrTab	binary.h	/^	char* pStrTab;       \/* point to String Table *\/$/;"	m	struct:struct_executable
+pSymTab	binary.h	/^    Elf32_Sym* pSymTab;  \/* point to Symbol Table entries *\/$/;"	m	struct:struct_executable
+pagesize	global.c	/^int pagesize;$/;"	v
+ra	context_switch.h	/^    UINT64  ra;    $/;"	m	struct:context
+real_fini	entre.c	/^void (*real_fini) (void);$/;"	v
+s0	context_switch.h	/^    UINT64  s0;    $/;"	m	struct:context
+s1	context_switch.h	/^    UINT64  s1;    $/;"	m	struct:context
+s2	context_switch.h	/^    UINT64  s2;    $/;"	m	struct:context
+s3	context_switch.h	/^    UINT64  s3;    $/;"	m	struct:context
+s4	context_switch.h	/^    UINT64  s4;    $/;"	m	struct:context
+s5	context_switch.h	/^    UINT64  s5;    $/;"	m	struct:context
+s6	context_switch.h	/^    UINT64  s6;     $/;"	m	struct:context
+s7	context_switch.h	/^    UINT64  s7;    $/;"	m	struct:context
+sp	context_switch.h	/^    UINT64  sp;     $/;"	m	struct:context
+sp	stack.c	/^int sp;$/;"	v
+stack	context_switch.h	/^	UINT64  stack;$/;"	m	struct:context
+start	basicblock.h	/^    ADDRESS start;         \/* BB begine virtual address *\/$/;"	m	struct:bb
+stdtrace	global.c	/^FILE * stdtrace;$/;"	v
+struct_executable	binary.h	/^struct struct_executable$/;"	s
+t0	context_switch.h	/^    UINT64  t0;    $/;"	m	struct:context
+t1	context_switch.h	/^    UINT64  t1;    $/;"	m	struct:context
+t2	context_switch.h	/^    UINT64  t2;    $/;"	m	struct:context
+t3	context_switch.h	/^    UINT64  t3;    $/;"	m	struct:context
+t4	context_switch.h	/^    UINT64  t4;    $/;"	m	struct:context
+t5	context_switch.h	/^    UINT64  t5;    $/;"	m	struct:context
+t6	context_switch.h	/^    UINT64  t6;     $/;"	m	struct:context
+t7	context_switch.h	/^    UINT64  t7;    $/;"	m	struct:context
+t8	context_switch.h	/^    UINT64  t8;     $/;"	m	struct:context
+t9	context_switch.h	/^    UINT64  t9;    $/;"	m	struct:context
+type	basicblock.h	/^    BB_CLASS type;$/;"	m	struct:bb
+type	make_new_function.h	/^	enum instrument_type type;$/;"	m	struct:instrument_point	typeref:enum:instrument_point::instrument_type
+v0	context_switch.h	/^    UINT64  v0;     $/;"	m	struct:context
+v1	context_switch.h	/^    UINT64  v1;    $/;"	m	struct:context
+zero	context_switch.h	/^    UINT64  zero;   $/;"	m	struct:context

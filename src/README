@@ -1,0 +1,39 @@
+ ************************************************************
+ * Copyright (c) 2010-present Peng Fei.  All rights reserved.
+ ************************************************************/
+
+ * Redistribution and use in source and binary forms, with or without
+   modification, are permitted provided that the following conditions are met:
+  
+ * Redistribution and use in source and binary forms must authorized by
+   Peng Fei.
+ 
+ * Redistributions of source code must retain the above copyright notice,
+   this list of conditions and the following disclaimer.
+ 
+ * Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+ 
+
+ * HOW TO USE:
+	export LD_PRELOAD=$DYNAMIC_LIB_PATH/trace.so
+	export LD_PRELOAD=$DYNAMIC_LIB_PATH/bb_freq.so
+	export LD_PRELOAD=$DYNAMIC_LIB_PATH/OOprofile.so
+
+ * FEATURE:
+	entre.so
+    	entre is not a tool, it is a platform. all tools like trace
+    	are developmented on it.
+	trace.so:
+    	trace is uesed to achieve all memory access trace.
+	bb_freq.so:
+    	bb_freq is used to achieve the frequency of any basic block,
+    	you can used this infomation to obtain the the frequency of
+    	any instruction.
+	OOprofile.so:
+    	OOprofile is used to achieve the function detail infomation
+    	together with Oprofile under root. right now, it dose not
+    	work very well, only proved that entre can work together with
+    	Oprofile, because it consumes so much time when it works.
+
