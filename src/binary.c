@@ -26,6 +26,7 @@
 #include <sys/mman.h>  /* mmap */
 #include <elf.h>
 #include <asm/cachectl.h>
+#include <errno.h>
 
 #include "global.h"
 #include "binary.h"
@@ -105,6 +106,10 @@ static void entre_function_sort(Elf32_Sym * sym, Elf32_Sym ** rank, int n)
  * *******************************************************************/
 void entre_IRMarkFunctions(void)
 {
+#ifdef DEBUG_REACH
+    printf("reach begin of function entre_IRMarkFunctions.\n\n");
+#endif
+
     INDEX i,j;
 
     Elf32_Sym *pSymTab = Executable.pSymTab;
@@ -198,6 +203,11 @@ void entre_IRMarkFunctions(void)
     /* the remaining symbol name string table must be smaller than original one, 
 	   so the pointer will not change. */
     Executable.pStrTab = realloc(Executable.pStrTab, Executable.nStrTab);
+
+#ifdef DEBUG_REACH
+    printf("reach end of function entre_IRMarkFunctions.\n\n");
+#endif
+
 }
 
 
@@ -207,21 +217,65 @@ void entre_IRMarkFunctions(void)
  * ******************************************************************/
 void entre_BinaryLoad(void* start_fp)
 {
+#ifdef DEBUG_REACH
+    printf("reach begin of function entre_BinaryLoad.\n\n");
+#endif
+
     INDEX i,j;
-    
+ 
+#ifdef DEBUG_REACH
+    printf("begin read systab information function entre_BinaryLoad.\n\n");
+#endif
+   
     Elf32_Ehdr *pElfHeader = (Elf32_Ehdr *) start_fp;    /* ELF Header address */
+
+#ifdef DEBUG_REACH
+    printf("1st read systab information function entre_BinaryLoad.\n\n");
+#endif
+
     UINT32      nSection = pElfHeader->e_shnum;    /* number of sections */
+ 
+#ifdef DEBUG_REACH
+    printf("2th read systab information function entre_BinaryLoad.\n\n");
+#endif
+
     Elf32_Shdr *pSectionHeaderStart =(Elf32_Shdr *)((char*)pElfHeader + pElfHeader->e_shoff);  /* Section Header Table address */
+#ifdef DEBUG_REACH
+    printf("3th read systab information function entre_BinaryLoad.\n\n");
+#endif
 
     /* Section Name String Table info */
     Elf32_Shdr *pSectionHeaderItem = pSectionHeaderStart + pElfHeader->e_shstrndx;
-    char *pSectionNameStrTab = (char *)((char*)pElfHeader + pSectionHeaderItem->sh_offset); /* ? */
+
+#ifdef DEBUG_REACH
+    printf("4st read systab information function entre_BinaryLoad.\n\n");
+#endif
+
+   char *pSectionNameStrTab = (char *)((char*)pElfHeader + pSectionHeaderItem->sh_offset); /* ? */
+
+#ifdef DEBUG_REACH
+    printf("5th read systab information function entre_BinaryLoad.\n\n");
+#endif
+
     Executable.pSectionNameStrTab = (char *)malloc(sizeof(pSectionHeaderItem->sh_size));
+
+#ifdef DEBUG_REACH
+    printf("6th read systab information function entre_BinaryLoad.\n\n");
+#endif
+
     Executable.nSectionNameStrTab = pSectionHeaderItem->sh_size;  /* ? */
-    
+
+#ifdef DEBUG_REACH
+    printf("7th read systab information function entre_BinaryLoad.\n\n");
+#endif
+
     /* symtab, strtab, and got is unquie, assum text is also unquie (?)*/
     for(i=1; i<nSection; i++)
     {
+#ifdef DEBUG_REACH
+    printf("for read systab information function entre_BinaryLoad.\n\n");
+#endif
+
         pSectionHeaderItem = pSectionHeaderStart + i;
         char *pSectionName = pSectionNameStrTab + pSectionHeaderItem->sh_name; /* type convect? */
         
@@ -259,17 +313,34 @@ void entre_BinaryLoad(void* start_fp)
         ADDRESS pPageStart = Executable.pCodeStart & (~(pagesize - 1));
         mprotect((void*)pPageStart, Executable.pCodeEnd - pPageStart, PROT_READ | PROT_WRITE | PROT_EXEC);
     }
+#ifdef DEBUG_REACH
+    printf("reach end of function entre_BinaryLoad.\n\n");
+#endif
 }
 
 
 
 void entre_initExecutable(int fp)
 {
+printf("the value of fp: %d\n", fp);
     struct stat stat_date;
 
+#ifdef DEBUG_REACH
+    printf("reach begin of function entre_initExecutable.\n\n");
+#endif
     int fs = fstat(fp, &stat_date);
+printf("the value of fp: %d", fp);
     void *start_fp = mmap(NULL, stat_date.st_size, PROT_READ, MAP_SHARED, fp, 0);
+	if (start_fp == (void *)-1)
+	{
+		printf("mmap error!  errno: %d\n\n", errno);
+		exit(0);
+	}
 	entre_BinaryLoad(start_fp);
 	entre_IRMarkFunctions();
 	munmap(start_fp, stat_date.st_size);
+#ifdef DEBUG_REACH
+    printf("reach end of function entre_initExecutable.\n\n");
+#endif
+
 }

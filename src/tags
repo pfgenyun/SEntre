@@ -3,34 +3,35 @@
 !_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.7	//
+!_TAG_PROGRAM_VERSION	5.8	//
 ADDRESS	global.h	/^typedef unsigned ADDRESS;$/;"	t
 ADDR_LIST_SIZE	basicblock.h	57;"	d
 ALL_FUNCTION_SIZE	function.h	27;"	d
 BASICBLOCK_H	basicblock.h	22;"	d
 BASIC_BLOCK	basicblock.h	72;"	d
-BB_B_LINK	basicblock.h	/^    BB_B_LINK,          \/* branch and link, bal *\/$/;"	e	enum:__anon3
-BB_B_NO_LINK	basicblock.h	/^    BB_B_NO_LINK,       \/* branch, bne *\/$/;"	e	enum:__anon3
-BB_CLASS	basicblock.h	/^}BB_CLASS;$/;"	t	typeref:enum:__anon3
+BB_B_LINK	basicblock.h	/^    BB_B_LINK,          \/* branch and link, bal *\/$/;"	e	enum:__anon2
+BB_B_NO_LINK	basicblock.h	/^    BB_B_NO_LINK,       \/* branch, bne *\/$/;"	e	enum:__anon2
+BB_CLASS	basicblock.h	/^}BB_CLASS;$/;"	t	typeref:enum:__anon2
 BB_FREQ_H	bb_freq.h	22;"	d
-BB_JR_LINK	basicblock.h	/^    BB_JR_LINK,         \/* jump and link, jalr *\/$/;"	e	enum:__anon3
-BB_JR_NO_LINK	basicblock.h	/^    BB_JR_NO_LINK,      \/* jump, jar *\/$/;"	e	enum:__anon3
-BB_J_LINK	basicblock.h	/^    BB_J_LINK,          \/* jump and link, jal *\/$/;"	e	enum:__anon3
-BB_J_NO_LINK	basicblock.h	/^    BB_J_NO_LINK,       \/* jump, j *\/$/;"	e	enum:__anon3
-BB_NORMAL	basicblock.h	/^    BB_NORMAL,          \/* normal instruction *\/$/;"	e	enum:__anon3
-BB_SINGLE	basicblock.h	/^    BB_SINGLE,$/;"	e	enum:__anon3
+BB_JR_LINK	basicblock.h	/^    BB_JR_LINK,         \/* jump and link, jalr *\/$/;"	e	enum:__anon2
+BB_JR_NO_LINK	basicblock.h	/^    BB_JR_NO_LINK,      \/* jump, jar *\/$/;"	e	enum:__anon2
+BB_J_LINK	basicblock.h	/^    BB_J_LINK,          \/* jump and link, jal *\/$/;"	e	enum:__anon2
+BB_J_NO_LINK	basicblock.h	/^    BB_J_NO_LINK,       \/* jump, j *\/$/;"	e	enum:__anon2
+BB_NORMAL	basicblock.h	/^    BB_NORMAL,          \/* normal instruction *\/$/;"	e	enum:__anon2
+BB_SINGLE	basicblock.h	/^    BB_SINGLE,$/;"	e	enum:__anon2
 BB_SIZE	basicblock.h	49;"	d
 BINARY_H	binary.h	22;"	d
 BROFFSET	isa.h	44;"	d
 B_INSN	make_new_function.h	/^	B_INSN,$/;"	e	enum:instrument_type
-B_LINK	isa.h	/^    B_LINK,      \/* branch and link, bal *\/$/;"	e	enum:__anon1
-B_NO_LINK	isa.h	/^    B_NO_LINK,   \/* normal branch instruction , bne *\/$/;"	e	enum:__anon1
+B_LINK	isa.h	/^    B_LINK,      \/* branch and link, bal *\/$/;"	e	enum:__anon3
+B_NO_LINK	isa.h	/^    B_NO_LINK,   \/* normal branch instruction , bne *\/$/;"	e	enum:__anon3
 CC	Makefile	/^CC = gcc$/;"	m
 CODECACHE_H	codecache.h	22;"	d
 CODECACHE_SIZE	codecache.h	26;"	d
 CONTEXT_SWITCH_H	context_switch.h	22;"	d
 CONTROL_TRANS_H	control_trans.h	22;"	d
 C_FLAG	Makefile	/^C_FLAG = -g -O0 -fPIC -shared $/;"	m
+D_FLAG	Makefile	/^D_FLAG = -DDEBUG -DDUMP_FUNC -DDUMP_BB -DDUMP_CONTEXT -DDUMP_DIRTY_CALL -DDEBUG_REACH$/;"	m
 D_REG	isa.h	42;"	d
 EHTRE_H	entre.h	22;"	d
 EXT_OP	isa.h	39;"	d
@@ -54,7 +55,7 @@ GOT_OLD_ADDR	got.h	44;"	d
 INDEX	global.h	/^typedef int INDEX;$/;"	t
 INSN_AT	isa.h	48;"	d
 INSN_BYTES	global.h	27;"	d
-INSN_CLASS	isa.h	/^}INSN_CLASS;$/;"	t	typeref:enum:__anon1
+INSN_CLASS	isa.h	/^}INSN_CLASS;$/;"	t	typeref:enum:__anon3
 INSN_D_REG	isa.h	53;"	d
 INSN_MAIN_OP	isa.h	50;"	d
 INSN_SUB_OP	isa.h	54;"	d
@@ -69,11 +70,11 @@ IN_CODE_H	in_code.h	22;"	d
 IN_CODE_LW_NUM	in_code.h	28;"	d
 IN_CODE_SIZE	in_code.h	26;"	d
 ISA_H	isa.h	22;"	d
-JR_LINK	isa.h	/^    JR_LINK,     \/* jump and link , jalr *\/$/;"	e	enum:__anon1
-JR_NO_LINK	isa.h	/^    JR_NO_LINK,  \/* jump , jr *\/$/;"	e	enum:__anon1
-J_LINK	isa.h	/^    J_LINK,      \/* jal *\/$/;"	e	enum:__anon1
-J_NO_LINK	isa.h	/^    J_NO_LINK,   \/* jump , j *\/$/;"	e	enum:__anon1
-LIBDIR	Makefile	/^LIBDIR = ..\/lib\/$/;"	m
+JR_LINK	isa.h	/^    JR_LINK,     \/* jump and link , jalr *\/$/;"	e	enum:__anon3
+JR_NO_LINK	isa.h	/^    JR_NO_LINK,  \/* jump , jr *\/$/;"	e	enum:__anon3
+J_LINK	isa.h	/^    J_LINK,      \/* jal *\/$/;"	e	enum:__anon3
+J_NO_LINK	isa.h	/^    J_NO_LINK,   \/* jump , j *\/$/;"	e	enum:__anon3
+LIBDIR	Makefile	/^LIBDIR = ..\/.lib\/$/;"	m
 LINK_FLAG	Makefile	/^LINK_FLAG = -ldl $/;"	m
 LOAD_T9_BYTES	make_new_function.h	28;"	d
 LOAD_T9_NUM	make_new_function.h	27;"	d
@@ -83,11 +84,11 @@ MAKE_NEW_FUNCTION_H	make_new_function.h	22;"	d
 MEGA_1	global.h	26;"	d
 MEM_ACCESS	make_new_function.h	/^	MEM_ACCESS$/;"	e	enum:instrument_type
 MIN_ADDR	basicblock.h	59;"	d
-MIPS_REG	reg.h	/^}MIPS_REG;$/;"	t	typeref:enum:__anon2
-NORMAL	isa.h	/^    NORMAL,      \/* normal instruction *\/$/;"	e	enum:__anon1
+MIPS_REG	reg.h	/^}MIPS_REG;$/;"	t	typeref:enum:__anon1
+NORMAL	isa.h	/^    NORMAL,      \/* normal instruction *\/$/;"	e	enum:__anon3
 NULL_INDEX	basicblock.h	58;"	d
 OBJ	Makefile	/^OBJ = entre.o top_level.o global.o binary.o basicblock.o \\$/;"	m
-OBJDIR	Makefile	/^OBJDIR = ..\/lib\/$/;"	m
+OBJDIR	Makefile	/^OBJDIR = ..\/.lib\/$/;"	m
 OFFSET	isa.h	45;"	d
 OOPROFILE_H	OOprofile.h	22;"	d
 OPCONTROL_FINI	OOprofile.h	42;"	d
@@ -96,40 +97,40 @@ OPCONTROL_REPORT	OOprofile.h	39;"	d
 OPCONTROL_SETUP	OOprofile.h	33;"	d
 PARAMS_START_MAIN	entre.h	25;"	d
 PUT_CONTEXT	context_switch.h	72;"	d
-REG_A0	reg.h	/^    REG_A0,		\/\/4-7$/;"	e	enum:__anon2
-REG_A1	reg.h	/^    REG_A1,$/;"	e	enum:__anon2
-REG_A2	reg.h	/^	REG_A2,$/;"	e	enum:__anon2
-REG_A3	reg.h	/^	REG_A3,$/;"	e	enum:__anon2
-REG_AT	reg.h	/^    REG_AT,		\/\/1$/;"	e	enum:__anon2
-REG_FP	reg.h	/^	REG_FP,		\/\/30$/;"	e	enum:__anon2
-REG_GP	reg.h	/^	REG_GP,		\/\/28$/;"	e	enum:__anon2
+REG_A0	reg.h	/^    REG_A0,		\/\/4-7$/;"	e	enum:__anon1
+REG_A1	reg.h	/^    REG_A1,$/;"	e	enum:__anon1
+REG_A2	reg.h	/^	REG_A2,$/;"	e	enum:__anon1
+REG_A3	reg.h	/^	REG_A3,$/;"	e	enum:__anon1
+REG_AT	reg.h	/^    REG_AT,		\/\/1$/;"	e	enum:__anon1
+REG_FP	reg.h	/^	REG_FP,		\/\/30$/;"	e	enum:__anon1
+REG_GP	reg.h	/^	REG_GP,		\/\/28$/;"	e	enum:__anon1
 REG_H	reg.h	22;"	d
-REG_K0	reg.h	/^	REG_K0,		\/\/26,27$/;"	e	enum:__anon2
-REG_K1	reg.h	/^	REG_K1,$/;"	e	enum:__anon2
-REG_RA	reg.h	/^	REG_RA		\/\/31$/;"	e	enum:__anon2
-REG_S0	reg.h	/^	REG_S0,		\/\/16-23$/;"	e	enum:__anon2
-REG_S1	reg.h	/^	REG_S1,$/;"	e	enum:__anon2
-REG_S2	reg.h	/^	REG_S2,$/;"	e	enum:__anon2
-REG_S3	reg.h	/^	REG_S3,$/;"	e	enum:__anon2
-REG_S4	reg.h	/^	REG_S4,$/;"	e	enum:__anon2
-REG_S5	reg.h	/^	REG_S5,$/;"	e	enum:__anon2
-REG_S6	reg.h	/^	REG_S6,$/;"	e	enum:__anon2
-REG_S7	reg.h	/^	REG_S7,$/;"	e	enum:__anon2
-REG_SP	reg.h	/^	REG_SP,		\/\/29$/;"	e	enum:__anon2
+REG_K0	reg.h	/^	REG_K0,		\/\/26,27$/;"	e	enum:__anon1
+REG_K1	reg.h	/^	REG_K1,$/;"	e	enum:__anon1
+REG_RA	reg.h	/^	REG_RA		\/\/31$/;"	e	enum:__anon1
+REG_S0	reg.h	/^	REG_S0,		\/\/16-23$/;"	e	enum:__anon1
+REG_S1	reg.h	/^	REG_S1,$/;"	e	enum:__anon1
+REG_S2	reg.h	/^	REG_S2,$/;"	e	enum:__anon1
+REG_S3	reg.h	/^	REG_S3,$/;"	e	enum:__anon1
+REG_S4	reg.h	/^	REG_S4,$/;"	e	enum:__anon1
+REG_S5	reg.h	/^	REG_S5,$/;"	e	enum:__anon1
+REG_S6	reg.h	/^	REG_S6,$/;"	e	enum:__anon1
+REG_S7	reg.h	/^	REG_S7,$/;"	e	enum:__anon1
+REG_SP	reg.h	/^	REG_SP,		\/\/29$/;"	e	enum:__anon1
 REG_T	global.h	/^typedef int REG_T;$/;"	t
-REG_T0	reg.h	/^	REG_T0,		\/\/8-15$/;"	e	enum:__anon2
-REG_T1	reg.h	/^	REG_T1,		$/;"	e	enum:__anon2
-REG_T2	reg.h	/^	REG_T2,		$/;"	e	enum:__anon2
-REG_T3	reg.h	/^	REG_T3,		$/;"	e	enum:__anon2
-REG_T4	reg.h	/^	REG_T4,		$/;"	e	enum:__anon2
-REG_T5	reg.h	/^	REG_T5,		$/;"	e	enum:__anon2
-REG_T6	reg.h	/^	REG_T6,		$/;"	e	enum:__anon2
-REG_T7	reg.h	/^	REG_T7,	$/;"	e	enum:__anon2
-REG_T8	reg.h	/^    REG_T8,		\/\/24,25$/;"	e	enum:__anon2
-REG_T9	reg.h	/^	REG_T9,	$/;"	e	enum:__anon2
-REG_V0	reg.h	/^    REG_V0,		\/\/2,3$/;"	e	enum:__anon2
-REG_V1	reg.h	/^    REG_V1,$/;"	e	enum:__anon2
-REG_ZERO	reg.h	/^    REG_ZERO,	\/\/0$/;"	e	enum:__anon2
+REG_T0	reg.h	/^	REG_T0,		\/\/8-15$/;"	e	enum:__anon1
+REG_T1	reg.h	/^	REG_T1,		$/;"	e	enum:__anon1
+REG_T2	reg.h	/^	REG_T2,		$/;"	e	enum:__anon1
+REG_T3	reg.h	/^	REG_T3,		$/;"	e	enum:__anon1
+REG_T4	reg.h	/^	REG_T4,		$/;"	e	enum:__anon1
+REG_T5	reg.h	/^	REG_T5,		$/;"	e	enum:__anon1
+REG_T6	reg.h	/^	REG_T6,		$/;"	e	enum:__anon1
+REG_T7	reg.h	/^	REG_T7,	$/;"	e	enum:__anon1
+REG_T8	reg.h	/^    REG_T8,		\/\/24,25$/;"	e	enum:__anon1
+REG_T9	reg.h	/^	REG_T9,	$/;"	e	enum:__anon1
+REG_V0	reg.h	/^    REG_V0,		\/\/2,3$/;"	e	enum:__anon1
+REG_V1	reg.h	/^    REG_V1,$/;"	e	enum:__anon1
+REG_ZERO	reg.h	/^    REG_ZERO,	\/\/0$/;"	e	enum:__anon1
 SCODE_SIZE	context_switch.h	26;"	d
 SHIFT	isa.h	43;"	d
 SOURCE	Makefile	/^SOURCE = entre.c top_level.c global.c binary.c basicblock.c \\$/;"	m
@@ -137,7 +138,7 @@ STACK_H	stack.h	22;"	d
 SUB_OP	isa.h	38;"	d
 S_REG	isa.h	40;"	d
 TARGET	isa.h	46;"	d
-TOOL_FLAG	Makefile	/^TOOL_FLAG = -DBB_FREQ$/;"	m
+TOOL_FLAG	Makefile	/^TOOL_FLAG = $/;"	m
 TOP_LEVEL_H	top_level.h	22;"	d
 TRACE_H	trace.h	22;"	d
 T_REG	isa.h	41;"	d
@@ -300,6 +301,7 @@ f_name	function.h	/^    char *f_name;          \/* function name *\/$/;"	m	struc
 f_numBB	function.h	/^    unsigned f_numBB;      \/* basic block number of this function *\/$/;"	m	struct:function
 fp	context_switch.h	/^    UINT64  fp;$/;"	m	struct:context
 function	function.h	/^struct function$/;"	s
+get_application_full_name	global.c	/^void get_application_full_name(char * exe_name_full)$/;"	f
 got	got.c	/^struct got * got;$/;"	v	typeref:struct:got
 got	got.h	/^struct got$/;"	s
 got_n	got.c	/^int got_n;$/;"	v

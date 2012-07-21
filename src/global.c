@@ -20,6 +20,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>   /* open   */
+#include <unistd.h>  /* close  */
+#include <string.h>
+
 
 int pagesize;
 #ifdef TRACE
@@ -51,4 +55,28 @@ void entre_my_error(char *msg)
     printf("%s%c", msg, '\n');
     exit(1);
     printf("Can't reach here!\n");
+}
+
+void get_application_full_name(char * exe_name_full)
+{
+    int pid = getpid();
+    char proc[250];
+
+    /*this is a shitty way of getting the process name,
+      but i can't think of anything better... */
+
+    sprintf(proc, "/proc/%d/exe", pid);
+    int length = readlink(proc, exe_name_full, 250);
+    if(length > 0)
+    {
+#ifdef DEBUG
+        printf("the length of the path %d", length);
+#endif
+        exe_name_full[length] = '\0';
+    }
+    else
+    {
+        printf("readlink error!\n");
+        exit(0);
+    }
 }

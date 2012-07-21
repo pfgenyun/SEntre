@@ -44,4 +44,6 @@ void entre_my_error(char *);
 void entre_global_file_open();
 void entre_global_file_close();
 
+char * get_application_full_name();
+
 #endif

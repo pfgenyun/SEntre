@@ -175,7 +175,18 @@ void entre_redirect_jr_call(struct context * context)
 		new_addr = entre_got_find_final(old_addr);
 		if(new_addr == 0)
 			return;
-		PUT_CONTEXT(s_reg,context,new_addr);
+
+#ifdef DUMP_DIRTY_CALL
+	printf("jr_call_addr: 0x%x\told: 0x%x\tnew: 0x%x\t\n", 
+			jr_call_addr, old_addr, new_addr);
+#endif
+		if(new_addr == 0)
+			PUT_CONTEXT(s_reg,context,new_addr);
+
+#ifdef DUMP_DIRTY_CALL
+	printf("jr_call_addr: 0x%x\told: 0x%x\tnew: 0x%x\t\n", 
+			jr_call_addr, old_addr, new_addr);
+#endif
 	}
 }
 
