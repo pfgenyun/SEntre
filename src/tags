@@ -31,7 +31,7 @@ CODECACHE_SIZE	codecache.h	26;"	d
 CONTEXT_SWITCH_H	context_switch.h	22;"	d
 CONTROL_TRANS_H	control_trans.h	22;"	d
 C_FLAG	Makefile	/^C_FLAG = -g -O0 -fPIC -shared $/;"	m
-D_FLAG	Makefile	/^D_FLAG = -DDEBUG -DDUMP_FUNC -DDUMP_BB -DDUMP_CONTEXT -DDUMP_DIRTY_CALL -DDEBUG_REACH$/;"	m
+D_FLAG	Makefile	/^D_FLAG = $/;"	m
 D_REG	isa.h	42;"	d
 EHTRE_H	entre.h	22;"	d
 EXT_OP	isa.h	39;"	d

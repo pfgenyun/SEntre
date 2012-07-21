@@ -45,7 +45,6 @@
 
 void entre_optimize(int fp)
 {
-printf("the value of fp: %d\n", fp);
     entre_global_env_init();
     entre_initExecutable(fp);
 

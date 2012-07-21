@@ -117,6 +117,12 @@ void entre_IRMarkFunctions(void)
     char      *pStrTab = Executable.pStrTab;
     UINT32     nStrTab = Executable.nStrTab;
 
+    if (nSymTab == 0)
+    {
+        printf("             **********ERROR:The symtab information is stripped!**********\n\n");
+        exit(0);
+    }
+
     Executable.pSymTab = NULL;
     Executable.nSymTab = 0;
     Executable.pStrTab = (char *)malloc(nStrTab);
@@ -322,14 +328,12 @@ void entre_BinaryLoad(void* start_fp)
 
 void entre_initExecutable(int fp)
 {
-printf("the value of fp: %d\n", fp);
     struct stat stat_date;
 
 #ifdef DEBUG_REACH
     printf("reach begin of function entre_initExecutable.\n\n");
 #endif
     int fs = fstat(fp, &stat_date);
-printf("the value of fp: %d", fp);
     void *start_fp = mmap(NULL, stat_date.st_size, PROT_READ, MAP_SHARED, fp, 0);
 	if (start_fp == (void *)-1)
 	{
