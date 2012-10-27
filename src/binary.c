@@ -104,7 +104,7 @@ static void entre_function_sort(Elf32_Sym * sym, Elf32_Sym ** rank, int n)
  * record them in the Executalbe.pSymTab and Executable.nSymTab. copy 
  * accoding String Table to Executable.pStrTab and Executable.nStrTab.
  * *******************************************************************/
-void entre_IRMarkFunctions(void)
+int entre_IRMarkFunctions(void)
 {
 #ifdef DEBUG_REACH
     printf("reach begin of function entre_IRMarkFunctions.\n\n");
@@ -119,8 +119,13 @@ void entre_IRMarkFunctions(void)
 
     if (nSymTab == 0)
     {
-        printf("             **********ERROR:The symtab information is stripped!**********\n\n");
-        exit(0);
+        printf("             *************************************************************\n");
+        printf("             **        STRIP: The Symtab Information Is Stripped!       **\n");
+        printf("             **                   Can't Instrumentation                 **\n");
+        printf("             *************************************************************\n\n");
+//	getchar();
+        return STRIP;
+//        exit(0);
     }
 
     Executable.pSymTab = NULL;
@@ -214,6 +219,7 @@ void entre_IRMarkFunctions(void)
     printf("reach end of function entre_IRMarkFunctions.\n\n");
 #endif
 
+    return 0;
 }
 
 
@@ -326,8 +332,9 @@ void entre_BinaryLoad(void* start_fp)
 
 
 
-void entre_initExecutable(int fp)
+int entre_initExecutable(int fp)
 {
+    int status;
     struct stat stat_date;
 
 #ifdef DEBUG_REACH
@@ -341,10 +348,11 @@ void entre_initExecutable(int fp)
 		exit(0);
 	}
 	entre_BinaryLoad(start_fp);
-	entre_IRMarkFunctions();
+	status = entre_IRMarkFunctions();
+        if(status) return status;
 	munmap(start_fp, stat_date.st_size);
 #ifdef DEBUG_REACH
     printf("reach end of function entre_initExecutable.\n\n");
 #endif
-
+    return 0;
 }

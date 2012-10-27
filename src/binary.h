@@ -54,7 +54,7 @@ extern struct struct_executable Executable;
 #define FOR_EACH_INSN_IN_FUN(fun, addr) \
     for(addr = fun->st_value; addr < fun->st_value + fun->st_size; addr += 4)
 
-void entre_initExecutable(int);
+int  entre_initExecutable(int);
 void entre_executable_flush(void);
 
 void entre_dump_function();

@@ -66,14 +66,16 @@ void __libc_start_main(PARAMS_START_MAIN)
 	get_application_full_name(exe_name_full);
 
     if(strcmp(exe_name, "/bin/bash")!=0 && strcmp(exe_name, "/bin/sh")!=0 
-		&& strcmp(exe_name, "bash")!=0 && strcmp(exe_name, "sh")!=0 )
+		&& strcmp(exe_name, "bash")!=0 && strcmp(exe_name, "sh")!=0 
+		&& strcmp(exe_name, "/usr/bin/perl") && strcmp(exe_name, "bin/perl") && strcmp(exe_name, "perl")
+		&& strcmp(exe_name, "/usr/bin/python") && strcmp(exe_name, "/bin/python") && strcmp(exe_name, "python"))
 	{
         INT32 fp = open(exe_name_full, O_RDONLY);
-#ifdef DEBUG
+//#ifdef DEBUG
 		printf("the value of exe_name: %s\n\n", exe_name);
 		printf("the value of exe_name_full: %s\n\n", exe_name_full);
 		printf("the value of fp: %d\n", fp);
-#endif
+//#endif
 	if (fp<0)
 	{
 		printf("open error. errno: %d\n\n", errno);

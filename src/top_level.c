@@ -43,10 +43,11 @@
 #include "bb_freq.h"
 #endif
 
-void entre_optimize(int fp)
+int entre_optimize(int fp)
 {
     entre_global_env_init();
-    entre_initExecutable(fp);
+    status = entre_initExecutable(fp);
+    if(status) return status;
 
 #ifdef DUMP_FUNC
 	entre_dump_function();

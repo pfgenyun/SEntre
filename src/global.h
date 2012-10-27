@@ -34,6 +34,14 @@ typedef unsigned INSN_T;
 typedef int REG_T;
 typedef long long UINT64;
 
+enum STATUS
+{
+    NORMOL  =	0x00,
+    STRIP   =	0x01,
+};
+
+enum STATUS status;
+
 extern int pagesize;
 #ifdef TRACE
 extern FILE * stdtrace;
