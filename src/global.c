@@ -24,6 +24,8 @@
 #include <unistd.h>  /* close  */
 #include <string.h>
 
+#include "global.h"
+
 
 int pagesize;
 #ifdef TRACE
@@ -33,21 +35,26 @@ FILE * stdtrace;
 void entre_global_file_open()
 {
 #ifdef TRACE
-	stdtrace = fopen("entre_trace.txt", "w");
+    stdtrace = fopen("entre_trace.txt", "w");
 #endif
 }
 
 void entre_global_file_close()
 {
 #ifdef TRACE
-	fclose(stdtrace);
+    fclose(stdtrace);
 #endif
+}
+
+void entre_memory_free()
+{
+    free(codecache);
 }
 
 void entre_global_env_init(void)
 {
     pagesize = getpagesize();
-	entre_global_file_open();
+    entre_global_file_open();
 }
 
 void entre_my_error(char *msg)

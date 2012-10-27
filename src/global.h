@@ -46,12 +46,14 @@ extern int pagesize;
 #ifdef TRACE
 extern FILE * stdtrace;
 #endif
+extern unsigned * codecache;
 
 void entre_global_env_init(void);
 void entre_my_error(char *);
 void entre_global_file_open();
 void entre_global_file_close();
+void entre_memory_free();
 
-char * get_application_full_name();
+void get_application_full_name(char *);
 
 #endif

@@ -28,7 +28,8 @@
 struct struct_executable
 {
     ADDRESS pCodeStart;  /* code segment start address */
-	ADDRESS pCodeEnd;    /* code segment end address */
+    ADDRESS pCodeEnd;    /* code segment end address */
+    UINT32 pSize;        /* size of code section */
 
     char* pSectionNameStrTab;   /* point to section name string table */
     UINT32 nSectionNameStrTab;   /* size of section name string table */
@@ -36,14 +37,14 @@ struct struct_executable
     ADDRESS* pGot;  /* point to GOT entries */
     UINT32 nGot;    /* number of GOT entries */
 
-    Elf32_Sym* pSymTab;  /* point to Symbol Table entries */
+    Elf32_Sym* pSymTab;   /* point to Symbol Table entries */
     UINT32 nSymTab;       /* number of Symbol Table entries */
-	char* pStrTab;       /* point to String Table */
-	UINT32 nStrTab;       /* size of String Table */
+    char* pStrTab;        /* point to String Table */
+    UINT32 nStrTab;       /* size of String Table */
 
-    Elf32_Sym* pDynamicSymTab; /* point to Dynamic Symbol Table entries */
+    Elf32_Sym* pDynamicSymTab;  /* point to Dynamic Symbol Table entries */
     UINT32 nDynamicSymTab;      /* number of Dynamic Symbol Table entries*/
-    char* pDynamicStrTab;      /* point to Dynamic String Table */
+    char* pDynamicStrTab;       /* point to Dynamic String Table */
     UINT32 nDynamicStrTab;      /* size of Dynamic String Table */
 };
 

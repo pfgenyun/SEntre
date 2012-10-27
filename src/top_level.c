@@ -51,7 +51,7 @@ Status entre_optimize(int fp)
     if(status) return status;
 
 #ifdef DUMP_FUNC
-	entre_dump_function();
+    entre_dump_function();
 #endif
 
     entre_init_stack();
@@ -61,7 +61,7 @@ Status entre_optimize(int fp)
     entre_mark_bb();
 
 #ifdef DUMP_BB
-	entre_dump_bb();
+    entre_dump_bb();
 #endif
 
 #ifdef DEBUG
@@ -90,13 +90,13 @@ Status entre_optimize(int fp)
 //	entre_make_in_code_bb_freq(context_switch_addr_bb_freq);
 #endif
 
-	entre_instrument_omit_init();
+    entre_instrument_omit_init();
     entre_make_new_functions();
     entre_transfer_redirect();
 
     entre_control_transfer();
 #ifdef OOprofile
-	entre_OOprofile_init();
+    entre_OOprofile_init();
 #endif
 
     entre_executable_flush();
@@ -111,8 +111,9 @@ Status entre_optimize(int fp)
 void entre_collection()
 {
     entre_global_file_close();
+    entre_memory_free();
 #ifdef OOprofile
-	entre_OOprofile_fini();
+    entre_OOprofile_fini();
 #endif
 
 #ifdef BB_FREQ

@@ -317,7 +317,8 @@ void entre_BinaryLoad(void* start_fp)
 		else if(strcmp(pSectionName,".text")==0)
         { /* .text exists when executing, get its virtual address. assum .text is unquie */
             Executable.pCodeStart = pSectionHeaderItem->sh_addr;
-            Executable.pCodeEnd   =  pSectionHeaderItem->sh_addr + pSectionHeaderItem->sh_size ;
+            Executable.pCodeEnd   = pSectionHeaderItem->sh_addr + pSectionHeaderItem->sh_size ;
+            Executable.pSize      = pSectionHeaderItem->sh_size;
         }   
 
         ADDRESS pPageStart = Executable.pCodeStart & (~(pagesize - 1));

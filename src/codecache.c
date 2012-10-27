@@ -25,17 +25,20 @@
 #include "global.h"
 #include "codecache.h"
 #include "isa.h"
+#include "binary.h"
 
-unsigned codecache[CODECACHE_SIZE];
-unsigned codecache_size;
+/* Each mips instruction 32 bits*/
+unsigned *codecache;
+unsigned codecache_size; 
 unsigned codecache_n;
 
 void entre_init_cc(void)
 {
-    codecache_size = CODECACHE_SIZE;
+    codecache_size = Executable.pSize;
+    codecache = malloc(codecache_size * sizeof(unsigned));
     codecache_n = 0;
 
-    ADDRESS pPageStart = (unsigned)codecache_size & (~(pagesize - 1));
+    ADDRESS pPageStart = (unsigned)codecache & (~(pagesize - 1));
     mprotect((void*)pPageStart, codecache_size*sizeof(unsigned), PROT_READ | PROT_WRITE | PROT_EXEC);
 }
 
@@ -72,6 +75,6 @@ void entre_cc_replace(ADDRESS addr, INSN_T insn)
 void entre_cc_flush()
 {
 	ADDRESS pPageStart = (unsigned)codecache&(~(pagesize-1));
-	mprotect((void*)pPageStart, codecache_size*sizeof(unsigned) - pPageStart, PROT_READ|PROT_WRITE|PROT_EXEC);
+	mprotect((void*)pPageStart, codecache_size*sizeof(unsigned), PROT_READ|PROT_WRITE|PROT_EXEC);
 	cacheflush(codecache, codecache_size*sizeof(unsigned), BCACHE);
 }
