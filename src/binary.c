@@ -104,10 +104,10 @@ static void entre_function_sort(Elf32_Sym * sym, Elf32_Sym ** rank, int n)
  * record them in the Executalbe.pSymTab and Executable.nSymTab. copy 
  * accoding String Table to Executable.pStrTab and Executable.nStrTab.
  * *******************************************************************/
-int entre_IRMarkFunctions(void)
+Status entre_IRMarkFunctions(void)
 {
 #ifdef DEBUG_REACH
-    printf("reach begin of function entre_IRMarkFunctions.\n\n");
+    printf("reach begin of function entre_IRMarkFunctions.\n");
 #endif
 
     INDEX i,j;
@@ -120,12 +120,10 @@ int entre_IRMarkFunctions(void)
     if (nSymTab == 0)
     {
         printf("             *************************************************************\n");
-        printf("             **        STRIP: The Symtab Information Is Stripped!       **\n");
-        printf("             **                   Can't Instrumentation                 **\n");
-        printf("             *************************************************************\n\n");
-//	getchar();
+        printf("             **        STRIP: The symtab information is stripped!       **\n");
+        printf("             **                     Can't Instrument!                   **\n");
+        printf("             *************************************************************\n");
         return STRIP;
-//        exit(0);
     }
 
     Executable.pSymTab = NULL;
@@ -332,9 +330,9 @@ void entre_BinaryLoad(void* start_fp)
 
 
 
-int entre_initExecutable(int fp)
+Status entre_initExecutable(int fp)
 {
-    int status;
+    Status status;
     struct stat stat_date;
 
 #ifdef DEBUG_REACH
@@ -342,15 +340,15 @@ int entre_initExecutable(int fp)
 #endif
     int fs = fstat(fp, &stat_date);
     void *start_fp = mmap(NULL, stat_date.st_size, PROT_READ, MAP_SHARED, fp, 0);
-	if (start_fp == (void *)-1)
-	{
-		printf("mmap error!  errno: %d\n\n", errno);
-		exit(0);
-	}
-	entre_BinaryLoad(start_fp);
-	status = entre_IRMarkFunctions();
-        if(status) return status;
-	munmap(start_fp, stat_date.st_size);
+    if (start_fp == (void *)-1)
+    {
+    	printf("mmap error!  errno: %d\n\n", errno);
+    	exit(0);
+    }
+    entre_BinaryLoad(start_fp);
+    status = entre_IRMarkFunctions();
+    if(status) return status;
+    munmap(start_fp, stat_date.st_size);
 #ifdef DEBUG_REACH
     printf("reach end of function entre_initExecutable.\n\n");
 #endif

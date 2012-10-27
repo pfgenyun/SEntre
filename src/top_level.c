@@ -43,8 +43,9 @@
 #include "bb_freq.h"
 #endif
 
-int entre_optimize(int fp)
+Status entre_optimize(int fp)
 {
+    Status status;
     entre_global_env_init();
     status = entre_initExecutable(fp);
     if(status) return status;

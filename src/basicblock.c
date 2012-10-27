@@ -220,36 +220,36 @@ INSN_CLASS entre_insn_type(INSN_T insn)
 	{   
 	    if(sub_op == 8) return JR_NO_LINK;  //jr 
 		else if(sub_op == 9) return JR_LINK;    //jalr 
-	    else return NORMAL;
+	    else return GENERAL;
 	}   
 	else if( main_op == 1 ) 
     {   
         if( t_reg <= 3) return B_NO_LINK;  //bltz bgez bltzl bgezl 
         else if ( (t_reg >= 16) && (t_reg <= 19) ) return B_LINK; // bltzal bgezal bltzall bgezall
-        else return NORMAL;
+        else return GENERAL;
     }   
     else if(main_op == 2) return J_NO_LINK;     //j 
     else if(main_op == 3) return J_LINK;        //jal
     else if(main_op <= 7 && main_op >= 4) return B_NO_LINK; // beq bne blez bgtz 
-    else if(main_op <= 15) return NORMAL;   
+    else if(main_op <= 15) return GENERAL;   
     else if(main_op == 16) 
     {   
         if(s_reg == 8 && t_reg <= 3 ) return B_NO_LINK; //bc0f bc0t bc0f1 bc0t1
-        else return NORMAL;
+        else return GENERAL;
     }   
     else if(main_op == 17) 
     {   
         if(s_reg >=8 && s_reg <= 10) return B_NO_LINK; // bc1f bc1t bc1f1 bc1t1 bc1any2f ...
-        else return NORMAL;
+        else return GENERAL;
     }   
     else if(main_op == 18 )
     {   
         if(s_reg == 8 && t_reg <= 3) return B_NO_LINK; //bc2f bc2t bc2f1 bc2t1
-        else return NORMAL;
+        else return GENERAL;
     }   
-    else if(main_op == 19) return NORMAL;
+    else if(main_op == 19) return GENERAL;
     else if(main_op <= 23) return B_NO_LINK; //beql bnel blezl bgtzl
-    else return NORMAL;
+    else return GENERAL;
 }
 
 
@@ -284,7 +284,7 @@ void entre_mark_bb_in_function(void)
         
         switch(class)
         {
-            case NORMAL:             /* normal instruction */     
+            case GENERAL:             /* normal instruction */     
                 break;
             case JR_LINK:            /* jump and link, jalr */
                 break;

@@ -25,7 +25,7 @@
 
 typedef enum
 {
-    NORMAL,      /* normal instruction */
+    GENERAL,     /* normal instruction */
     JR_LINK,     /* jump and link , jalr */
     JR_NO_LINK,  /* jump , jr */
     B_LINK,      /* branch and link, bal */

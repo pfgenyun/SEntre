@@ -36,11 +36,11 @@ typedef long long UINT64;
 
 enum STATUS
 {
-    NORMOL  =	0x00,
+    NORMAL  =	0x00,
     STRIP   =	0x01,
 };
 
-enum STATUS status;
+typedef enum STATUS Status;
 
 extern int pagesize;
 #ifdef TRACE

@@ -1,2 +1,7 @@
 2012-07-15
-lock all functionis of SEntre, for example, bb_freq.
+Lock all functionis of SEntre, for example, bb_freq.
+
+2012-10-27
+(1)Fix path error. Any APP can instrument at any place.
+(2)Run orignal code when App's symtab was stripped.
+(3)Add status information at each function return.

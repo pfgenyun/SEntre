@@ -22,7 +22,7 @@
 #define TOP_LEVEL_H
 
 /* the main framework of entre, realized if top_level.c */
-void entre_optimizte(int);
+Status entre_optimizte(int);
 void entre_collection();
 
 #endif
