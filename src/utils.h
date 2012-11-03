@@ -88,5 +88,52 @@ typedef struct _read_write_lock_t {
 } read_write_lock_t;
 
 
+/* basic synchronization functions */
+void mutex_lock(mutex_t *mutex);
+bool mutex_trylock(mutex_t *mutex);
+void mutex_unlock(mutex_t *mutex);
+#ifdef LINUX
+void mutex_fork_reset(mutex_t *mutex);
+#endif
+
+/* spinmutex synchronization */
+bool spinmutex_trylock(spin_mutex_t *spin_lock);
+void spinmutex_lock(spin_mutex_t *spin_lock);
+void spinmutex_lock_no_yield(spin_mutex_t *spin_lock);
+void spinmutex_unlock(spin_mutex_t *spin_lock);
+void spinmutex_delete(spin_mutex_t *spin_lock);
+
+/* tests if a lock is held, but doesn't grab it */
+/* note that this is not a synchronizing function, its intended uses are :
+ * 1. for synch code to guarantee that a thread it has suspened isn't holding
+ * a lock (note that a return of true doesn't mean that the suspended thread 
+ * is holding the lock, could be some other thread)
+ * 2. for when you want to assert that you hold a lock, while you can't 
+ * actually do that, you can assert with this function that the lock is held
+ * by someone
+ * 3. read_{un,}lock use this function to check the state of write lock mutex
+ */
+static inline bool
+mutex_testlock(mutex_t *lock)
+{
+    return lock->lock_requests > LOCK_FREE_STATE;
+}
+
+
+/* A recursive lock can be taken more than once by the owning thread */
+void acquire_recursive_lock(recursive_lock_t *lock);
+bool try_recursive_lock(recursive_lock_t *lock);
+void release_recursive_lock(recursive_lock_t *lock);
+bool self_owns_recursive_lock(recursive_lock_t *lock);
+
+/* A read write lock allows multiple readers or alternatively a single writer */
+void read_lock(read_write_lock_t *rw);
+void write_lock(read_write_lock_t *rw);
+bool write_trylock(read_write_lock_t *rw);
+void read_unlock(read_write_lock_t *rw);
+void write_unlock(read_write_lock_t *rw);
+bool self_owns_write_lock(read_write_lock_t *rw);
+
+
 #endif
 
