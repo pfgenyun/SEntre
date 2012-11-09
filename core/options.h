@@ -41,6 +41,8 @@ typedef enum
     OP_PCACHE_GLOBAL = 2, /* Affects pcaches but not called out as local. */
 } op_pcache_t;
 
+/***************************************************************************************/
+/***************************************************************************************/
 
 /* We use an enum for default values of non-string options so that the compiler
  * will fold them away (cl, at least, won't do it even for struct fields
@@ -125,6 +127,36 @@ typedef struct _internal_options_t
 #undef uint_size
 #undef uint_time
 #undef uint_addr
+
+/***************************************************************************************/
+/***************************************************************************************/
+
+/* For default integer values we use an enum, while for default string values we
+ * use the default_options struct instance that is already being used
+ * for option parsing, and a second one for internal options when !INTERNAL
+ */
+extern const options_t default_options;
+
+#ifndef EXPOSE_INTERNAL_OPTIONS
+/* only needs to contain string options, but no compile-time way to
+ * do that without having OPTION_COMMAND_INTERNAL_STRING()!
+ */
+extern const internal_options_t default_internal_options;
+#endif
+
+#define IS_OPTION_INTERNAL(name) (OPTION_IS_INTERNAL_##name)
+#define IS_OPTION_STRING(name) (OPTION_IS_STRING_##name)
+/* FIXME : figure out a way to handle types here so that we don't have to cast
+ * strings to ints to avoid compiler warnings */
+#define DEFAULT_OPTION_VALUE(name) (IS_OPTION_STRING(name) ? (int)default_options.name : \
+                                    OPTION_DEFAULT_VALUE_##name)
+#ifdef EXPOSE_INTERNAL_OPTIONS
+#  define DEFAULT_INTERNAL_OPTION_VALUE DEFAULT_OPTION_VALUE
+#else
+#  define DEFAULT_INTERNAL_OPTION_VALUE(name) (IS_OPTION_STRING(name) ? \
+                                               default_internal_options.name : \
+                                               OPTION_DEFAULT_VALUE_##name)
+#endif
 
 /***************************************************************************************/
 /***************************************************************************************/

@@ -24,6 +24,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 
+#include "lib/globals_shared.h"
+
 #define MEGA_1 (1024*1024)  /* 1M */
 #define INSN_BYTES 4        /* bytes of instruction */
 
