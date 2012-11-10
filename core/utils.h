@@ -22,7 +22,53 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "globals.h"
+/**************************************************************************************/
+/**************************************************************************************/
+
+#ifdef assert
+# undef assert
+#endif
+/* avoid mistake of lower-case assert */
+#define assert assert_no_good_use_ASSERT_instead
+
+
+/**************************************************************************************/
+/**************************************************************************************/
+
+#ifdef DEBUG
+# ifdef INTERNAL
+/* cast to void to avoid gcc warning "statement with no effect" when used as
+ * a statement and x is a compile-time false
+ * FIXME: cl debug build allocates a local for each ?:, so if this gets
+ * unrolled in some optionsx or other expansion we could have stack problems!
+ */
+#   define ASSERT(x) \
+        ((void)((!(x)) ? (internal_error(__FILE__, __LINE__, #x), 0) : 0))
+/* make type void to avoid gcc 4.1 warnings about "value computed is not used"
+ * (case 7851).  can also use statement expr ({;}) but only w/ gcc, not w/ cl.
+ */
+#   define ASSERT_MESSAGE(msg, x) ((!(x)) ? \
+        (internal_error(msg " @" __FILE__, __LINE__, #x), (void)0) : (void)0)
+# else 
+/* cast to void to avoid gcc warning "statement with no effect" */
+#   define ASSERT(x) \
+        ((void)((!(x)) ? (internal_error(__FILE__, __LINE__, ""), 0) : 0))
+#   define ASSERT_MESSAGE(msg, x) ((void)((!(x)) ? (internal_error(__FILE__, __LINE__, ""), 0) : 0))
+# endif /* INTERNAL */
+#else
+# define ASSERT(x)         ((void) 0)
+# define ASSERT_MESSAGE(msg, x) ASSERT(x)
+#endif /* DEBUG */
+
+/**************************************************************************************/
+
+#if defined(INTERNAL) || defined(DEBUG)
+void internal_error(char *file, int line, char *expr);
+bool ignore_assert(const char *assert_file_line, const char *expr);
+#endif
+
+/**************************************************************************************/
+/**************************************************************************************/
 
 typedef void * contention_event_t;
 
@@ -133,6 +179,18 @@ bool write_trylock(read_write_lock_t *rw);
 void read_unlock(read_write_lock_t *rw);
 void write_unlock(read_write_lock_t *rw);
 bool self_owns_write_lock(read_write_lock_t *rw);
+
+/**************************************************************************************/
+/**************************************************************************************/
+/* FIXME: no way to tell if current thread is one of the readers */
+#define ASSERT_OWN_READ_LOCK(pred, rw) \
+    ASSERT(!(pred) || READ_LOCK_HELD(rw))
+#define READWRITE_LOCK_HELD(rw) (READ_LOCK_HELD(rw) || self_owns_write_lock(rw))
+#define ASSERT_OWN_READWRITE_LOCK(pred, rw) \
+    ASSERT(!(pred) || READWRITE_LOCK_HELD(rw))
+#define ASSERT_OWN_RECURSIVE_LOCK(pred, l) \
+    ASSERT(!(pred) || self_owns_recursive_lock(l))
+
 
 
 #endif

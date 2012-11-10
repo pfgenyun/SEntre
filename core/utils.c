@@ -26,6 +26,23 @@
 #include "globals.h"
 #include "utils.h"
 
+/**************************************************************************************/
+/**************************************************************************************/
+#if defined(INTERNAL) || defined(DEBUG)
+/* checks whether an assert statement should be ignored, 
+ * produces a warning if so and returns true,
+ * otherwise returns false
+ */
+
+void internal_error(char *file, int line, char *expr)
+{
+    /* need to be fix */
+}
+
+#endif
+
+/**************************************************************************************/
+/**************************************************************************************/
 
 /* Read write locks */
 /* A read write lock allows multiple readers or alternatively a single writer */
@@ -109,19 +126,19 @@ read_lock(read_write_lock *rw)
                     ATOMIC_INC(int, rw->num_readers);
                     return;
                 }
+                DEADLOCK_AVOIDANCE_LOCK(&rw->lock, false, LOCK_NOT_OWNABLE);
+                /* FIXME: last places where we yield instead of wait */
+                thread_yield();
             }
-            DEADLOCK_AVOIDANCE_LOCK(&rw->lock, false, LOCK_NOT_OWNABLE);
-            /* FIXME: last places where we yield instead of wait */
-            thread_yield();
-        }
-        ATOMIC_INC(int, rw->num_readers);
-        if (!imutex_testlock(&rw->lock))
-            break;	/* do-while*/
-        /* else race with write, must try again */
-        ATOMIC_DEC(int, rw->num_readers);
-    }while(true);
-    DEADLOCK_AVOIDANCE_LOCK(&rw->lock, true, LOCK_NOT_OWNABLE);
-    return;
+            ATOMIC_INC(int, rw->num_readers);
+            if (!imutex_testlock(&rw->lock))
+                break;	/* do-while*/
+            /* else race with write, must try again */
+            ATOMIC_DEC(int, rw->num_readers);
+        }while(true);
+        DEADLOCK_AVOIDANCE_LOCK(&rw->lock, true, LOCK_NOT_OWNABLE);
+        return;
+    }
 
 
     /* event based notification, yet still need to loop */
