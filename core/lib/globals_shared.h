@@ -25,6 +25,22 @@
 #ifndef GLOBALS_SHARED_H
 #define GLOBALS_SHARED_H
 
+
+#define MEGA_1 (1024*1024)  /* 1M */
+#define INSN_BYTES 4        /* bytes of instruction */
+
+typedef unsigned ADDRESS;
+typedef unsigned UINT32;
+typedef int INT32;
+typedef int INDEX;
+typedef unsigned INSN_T;
+typedef int REG_T;
+typedef long long UINT64;
+
+typedef pid_t thread_id_t;
+typedef pid_t process_id_t;
+
+
 /*************************************************************************************/
 /*************************************************************************************/
 
