@@ -140,9 +140,7 @@ typedef struct _read_write_lock_t {
 void mutex_lock(mutex_t *mutex);
 bool mutex_trylock(mutex_t *mutex);
 void mutex_unlock(mutex_t *mutex);
-#ifdef LINUX
 void mutex_fork_reset(mutex_t *mutex);
-#endif
 
 /* spinmutex synchronization */
 bool spinmutex_trylock(spin_mutex_t *spin_lock);

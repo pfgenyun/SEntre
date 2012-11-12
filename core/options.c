@@ -74,7 +74,7 @@ const options_t default_options = {
 
 /**************************************************************************************/
 
-options_t dynamo_options = {
+options_t sentre_options = {
 # include "optionsx.h"
 };
 

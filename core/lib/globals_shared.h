@@ -25,17 +25,47 @@
 #ifndef GLOBALS_SHARED_H
 #define GLOBALS_SHARED_H
 
+#ifndef NULL
+#  define NULL (0)
+#endif
+
+#ifndef __cplusplus
+typedef int bool;
+#  define true  (1)
+#  define false (0)
+#endif
+
 
 #define MEGA_1 (1024*1024)  /* 1M */
 #define INSN_BYTES 4        /* bytes of instruction */
 
-typedef unsigned ADDRESS;
-typedef unsigned UINT32;
-typedef int INT32;
-typedef int INDEX;
-typedef unsigned INSN_T;
-typedef int REG_T;
-typedef long long UINT64;
+typedef unsigned int UINT;
+typedef unsigned int uint;
+typedef signed int INT;
+typedef unsigned int UINT32;
+typedef signed int INT32;
+typedef unsigned short ushort;
+typedef unsigned char byte;
+typedef signed char sbyte;
+
+typedef unsigned long long int UINT64;
+typedef unsigned long long int uint64;
+typedef long long int INT64;
+typedef long long int int64;
+
+typedef byte * app_pc;
+typedef UINT ADDRESS;
+typedef INT INDEX;
+typedef UINT INSN_T;
+
+typedef UINT reg_t;
+typedef UINT REG_T;
+//typedef INT REG_T;	/* fix bug from INT to UINT */
+
+/* integer whose size is based on pointers: ptr diff, mask, etc. */
+typedef reg_t ptr_uint_t;
+typedef int ptr_int_t;
+/* for memory region sizes, use size_t */
 
 typedef pid_t thread_id_t;
 typedef pid_t process_id_t;

@@ -106,7 +106,7 @@ ALL:
 	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}trace.c                -c -o  ${OBJDIR}trace.o;					\
 	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}OOprofile.c            -c -o  ${OBJDIR}OOprofile.o;				\
 	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}bb_freq.c              -c -o  ${OBJDIR}bb_freq.o;				\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}utils.c	               -c -o  ${OBJDIR}utils.o;				\
+	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}utils.c                -c -o  ${OBJDIR}utils.o;				\
 	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}options.c              -c -o  ${OBJDIR}options.o;			\
 															\
 	cd ${OBJDIR};											\
