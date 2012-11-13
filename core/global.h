@@ -25,6 +25,7 @@
 #include <sys/types.h>
 
 #include "globals_shared.h"
+#include "options.h"
 
 #define MEGA_1 (1024*1024)  /* 1M */
 #define INSN_BYTES 4        /* bytes of instruction */

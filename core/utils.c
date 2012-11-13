@@ -99,7 +99,7 @@ void read_lock(read_write_lock_t *rw)
      * order violations and gather contention stats for
      * this mutex-less synch
      */
-    if (INTERNAL_OPTION(spin_yield_lock))
+    if (INTERNAL_OPTION(spin_yield_rwlock))
     {
 //        do 
 //        {

@@ -31,6 +31,16 @@
 /* So far all addr_t are external so we don't have a 64-bit problem */
 #define uint_addr ptr_uint_t
 
+
+/* to dispatch on string default values, kept in struct not enum */
+#define ISSTRING_bool 0
+#define ISSTRING_uint 0
+#define ISSTRING_uint_size 0
+#define ISSTRING_uint_time 0
+#define ISSTRING_ptr_uint_t 0
+#define ISSTRING_pathstring_t 1
+#define ISSTRING_liststring_t 1
+
 /* Does this option affect persistent cache formation? */
 typedef enum 
 {
@@ -99,7 +109,7 @@ enum option_is_internal
 typedef struct _option_t
 {
 #    include "optionsx.h"
-} option_t;
+} options_t;
 #undef OPTION_COMMAND
 #undef OPTION_COMMAND_INTERNAL
 

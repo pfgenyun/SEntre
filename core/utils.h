@@ -72,6 +72,11 @@ bool ignore_assert(const char *assert_file_line, const char *expr);
 /**************************************************************************************/
 /**************************************************************************************/
 
+/* thread synchronization */
+#define LOCK_FREE_STATE -1     /* allows a quick >=0 test for contention */
+#define LOCK_SET_STATE (LOCK_FREE_STATE + 1)  /* set when requested by a single thread */
+/* any value greater than LOCK_SET_STATE means multiple threads requested the lock */
+
 typedef void * contention_event_t;
 
 typedef struct _mutex_t {
