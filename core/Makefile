@@ -86,6 +86,7 @@ ALL:
 	cp	*.h	${SRCDIR};			\
 	cp	*.c	${SRCDIR};			\
 	cp	lib/*	${SRCDIR};			\
+	cp	linux/*	${SRCDIR};			\
 							\
 	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}entre.c                -c -o  ${OBJDIR}entre.o;					\
 	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}top_level.c            -c -o  ${OBJDIR}top_level.o;				\
