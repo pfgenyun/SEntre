@@ -123,7 +123,7 @@ void read_lock(read_write_lock_t *rw)
 //                    /* we would share the code below but we do not want
 //                     * the deadlock avoidance to consider this an acquire
 //                     */
-//                    ATOMIC_INC(int, rw->num_readers);
+                    ATOMIC_INC(int, rw->num_readers);
 //                    return;
 //                }
 //                DEADLOCK_AVOIDANCE_LOCK(&rw->lock, false, LOCK_NOT_OWNABLE);
