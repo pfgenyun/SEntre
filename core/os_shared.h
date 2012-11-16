@@ -29,6 +29,10 @@
 #define OS_SHARED_H
 
 
+thread_id_t get_thread_id(void);
+process_id_t get_process_id(void);
+void thread_yield(void);
+
 /* these must be plain literals since we need these in pragmas/attributes */
 #define NEVER_PROTECTED_SECTION  ".nspdata"
 #define RARELY_PROTECTED_SECTION ".data"

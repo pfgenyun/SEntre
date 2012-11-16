@@ -41,6 +41,24 @@ void internal_error(char *file, int line, char *expr)
 
 #endif
 
+
+/**************************************************************************************/
+/**************************************************************************************/
+
+#ifdef DEADLOCK_AVOIDANCE
+void
+deadlock_avoidance_unlock(mutex_t *lock, bool ownable)
+{
+    /* need to be fix */ 
+}
+#define DEADLOCK_AVOIDANCE_LOCK(lock, acquired, ownable) deadlock_avoidance_lock(lock, acquired, ownable) 
+#define DEADLOCK_AVOIDANCE_UNLOCK(lock, ownable) deadlock_avoidance_unlock(lock, ownable)
+#else
+#  define DEADLOCK_AVOIDANCE_LOCK(lock, acquired, ownable) /* do nothing */
+#  define DEADLOCK_AVOIDANCE_UNLOCK(lock, ownable) /* do nothing */
+#endif /* DEADLOCK_AVOIDANCE */
+
+
 /**************************************************************************************/
 /**************************************************************************************/
 
@@ -101,42 +119,42 @@ void read_lock(read_write_lock_t *rw)
      */
     if (INTERNAL_OPTION(spin_yield_rwlock))
     {
-//        do 
-//        {
-//            while(mutex_testlock(&rw->lock))
-//            {
-//                /* contended read */
-//                /* am I the writer?
-//                 * ASSUMPTION: reading field is atomic 
-//                 * For linux get_thread_id() is expensive -- we
-//                 * should either address that through special handling
-//                 * of native and new thread cases, or switch this
-//                 * routine to pass in dcontext and use that.
-//                 * Update: linux get_thread_id() now calls get_tls_thread_id()
-//                 * and avoids the syscall (xref PR 473640).
-//                 * FIXME: we could also reorganize this check so that it is done only once
-//                 * instead of in the loop body but it doesn't seem wortwhile
-//                 */
-//                if (rw->writer == get_thread_id())
-//                {
-//                    
-//                    /* we would share the code below but we do not want
-//                     * the deadlock avoidance to consider this an acquire
-//                     */
+        do 
+        {
+            while(mutex_testlock(&rw->lock))
+            {
+                /* contended read */
+                /* am I the writer?
+                 * ASSUMPTION: reading field is atomic 
+                 * For linux get_thread_id() is expensive -- we
+                 * should either address that through special handling
+                 * of native and new thread cases, or switch this
+                 * routine to pass in dcontext and use that.
+                 * Update: linux get_thread_id() now calls get_tls_thread_id()
+                 * and avoids the syscall (xref PR 473640).
+                 * FIXME: we could also reorganize this check so that it is done only once
+                 * instead of in the loop body but it doesn't seem wortwhile
+                 */
+                if (rw->writer == get_thread_id())
+                {
+                    
+                    /* we would share the code below but we do not want
+                     * the deadlock avoidance to consider this an acquire
+                     */
                     ATOMIC_INC(int, rw->num_readers);
-//                    return;
-//                }
-//                DEADLOCK_AVOIDANCE_LOCK(&rw->lock, false, LOCK_NOT_OWNABLE);
-//                /* FIXME: last places where we yield instead of wait */
-//                thread_yield();
-//            }
-//            ATOMIC_INC(int, rw->num_readers);
-//            if (!imutex_testlock(&rw->lock))
-//                break;	/* do-while*/
-//            /* else race with write, must try again */
-//            ATOMIC_DEC(int, rw->num_readers);
-//        }while(true);
-//        DEADLOCK_AVOIDANCE_LOCK(&rw->lock, true, LOCK_NOT_OWNABLE);
+                    return;
+                }
+                DEADLOCK_AVOIDANCE_LOCK(&rw->lock, false, LOCK_NOT_OWNABLE);
+                /* FIXME: last places where we yield instead of wait */
+                thread_yield();
+            }
+            ATOMIC_INC(int, rw->num_readers);
+            if (!imutex_testlock(&rw->lock))
+                break;	/* do-while*/
+            /* else race with write, must try again */
+            ATOMIC_DEC(int, rw->num_readers);
+        }while(true);
+        DEADLOCK_AVOIDANCE_LOCK(&rw->lock, true, LOCK_NOT_OWNABLE);
 //        return;
     }
 
