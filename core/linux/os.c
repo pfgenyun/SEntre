@@ -47,3 +47,19 @@ thread_yield()
 {
     sentre_syscall(SYS_sched_yield);
 }
+
+/*************************************************************************/
+/*************************************************************************/
+
+void
+rwlock_wait_contended_reader(read_write_lock_t *rwlock)
+{
+    thread_yield();
+}
+
+void
+rwlock_notify_readers(read_write_lock_t *rwlock)
+{
+    /* nothing to do here */
+}
+

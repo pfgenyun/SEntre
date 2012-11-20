@@ -59,4 +59,11 @@ void thread_yield(void);
     END_DATA_SECTION() 
 
 
+/* contended path of rwlock operations */
+void rwlock_wait_contended_writer(read_write_lock_t *rwlock);
+void rwlock_notify_writer(read_write_lock_t *rwlock);
+void rwlock_wait_contended_reader(read_write_lock_t *rwlock);
+void rwlock_notify_readers(read_write_lock_t *rwlock);
+
+
 #endif

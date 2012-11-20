@@ -25,7 +25,10 @@
 #include <sys/types.h>
 
 #include "globals_shared.h"
+
+#include "utils.h"
 #include "options.h"
+
 #include "os_exports.h"
 #include "arch_exports.h"
 

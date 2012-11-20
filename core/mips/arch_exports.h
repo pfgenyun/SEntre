@@ -46,4 +46,7 @@
 #define ATOMIC_DEC_int64(var) ATOMIC_DEC_suffix("q", var)
 #define ATOMIC_DEC(type, var) ATOMIC_DEC_##type(var)
 
+/* need to fix up */
+#define SPINLOC_PAUSE 
+
 #endif
