@@ -231,3 +231,46 @@ void read_lock(read_write_lock_t *rw)
 
     DEADLOCK_AVOIDANCE_LOCK(&rw->lock, true, LOCK_NOT_OWNABLE);
 }
+
+void read_unlock(read_write_lock_t *rw)
+{
+    if (INTERNAL_OPTION(spin_yield_rwlock))
+    {
+        ATOMIC_DEC(int, rw->num_readers);
+        DEADLOCK_AVOIDANCE_UNLOCK(&rw->lock, LOCK_NOT_OWNABLE);
+        return;
+    }
+
+    /* if we were the last reader to hold the lock, (i.e. final value is 0) 
+       we may need to notify a waiting writer */
+
+    /* unfortunately even on the hot path (of a single reader) we have
+       to check if the writer is in fact waiting.  Even though this is
+       not atomic we don't need to loop here - write_lock() will loop.
+    */
+    if (atomic_dec_becomes_zero(&rw->num_readers)) 
+    {
+        /* if the writer is waiting it definitely needs to hold the mutex */
+        if (mutex_testlock(&rw->lock)) 
+        {
+            /* test that it was not this thread owning both write and read lock */
+            if (rw->writer != get_thread_id()) 
+            {
+                /* we're assuming the writer has been forced to wait,
+                   but since we can't tell whether it did indeed wait this 
+                   notify may leave signaled the event for the next turn
+
+                   If the writer has grabbed the mutex and checked
+                   when num_readers==0 and has gone assuming to be the
+                   rwlock owner.  In that case the above
+                   rwlock_notify_writer will give the wrong signal to
+                   the next writer.  
+                   --ok since writers still have to loop 
+                */
+                rwlock_notify_writer(rw);
+            }
+        }
+    }
+
+    DEADLOCK_AVOIDANCE_UNLOCK(&rw->lock, LOCK_NOT_OWNABLE);
+}

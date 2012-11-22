@@ -49,4 +49,55 @@
 /* need to fix up */
 #define SPINLOC_PAUSE 
 
+
+/* need to fix up */
+# define SET_FLAG(cc, flag) __asm__ __volatile__("")
+# define SET_IF_NOT_ZERO(flag) SET_FLAG(nz, flag)
+# define SET_IF_NOT_LESS(flag) SET_FLAG(nl, flag)
+
+/* Atomically increments *var by 1
+ * Returns true if the resulting value is zero, otherwise returns false
+ */ 
+static inline bool atomic_inc_and_test(volatile int *var)
+{
+    unsigned char c;
+
+    ATOMIC_INC(int, *var);
+    /* flags should be set according to resulting value, now we convert that back to C */
+    SET_IF_NOT_ZERO(c);
+    /* FIXME: we add an extra memory reference to a local, 
+       although we could put the return value in EAX ourselves */
+    return c == 0;
+}
+
+/* Atomically decrements *var by 1
+ * Returns true if the initial value was zero, otherwise returns false
+ */ 
+static inline bool atomic_dec_and_test(volatile int *var)
+{
+    unsigned char c;
+
+    ATOMIC_DEC(int, *var);
+    /* result should be set according to value before change, now we convert that back to C */
+    SET_IF_NOT_LESS(c);
+    /* FIXME: we add an extra memory reference to a local, 
+       although we could put the return value in EAX ourselves */
+    return c == 0;
+}
+
+/* Atomically decrements *var by 1
+ * Returns true if the resulting value is zero, otherwise returns false
+ */ 
+static inline bool atomic_dec_becomes_zero(volatile int *var)
+{
+    unsigned char c;
+
+    ATOMIC_DEC(int, *var);
+    /* result should be set according to value after change, now we convert that back to C */
+    SET_IF_NOT_ZERO(c);
+    /* FIXME: we add an extra memory reference to a local, 
+       although we could put the return value in EAX ourselves */
+    return c == 0;
+}
+
 #endif
