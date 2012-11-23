@@ -41,6 +41,13 @@ enum STATUS
     STRIP   =	0x01,
 };
 
+/* FIXME: what is range of thread_id_t on linux?
+ * linux routines use -1 as sentinel, right?
+ * if so, change thread_id_t to be a signed int and use -1?
+ * For now, based on observation, no process on linux has id 0.
+ */
+#define INVALID_THREAD_ID  0
+
 typedef enum STATUS Status;
 
 extern int pagesize;

@@ -46,6 +46,9 @@ void internal_error(char *file, int line, char *expr)
 /**************************************************************************************/
 
 #ifdef DEADLOCK_AVOIDANCE
+
+enum {LOCK_NOT_OWNABLE, LOCK_OWNABLE};
+
 void
 deadlock_avoidance_unlock(mutex_t *lock, bool ownable)
 {
@@ -160,8 +163,10 @@ void read_lock(read_write_lock_t *rw)
 
 
     /* event based notification, yet still need to loop */
-    do {
-        while (mutex_testlock(&rw->lock)) {
+    do 
+    {
+        while (mutex_testlock(&rw->lock)) 
+        {
             /* contended read */
             /* am I the writer?
              * ASSUMPTION: reading field is atomic 
@@ -172,7 +177,8 @@ void read_lock(read_write_lock_t *rw)
              * Update: linux get_thread_id() now calls get_tls_thread_id()
              * and avoids the syscall (xref PR 473640).
              */
-            if (rw->writer == get_thread_id()) {
+            if (rw->writer == get_thread_id()) 
+            {
                 /* we would share the code below but we do not want
                  * the deadlock avoidance to consider this an acquire
                  */
@@ -186,17 +192,21 @@ void read_lock(read_write_lock_t *rw)
             /* if we get interrupted before we have incremented this counter? 
                Then no signal will be send our way, so we shouldn't be waiting then
             */
-            if (mutex_testlock(&rw->lock)) {
+            if (mutex_testlock(&rw->lock)) 
+            {
                 /* still holding up */
                 rwlock_wait_contended_reader(rw);
-            } else {
+            } 
+            else 
+            {
                 /* otherwise race with writer */
                 /* after the write lock is released pending readers
                    should no longer wait since no one will wake them up */
                 /* no need to pause */
             }
             /* Even if we didn't wait another reader may be waiting for notification */
-            if (!atomic_dec_becomes_zero(&rw->num_pending_readers)) {
+            if (!atomic_dec_becomes_zero(&rw->num_pending_readers)) 
+            {
                 /* If we were not the last pending reader,
                    we need to notify another waiting one so that 
                    it can get out of the contention path.
@@ -273,4 +283,67 @@ void read_unlock(read_write_lock_t *rw)
     }
 
     DEADLOCK_AVOIDANCE_UNLOCK(&rw->lock, LOCK_NOT_OWNABLE);
+}
+
+
+void write_lock(read_write_lock_t *rw)
+{
+    /* we do not follow the pattern of having lock call trylock in
+     * a loop because that would be unfair to writers -- first guy
+     * in this implementation gets to write
+     */
+    if (INTERNAL_OPTION(spin_yield_rwlock)) 
+    {
+        mutex_lock(&rw->lock);
+        while (rw->num_readers > 0) 
+        {
+            /* contended write */
+            DEADLOCK_AVOIDANCE_LOCK(&rw->lock, false, LOCK_NOT_OWNABLE);
+            /* FIXME: last places where we yield instead of wait */
+            thread_yield();
+        }
+        rw->writer = get_thread_id();
+        return;
+    }
+
+    /* the same as spin_yield_rwlock pengfei */
+    mutex_lock(&rw->lock);
+    /* We still do this in a loop, since the event signal doesn't guarantee 
+       that num_readers is 0 when unblocked. 
+     */
+    while (rw->num_readers > 0) 
+    {
+        /* contended write */
+        DEADLOCK_AVOIDANCE_LOCK(&rw->lock, false, LOCK_NOT_OWNABLE);
+        rwlock_wait_contended_writer(rw);
+    }
+    rw->writer = get_thread_id();
+}
+
+void write_unlock(read_write_lock_t *rw)
+{
+#ifdef DEADLOCK_AVOIDANCE
+    ASSERT(rw->writer == rw->lock.owner);
+#endif
+    rw->writer = INVALID_THREAD_ID;
+    if (INTERNAL_OPTION(spin_yield_rwlock)) 
+    {
+        mutex_unlock(&rw->lock);
+        return;
+    }
+    /* we need to signal all waiting readers (if any) that they can now go
+       ahead.  No writer should be allowed to lock until all currently
+       waiting readers are unblocked.
+     */
+    /* We first unlock so that any blocked readers can start making
+       progress as soon as they are notified.  Further field
+       accesses however have to be assumed unprotected.
+    */
+    mutex_unlock(&rw->lock);
+    /* check whether any reader is currently waiting */
+    if (rw->num_pending_readers > 0) 
+    {
+        /* after we've released the write lock, pending readers will no longer wait */
+        rwlock_notify_readers(rw);
+    }
 }

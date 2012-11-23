@@ -122,3 +122,5 @@ clean :
 distclean:
 	-rm -f ${LIBDIR}*.so ${OBJDIR}*.o
 
+check:
+	
