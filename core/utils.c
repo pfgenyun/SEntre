@@ -429,3 +429,39 @@ void mutex_unlock(mutex_t *lock)
        we need to notify another waiting thread */
     mutex_notify_released_lock(lock);
 }
+
+
+/* NOTE since used by spinmutex_lock_no_yield, can make no system calls before
+ * the lock is grabbed (required by check_wait_at_safe_spot). */
+bool spinmutex_trylock(spin_mutex_t *spin_lock)
+{
+    mutex_t *lock = &spin_lock->lock;
+    int mutexval;
+    mutexval = atomic_swap(&lock->lock_requests, LOCK_SET_STATE);
+    ASSERT(mutexval == LOCK_FREE_STATE || mutexval == LOCK_SET_STATE);
+    DEADLOCK_AVOIDANCE_LOCK(lock, mutexval == LOCK_FREE_STATE, LOCK_OWNABLE);
+    return (mutexval == LOCK_FREE_STATE);
+}
+
+void spinmutex_lock(spin_mutex_t *spin_lock)
+{
+    /* busy-wait until mutex is locked */
+    while (!spinmutex_trylock(spin_lock)) {
+        thread_yield();
+    }
+    return;
+}
+
+
+void spinmutex_unlock(spin_mutex_t *spin_lock)
+{
+    mutex_t *lock = &spin_lock->lock;
+    /* if this fails, it means you don't already own the lock. */
+    ASSERT(lock->lock_requests > LOCK_FREE_STATE && "lock not owned");
+    ASSERT(lock->lock_requests == LOCK_SET_STATE);
+    DEADLOCK_AVOIDANCE_UNLOCK(lock, LOCK_OWNABLE);
+    lock->lock_requests = LOCK_FREE_STATE;
+    /* NOTE - check_wait_at_safe_spot requires that no system calls be made
+     * after we release the lock */
+    return;
+}

@@ -65,5 +65,8 @@ void rwlock_notify_writer(read_write_lock_t *rwlock);
 void rwlock_wait_contended_reader(read_write_lock_t *rwlock);
 void rwlock_notify_readers(read_write_lock_t *rwlock);
 
+/* contended path of mutex operations */
+void mutex_wait_contended_lock(mutex_t *lock);
+void mutex_notify_released_lock(mutex_t *lock);
 
 #endif
