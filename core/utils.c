@@ -52,7 +52,7 @@ enum {LOCK_NOT_OWNABLE, LOCK_OWNABLE};
 void
 deadlock_avoidance_unlock(mutex_t *lock, bool ownable)
 {
-    /* need to be fix */ 
+    /* pengfei need to be fix */ 
 }
 #define DEADLOCK_AVOIDANCE_LOCK(lock, acquired, ownable) deadlock_avoidance_lock(lock, acquired, ownable) 
 #define DEADLOCK_AVOIDANCE_UNLOCK(lock, ownable) deadlock_avoidance_unlock(lock, ownable)
@@ -64,6 +64,8 @@ deadlock_avoidance_unlock(mutex_t *lock, bool ownable)
 
 /**************************************************************************************/
 /**************************************************************************************/
+
+static uint spinlock_count = 0;     /* initialized in utils_init, but 0 is always safe */
 
 /* Read write locks */
 /* A read write lock allows multiple readers or alternatively a single writer */
@@ -346,4 +348,84 @@ void write_unlock(read_write_lock_t *rw)
         /* after we've released the write lock, pending readers will no longer wait */
         rwlock_notify_readers(rw);
     }
+}
+
+void mutex_lock(mutex_t *lock)
+{
+
+    bool acquired;
+
+    if (INTERNAL_OPTION(spin_yield_mutex)) 
+    {
+        spinmutex_lock((spin_mutex_t *)lock);
+        return;
+    } 
+    
+    /* we may want to first spin the lock for a while if we are on a multiprocessor machine */
+    /* option is external only so that we can set it to 0 on a uniprocessor */
+    if (spinlock_count) 
+    {
+        uint i;
+        /* in the common case we'll just get it */
+        if (mutex_trylock(lock))
+            return;
+
+        /* otherwise contended, we should spin for some time */
+        i = spinlock_count;
+        /* while spinning we are PAUSEing and reading without LOCKing the bus in the spin loop */
+        do 
+        {
+            /* hint we are spinning */
+            SPINLOCK_PAUSE();
+
+            /* We spin only while lock_requests == 0 which means that exactly one thread
+               holds the lock, while the current one (and possibly a few others) are
+               contending on who will grab it next.  It doesn't make much sense to spin
+               when the lock->lock_requests > 0 (which means that at least one thread is
+               already blocked).  And of course, we also break if it is LOCK_FREE_STATE.
+            */
+            if (lock->lock_requests != LOCK_SET_STATE) 
+            {
+#               ifdef DEADLOCK_AVOIDANCE
+                lock->count_times_spin_only++;
+#               endif
+                break;
+            }
+            i--;
+        } while (i>0);
+    }
+
+    /* we have strong intentions to grab this lock, increment requests */
+    /* break or i<=0 */
+    acquired = atomic_inc_and_test(&lock->lock_requests);
+    DEADLOCK_AVOIDANCE_LOCK(lock, acquired, LOCK_OWNABLE);
+
+    if (!acquired) {
+        mutex_wait_contended_lock(lock);
+#       ifdef DEADLOCK_AVOIDANCE
+        DEADLOCK_AVOIDANCE_LOCK(lock, true, LOCK_OWNABLE); /* now we got it  */
+        /* this and previous owner are not included in lock_requests */
+        if (lock->max_contended_requests < (uint)lock->lock_requests)
+            lock->max_contended_requests = (uint)lock->lock_requests;
+#       endif
+    }
+}
+
+void mutex_unlock(mutex_t *lock)
+{
+    if (INTERNAL_OPTION(spin_yield_mutex)) 
+    {
+        spinmutex_unlock((spin_mutex_t *)lock);
+        return;
+    }
+
+    ASSERT(lock->lock_requests > LOCK_FREE_STATE && "lock not owned");
+    DEADLOCK_AVOIDANCE_UNLOCK(lock, LOCK_OWNABLE);
+    
+    if (atomic_dec_and_test(&lock->lock_requests)) 
+        return;
+    /* if we were not the last one to hold the lock, 
+       (i.e. final value is not LOCK_FREE_STATE) 
+       we need to notify another waiting thread */
+    mutex_notify_released_lock(lock);
 }

@@ -47,13 +47,13 @@
 #define ATOMIC_DEC(type, var) ATOMIC_DEC_##type(var)
 
 /* need to fix up */
-#define SPINLOC_PAUSE 
-
+#define SPINLOCK_PAUSE() 
 
 /* need to fix up */
 # define SET_FLAG(cc, flag) __asm__ __volatile__("")
 # define SET_IF_NOT_ZERO(flag) SET_FLAG(nz, flag)
 # define SET_IF_NOT_LESS(flag) SET_FLAG(nl, flag)
+
 
 /* Atomically increments *var by 1
  * Returns true if the resulting value is zero, otherwise returns false

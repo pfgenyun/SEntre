@@ -63,3 +63,34 @@ rwlock_notify_readers(read_write_lock_t *rwlock)
     /* nothing to do here */
 }
 
+void
+mutex_notify_released_lock(mutex_t *lock)
+{
+    /* nothing to do here */
+}
+
+void
+mutex_wait_contended_lock(mutex_t *lock)
+{
+    /* FIXME: we don't actually use system calls to synchronize on Linux,
+     * one day we would use futex(2) on this path (PR 295561). 
+     * For now we use a busy-wait lock.
+     * If we do use a true wait need to set client_thread_safe_for_synch around it */
+
+    /* we now have to undo our earlier request */
+    atomic_dec_and_test(&lock->lock_requests);
+
+    while (!mutex_trylock(lock)) {
+        thread_yield();
+    }
+
+#ifdef DEADLOCK_AVOIDANCE
+    /* HACK: trylock's success causes it to do DEADLOCK_AVOIDANCE_LOCK, so to
+     * avoid two in a row (causes assertion on owner) we unlock here
+     * In the future we will remove the trylock here and this will go away.
+     */
+    deadlock_avoidance_unlock(lock, true);
+#endif
+
+    return;
+}

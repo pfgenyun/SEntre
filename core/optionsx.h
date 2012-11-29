@@ -56,3 +56,6 @@
 
 OPTION_DEFAULT_INTERNAL(bool, spin_yield_rwlock, false, "use old spin-yield rwlock implementation")
 
+/* FIXME: remove this once we are happy with new mutexes */
+OPTION_DEFAULT_INTERNAL(bool, spin_yield_mutex, false, "use old spin-yield mutex implementation")
+
