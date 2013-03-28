@@ -35,16 +35,21 @@ struct struct_executable Executable;
 
 void entre_dump_function()
 {
-	Elf32_Sym * pSymTab = Executable.pSymTab;
-	UINT32      nSymTab = Executable.nSymTab; 
-	char *      pStrTab = Executable.pStrTab;
-	UINT32      nStrTab = Executable.nStrTab;
+	Elf32_Sym * pSymTab;
+	UINT32      nSymTab; 
+	char *      pStrTab;
+	UINT32      nStrTab;
 
 	char * funName;
 	ADDRESS addr;
 	int size;
 
 	Elf32_Sym * fun;
+
+	pSymTab = Executable.pSymTab;
+	nSymTab = Executable.nSymTab; 
+	pStrTab = Executable.pStrTab;
+	nStrTab = Executable.nStrTab;
 
 	FOR_EACH_FUNCTION(fun)
 	{
@@ -335,12 +340,14 @@ Status entre_initExecutable(int fp)
 {
     Status status;
     struct stat stat_date;
+    int fs;
+    void *start_fp;
 
 #ifdef DEBUG_REACH
     printf("reach begin of function entre_initExecutable.\n\n");
 #endif
-    int fs = fstat(fp, &stat_date);
-    void *start_fp = mmap(NULL, stat_date.st_size, PROT_READ, MAP_SHARED, fp, 0);
+    fs = fstat(fp, &stat_date);
+    start_fp = mmap(NULL, stat_date.st_size, PROT_READ, MAP_SHARED, fp, 0);
     if (start_fp == (void *)-1)
     {
     	printf("mmap error!  errno: %d\n\n", errno);

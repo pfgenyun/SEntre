@@ -32,10 +32,13 @@ void entre_control_transfer()
 {
 	int i;
 	INSN_T trans[4];
+	struct function * fun_main;
+	ADDRESS main_old_addr;
+	ADDRESS main_new_addr;
 	
-	struct function * fun_main = entre_find_function("main");
-	ADDRESS main_old_addr = fun_main->f_address;
-	ADDRESS main_new_addr = entre_got_find_final(main_old_addr);
+	fun_main = entre_find_function("main");
+	main_old_addr = fun_main->f_address;
+	main_new_addr = entre_got_find_final(main_old_addr);
 
 #ifdef DDEBUG
 	printf("control_tran, old_address %x\t new_address %x", main_old_addr, main_new_addr);

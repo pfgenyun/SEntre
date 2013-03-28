@@ -91,9 +91,11 @@ ADDRESS entre_get_bb_counter_addr(ADDRESS addr)
 void entre_fini_addr_list(void)
 {
     INDEX i, index;
-    int tmp_bb_n = all_bb_n;
+    int tmp_bb_n;
     ADDRESS addr;
     unsigned size_byte;
+
+    tmp_bb_n = all_bb_n;
 
     if(all_bb_n + addr_list_n > all_bb_size) 
         entre_my_error("all_basic_block size insufficient!\n");
@@ -165,13 +167,15 @@ int entre_add_bb_entry_to_addr_list(ADDRESS entry_addr)
 
     addr_list_n ++;
 
-	return 1;
+    return 1;
 }
 
 
 void entre_add_jr_no_link_insn(ADDRESS addr, INSN_T insn)
 {
-    ADDRESS entry = addr + 8;
+    ADDRESS entry;
+    entry = addr + 8;
+
     if(entry < current_fun->st_value || 
        entry >= current_fun->st_value + current_fun->st_size);
 //        entre_my_error("jr_no_link addr error");
@@ -211,10 +215,15 @@ void entre_add_branch_insn(ADDRESS addr, INSN_T insn)
  * *******************************************************************/
 INSN_CLASS entre_insn_type(INSN_T insn)
 {
-    int main_op = MAIN_OP(insn);
-	int sub_op = SUB_OP(insn);
-	int s_reg = S_REG(insn);
-	int t_reg = T_REG(insn);
+    int main_op;
+    int sub_op;
+    int s_reg;
+    int t_reg;
+
+    main_op = MAIN_OP(insn);
+    sub_op = SUB_OP(insn);
+	s_reg = S_REG(insn);
+	t_reg = T_REG(insn);
 
 	if(main_op == 0)  
 	{   
@@ -261,7 +270,7 @@ void entre_init_addr_list(void)
     addr_list[0].addr = MIN_ADDR;
     addr_list[0].next = NULL_INDEX;
 
-	addr_list_n = 1;
+    addr_list_n = 1;
 }
 
 
@@ -338,7 +347,7 @@ void entre_mark_bb(void)
 void entre_init_mark_bb(void)
 {
     INDEX i;
-	all_bb_n = 0;
+    all_bb_n = 0;
     all_bb_size = BB_SIZE;
 
     for(i=0; i<all_bb_size; i++)

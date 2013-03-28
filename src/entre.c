@@ -27,9 +27,12 @@
 #endif
 
 #include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <dlfcn.h>   /* dlsym  */
 #include <fcntl.h>   /* open   */
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>  /* close  */
 #include <string.h>  /* strcmp */
 #include <errno.h>
@@ -54,6 +57,7 @@ void __libc_start_main(PARAMS_START_MAIN)
     char exe_name[256];
     char exe_name_full[256];
     Status status;
+    INT32 fp;
 
 	/* locale original _libc_start_main */
     void (*real_libc_start_main) (PARAMS_START_MAIN);
@@ -65,32 +69,31 @@ void __libc_start_main(PARAMS_START_MAIN)
     sprintf(exe_name, "%s", ubp_av[0]);
 	
     get_application_full_name(exe_name_full);
-    INT32 fp = open(exe_name_full, O_RDONLY);
+    fp = open(exe_name_full, O_RDONLY);
 //#ifdef DEBUG
-    printf("the value of exe_name: %s\n", exe_name);
-    printf("the value of exe_name_full: %s\n", exe_name_full);
-    printf("the value of fp: %d\n", fp);
+    //printf("the value of exe_name: %s\n", exe_name);
+    //printf("the value of exe_name_full: %s\n", exe_name_full);
+    //printf("the value of fp: %d\n", fp);
 //#endif	
     if (fp<0)
     {
         printf("open error. errno: %d\n", errno);
         exit(0);
     }
-
     if(strcmp(exe_name, "/bin/bash")!=0 && strcmp(exe_name, "/bin/sh")!=0 
        && strcmp(exe_name, "bash")!=0 && strcmp(exe_name, "sh")!=0 
        && strcmp(exe_name, "/usr/bin/perl") !=0 && strcmp(exe_name, "bin/perl")!=0 && strcmp(exe_name, "perl")!=0
        && strcmp(exe_name, "/usr/bin/python")!=0 && strcmp(exe_name, "/bin/python")!=0 && strcmp(exe_name, "python")!=0)
     {
-        printf("Yes, work begins!\n");
+        //printf("Yes, work begins!\n");
         status = entre_optimize(fp); /* the main framework of entre */
         switch (status)
         {
            case NORMAL:
-                printf("Yes, work finished!\n\n");
+                //printf("Yes, work finished!\n\n");
                 break;
            case STRIP:
-                printf("Cancel instrument. Original app runs!\n\n");
+                //printf("Cancel instrument. Original app runs!\n\n");
                 break;
             default : 
                 break;
@@ -98,7 +101,7 @@ void __libc_start_main(PARAMS_START_MAIN)
     }
     else
     {
-        printf("Script file, NOT instrument!\n\n");
+        //printf("Script file, NOT instrument!\n\n");
     }
     close(fp);
 

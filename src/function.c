@@ -157,7 +157,9 @@ inline int entre_function_num()
 
 void entre_init_one_function(Elf32_Sym *sym, unsigned first_bb, unsigned bb_num)
 {
-    int i = all_function_n ++;
+    int i;
+
+    i = all_function_n ++;
     all_function[i].f_name = (char *) &(Executable.pStrTab[(int)sym->st_name]);
     all_function[i].f_address = sym->st_value;
     all_function[i].f_codesize = sym->st_size;

@@ -34,11 +34,12 @@ unsigned codecache_n;
 
 void entre_init_cc(void)
 {
+    ADDRESS pPageStart;
     codecache_size = Executable.pSize;
     codecache = malloc(codecache_size * sizeof(unsigned));
     codecache_n = 0;
 
-    ADDRESS pPageStart = (unsigned)codecache & (~(pagesize - 1));
+    pPageStart = (unsigned)codecache & (~(pagesize - 1));
     mprotect((void*)pPageStart, codecache_size*sizeof(unsigned), PROT_READ | PROT_WRITE | PROT_EXEC);
 }
 
@@ -74,7 +75,8 @@ void entre_cc_replace(ADDRESS addr, INSN_T insn)
 
 void entre_cc_flush()
 {
-	ADDRESS pPageStart = (unsigned)codecache&(~(pagesize-1));
+	ADDRESS pPageStart;
+	pPageStart = (unsigned)codecache&(~(pagesize-1));
 	mprotect((void*)pPageStart, codecache_size*sizeof(unsigned), PROT_READ|PROT_WRITE|PROT_EXEC);
 	cacheflush(codecache, codecache_size*sizeof(unsigned), BCACHE);
 }

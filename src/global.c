@@ -66,14 +66,16 @@ void entre_my_error(char *msg)
 
 void get_application_full_name(char * exe_name_full)
 {
-    int pid = getpid();
+    int pid;
     char proc[250];
+    int length;
 
     /*this is a shitty way of getting the process name,
       but i can't think of anything better... */
 
+    pid = getpid();
     sprintf(proc, "/proc/%d/exe", pid);
-    int length = readlink(proc, exe_name_full, 250);
+    length = readlink(proc, exe_name_full, 250);
     if(length > 0)
     {
 #ifdef DEBUG

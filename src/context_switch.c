@@ -32,9 +32,12 @@
 ADDRESS entre_make_context_switch_code(ADDRESS target_addr)
 {
     int i;
-    int insn_i = 0;
+    int insn_i;
     INSN_T scode[SCODE_SIZE];
+    ADDRESS context_addr;
 //    ADDRESS addr = (ADDRESS) entre_call_redirect;
+
+    insn_i = 0;
 
 	/* 36 position was used 33 in fact. the remaining 3 was used in in_code function. */
     scode[insn_i++] = entre_make_addiu(REG_SP, REG_SP, (-(36*8)));	/* stack space */
@@ -56,7 +59,7 @@ ADDRESS entre_make_context_switch_code(ADDRESS target_addr)
 	scode[insn_i++] = entre_make_addiu(REG_SP, REG_SP, (36*8));		/* exe before jr */
 //	scode[insn_i++] = entre_make_nop();
 
-    ADDRESS context_addr = entre_cc_get_top_address();		/* copy this code to cc */
+    context_addr = entre_cc_get_top_address();		/* copy this code to cc */
 	entre_cc_add_code(scode, insn_i);
 #ifdef DEBUG
 	printf("codecache start address:0x%x in context switch code\n\n", context_addr);
