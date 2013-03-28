@@ -24,7 +24,7 @@
 #include <elf.h>
 #include "global.h"
 
-#define ALL_FUNCTION_SIZE (1024*10)
+#define ALL_FUNCTION_SIZE (1024*24)
 
 struct function
 {
