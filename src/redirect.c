@@ -38,9 +38,27 @@ int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call
 	ADDRESS new_target_addr;
 
 	if(old_target_addr > b_addr)	/* branch after*/
+	{
 		new_target_addr = old_target_addr + fun_call_num*IN_CODE_SIZE*INSN_BYTES;
+		if((new_target_addr-b_addr)>65535)
+		{
+            printf("             ************************************************************\n");
+            printf("             ******       WARNING1: Branch Offset Over 2^16!       ******\n");
+            printf("             ******                Can't Instrument!               ******\n");
+            printf("             ************************************************************\n");
+		}
+	}
 	else							/* branch before*/
+	{
 		new_target_addr = old_target_addr - fun_call_num*IN_CODE_SIZE*INSN_BYTES;
+		if((b_addr-new_target_addr)>65535)
+		{
+            printf("             ************************************************************\n");
+            printf("             ******       WARNING2: Branch Offset Over 2^16!       ******\n");
+            printf("             ******                 Can't Instrument!              ******\n");
+            printf("             ************************************************************\n");
+		}
+	}
 
 	return new_target_addr;
 }
