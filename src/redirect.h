@@ -28,5 +28,6 @@ void entre_redict_jalr(struct context * context);
 void entre_transfer_redirect(void);
 void entre_jal_b_redirect(struct function * fun);
 int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call_num);
+int entre_out_of_j_range(ADDRESS new_replace_addr, ADDRESS new_target_addr); 
 
 #endif

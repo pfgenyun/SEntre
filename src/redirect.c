@@ -28,6 +28,21 @@
 #include "redirect.h"
 #include "make_new_function.h"
 
+/* judje whether the new target of j/jal instruction out of range.
+ * new_replace_addr is the address of the j/jal instruction at new space
+ * new_target_addr  is the address of the j/jal target at new space*/
+int entre_out_of_j_range(ADDRESS new_replace_addr, ADDRESS new_target_addr)
+{
+	if(new_target_addr > new_replace_addr)	/* branch after*/
+		if((new_target_addr-new_replace_addr)>0x3ffffff)
+		    return true;
+	else							/* branch before*/
+		if((new_replace_addr-new_target_addr)>0x3ffffff)
+		    return true;
+
+	return false;
+}
+
 /* calculate new target of b instruction when redirect b instruction.
  * old_target_addr is orignal address at orignal space
  * b_addr is b target address at orignal space
@@ -40,7 +55,7 @@ int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call
 	if(old_target_addr > b_addr)	/* branch after*/
 	{
 		new_target_addr = old_target_addr + fun_call_num*IN_CODE_SIZE*INSN_BYTES;
-		if((new_target_addr-b_addr)>65535)
+		if((new_target_addr-b_addr)>0xffff)
 		{
             printf("             ************************************************************\n");
             printf("             ******       WARNING1: Branch Offset Over 2^16!       ******\n");
@@ -51,7 +66,7 @@ int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call
 	else							/* branch before*/
 	{
 		new_target_addr = old_target_addr - fun_call_num*IN_CODE_SIZE*INSN_BYTES;
-		if((b_addr-new_target_addr)>65535)
+		if((b_addr-new_target_addr)>0xffff)
 		{
             printf("             ************************************************************\n");
             printf("             ******       WARNING2: Branch Offset Over 2^16!       ******\n");
@@ -122,6 +137,15 @@ void entre_jal_b_redirect(struct function * fun)
 			old_replace_addr = fun_start_addr + (insn_index_old-1)*INSN_BYTES;
 			new_replace_addr = new_start_addr + (insn_index_new-1)*INSN_BYTES;
 			entre_cc_replace(new_replace_addr, insn_redirect);
+
+			if(entre_out_of_j_range(new_replace_addr, new_target))
+			{
+                 printf("             **********************************************************\n");
+                 printf("             ******       WARNING3: Jump Target Over 2^26!       ******\n");
+                 printf("             ******               Can't Instrument!              ******\n");
+                 printf("             **********************************************************\n");
+			}
+
 #ifdef DEBUG
             printf("old_jal_j_addr:0x%x\tnew_jal_j_addr:0x%x\tfunction name:%-20s\n\n",
                    old_replace_addr, new_replace_addr, fun->f_name);

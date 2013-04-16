@@ -26,6 +26,9 @@
 #define MEGA_1 (1024*1024)  /* 1M */
 #define INSN_BYTES 4        /* bytes of instruction */
 
+#define true 1
+#define false 0
+
 typedef unsigned ADDRESS;
 typedef unsigned UINT32;
 typedef int INT32;
