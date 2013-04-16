@@ -34,10 +34,10 @@
 int entre_out_of_j_range(ADDRESS new_replace_addr, ADDRESS new_target_addr)
 {
 	if(new_target_addr > new_replace_addr)	/* branch after*/
-		if((new_target_addr-new_replace_addr)>0x3ffffff)
+		if((new_target_addr-new_replace_addr)/INSN_BYTES > 0x3ffffff)
 		    return true;
 	else							/* branch before*/
-		if((new_replace_addr-new_target_addr)>0x3ffffff)
+		if((new_replace_addr-new_target_addr)/INSN_BYTES > 0x3ffffff)
 		    return true;
 
 	return false;
@@ -55,10 +55,10 @@ int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call
 	if(old_target_addr > b_addr)	/* branch after*/
 	{
 		new_target_addr = old_target_addr + fun_call_num*IN_CODE_SIZE*INSN_BYTES;
-		if((new_target_addr-b_addr)>0xffff)
+		if((new_target_addr-b_addr)/INSN_BYTES-1>0x8fff)
 		{
             printf("             ************************************************************\n");
-            printf("             ******       WARNING1: Branch Offset Over 2^16!       ******\n");
+            printf("             ******       WARNING1: Branch Offset Over 2^15!       ******\n");
             printf("             ******                Can't Instrument!               ******\n");
             printf("             ************************************************************\n");
 		}
@@ -66,10 +66,10 @@ int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call
 	else							/* branch before*/
 	{
 		new_target_addr = old_target_addr - fun_call_num*IN_CODE_SIZE*INSN_BYTES;
-		if((b_addr-new_target_addr)>0xffff)
+		if((b_addr-new_target_addr)/INSN_BYTES-1>0x8fff && (b_addr != old_target_addr))
 		{
             printf("             ************************************************************\n");
-            printf("             ******       WARNING2: Branch Offset Over 2^16!       ******\n");
+            printf("             ******       WARNING2: Branch Offset Over 2^15!       ******\n");
             printf("             ******                 Can't Instrument!              ******\n");
             printf("             ************************************************************\n");
 		}
@@ -161,7 +161,7 @@ void entre_jal_b_redirect(struct function * fun)
 #endif
 			int fun_call_num = entre_lr_num(fun, old_target, addr_i);
 			new_target = entre_get_b_new_target(old_target, addr_i, fun_call_num);
-			insn_redirect = entre_make_b(insn, (new_target-addr_i-1)/INSN_BYTES);
+			insn_redirect = entre_make_b(insn, (new_target-addr_i)/INSN_BYTES-1); /* -1 is for broffset*/
 #ifdef DEBUG
 	        printf("new_b_insn: 0x%x\told_b_target: 0x%x\tnew_b_target: 0x%x\tlr_num: %d\t function name: %-20s\n",
 					insn_redirect, old_target, new_target, fun_call_num, fun->f_name);
