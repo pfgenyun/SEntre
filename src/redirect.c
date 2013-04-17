@@ -62,7 +62,7 @@ int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call
 		{
             printf("             ************************************************************\n");
             printf("             ******       WARNING1: Branch Offset Over 2^15!       ******\n");
-            printf("             ******            Suggest Not Instrument!           ******\n");
+            printf("             ******            Suggest Not Instrument!             ******\n");
             printf("             ************************************************************\n");
 		}
 	}
@@ -73,7 +73,7 @@ int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call
 		{
             printf("             ************************************************************\n");
             printf("             ******       WARNING2: Branch Offset Over 2^15!       ******\n");
-            printf("             ******            Suggest Not Instrument!           ******\n");
+            printf("             ******            Suggest Not Instrument!             ******\n");
             printf("             ************************************************************\n");
 		}
 	}
