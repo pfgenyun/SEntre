@@ -33,19 +33,22 @@
  * new_target_addr  is the address of the j/jal target at new space*/
 int entre_out_of_j_range(ADDRESS new_replace_addr, ADDRESS new_target_addr)
 {
-	if(new_target_addr > new_replace_addr)	/* branch after*/
+	if(new_target_addr > new_replace_addr)	/* j/jal after*/
+	{
 		if((new_target_addr-new_replace_addr)/INSN_BYTES > 0x3ffffff)
 		    return true;
-	else							/* branch before*/
+	}
+	else							/* j/jal before*/
+	{
 		if((new_replace_addr-new_target_addr)/INSN_BYTES > 0x3ffffff)
 		    return true;
-
+	}
 	return false;
 }
 
 /* calculate new target of b instruction when redirect b instruction.
- * old_target_addr is orignal address at orignal space
- * b_addr is b target address at orignal space
+ * old_target_addr is the target address at orignal space
+ * b_addr is b instruction address at orignal space
  * fun_call_num is jalr and jr instruction number between 
  * old_target_addr and b_addr */
 int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call_num)
@@ -59,7 +62,7 @@ int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call
 		{
             printf("             ************************************************************\n");
             printf("             ******       WARNING1: Branch Offset Over 2^15!       ******\n");
-            printf("             ******                Can't Instrument!               ******\n");
+            printf("             ******            Suggest Not Instrument!           ******\n");
             printf("             ************************************************************\n");
 		}
 	}
@@ -70,7 +73,7 @@ int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call
 		{
             printf("             ************************************************************\n");
             printf("             ******       WARNING2: Branch Offset Over 2^15!       ******\n");
-            printf("             ******                 Can't Instrument!              ******\n");
+            printf("             ******            Suggest Not Instrument!           ******\n");
             printf("             ************************************************************\n");
 		}
 	}
@@ -142,7 +145,7 @@ void entre_jal_b_redirect(struct function * fun)
 			{
                  printf("             **********************************************************\n");
                  printf("             ******       WARNING3: Jump Target Over 2^26!       ******\n");
-                 printf("             ******               Can't Instrument!              ******\n");
+                 printf("             ******            Suggest Not Instrument!           ******\n");
                  printf("             **********************************************************\n");
 			}
 
