@@ -40,7 +40,7 @@ int entre_can_instrument_here(ADDRESS instrument_addr)
 	INSN_T insn = INSN_AT(instrument_addr - INSN_BYTES);
 	if(entre_is_b(insn) || entre_is_call_instruction(insn) ||
 	   entre_is_return_instruction(insn) || entre_is_jal(insn) ||
-	   entre_is_j(insn))
+	   entre_is_j(insn) || entre_is_jr_ra(insn))
 		return 0;
 	else
 		return 1;
@@ -114,7 +114,15 @@ void entre_make_a_new_function(struct function * fun)
 			printf("jalr or jr insn:0x%x\tin function:%s\n", addr_end, fun->f_name);
 #endif
 			entre_cc_add_code((INSN_T*)addr_start, (addr_end - addr_start) / INSN_BYTES);
-			entre_cc_add_code(incode_call, incode_call_size);
+			if(entre_can_instrument_here(addr_end))
+			{
+				entre_cc_add_code(incode_call, incode_call_size);
+			}
+			else
+			{
+				printf("EE: jalr instuction cannot be instrument here.\n");
+				exit(0);
+			}
 			addr_start = addr_end;
 		}
 #ifdef TRACE

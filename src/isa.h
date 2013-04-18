@@ -92,7 +92,7 @@ ADDRESS entre_mem_access_addr(ADDRESS b_reg, ADDRESS offset);
 //#define entre_is_call_instruction(insn)			\
 	(entre_is_jalr(insn) || entre_is_jr(insn))
 
-/* jr instruction is used for function return. 
+/* jr ra instruction is used for function return. 
  * does not need to be redirected*/
 #define entre_is_call_instruction(insn)			\
 	(entre_is_jalr(insn) || entre_is_jr_call(insn))
