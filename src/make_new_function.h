@@ -46,5 +46,6 @@ int entre_can_instrument_here(ADDRESS );
 void entre_instrument_omit_record(ADDRESS );
 void entre_make_new_functions();
 void entre_make_a_new_function(struct function *);
+int entre_lr_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr);
 
 #endif

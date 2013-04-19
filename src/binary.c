@@ -111,6 +111,7 @@ static void entre_function_sort(Elf32_Sym * sym, Elf32_Sym ** rank, int n)
  * *******************************************************************/
 Status entre_IRMarkFunctions(void)
 {
+	char exe_name_full[256];
 #ifdef DEBUG_REACH
     printf("reach begin of function entre_IRMarkFunctions.\n");
 #endif
@@ -122,11 +123,15 @@ Status entre_IRMarkFunctions(void)
     char      *pStrTab = Executable.pStrTab;
     UINT32     nStrTab = Executable.nStrTab;
 
+	get_application_full_name(exe_name_full);
+
     if (nSymTab == 0)
     {
+        printf("\n");
         printf("             *************************************************************\n");
-        printf("             **        STRIP: The symtab information is stripped!       **\n");
-        printf("             **                     Can't Instrument!                   **\n");
+        printf("             **        %s\n", exe_name_full);
+        printf("             **        STRIP: The symtab information is stripped!         \n");
+        printf("             **                     Can't Instrument!                     \n");
         printf("             *************************************************************\n");
         return STRIP;
     }

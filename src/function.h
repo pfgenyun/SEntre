@@ -44,7 +44,6 @@ int entre_function_size(struct function * fun);
 struct function * entre_find_function(char * name);
 void entre_for_all_function(void (*my_fun)(struct function *));
 int entre_is_before_main(struct function * fun);
-int entre_lr_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr);
 
 #define FUNCTION_NUMS entre_function_num()
 #define FUNCTION_START_ADDRESS(fun) entre_function_start_address(fun)

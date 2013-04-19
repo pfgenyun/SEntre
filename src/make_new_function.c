@@ -33,6 +33,58 @@ struct instrument_point instrument_omit[INSTRUMENT_OMIT_SIZE];
 int instrument_omit_size;
 int instrument_omit_num;
 
+int entre_lr_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr)
+{
+	int lr_num = 0;
+	ADDRESS addr_i;
+	ADDRESS start_addr;
+	ADDRESS end_addr;
+	ADDRESS fun_start_addr = FUNCTION_START_ADDRESS(fun);
+	
+	if(target_addr >= entre_function_next_address(fun) || 
+	   target_addr < fun_start_addr )
+	{
+		entre_my_error("EE: address does not in function!");
+	}
+
+	if(target_addr > b_addr)
+	{
+		start_addr = b_addr;
+		end_addr = target_addr;
+	}
+	else
+	{
+		start_addr = target_addr;
+		end_addr = b_addr;
+	}
+#ifdef BB_FREQ
+	for(addr_i=start_addr; addr_i<=end_addr; addr_i+=INSN_BYTES)
+#else
+	for(addr_i=start_addr; addr_i<end_addr; addr_i+=INSN_BYTES)
+//	for(addr_i=start_addr; addr_i<=end_addr; addr_i+=INSN_BYTES)
+#endif
+	{
+		INSN_T insn = INSN_AT(addr_i);
+//		if(entre_is_instrument_instruction(insn) && 
+//		   entre_is_bb_begine(addr_i))
+//		{
+//			printf("instrument and bb_begine. addr: 0x%x\t insn: 0x%x\n",
+//					addr_i, insn);
+//			entre_my_error("Cannot reach here!");
+//		}
+#ifdef BB_FREQ
+		if((entre_is_instrument_instruction(insn) || 
+			entre_is_bb_begine(addr_i)) && 
+			entre_can_instrument_here(addr_i))
+#else
+		if(entre_is_instrument_instruction(insn) && 
+		   entre_can_instrument_here(addr_i))
+#endif
+			lr_num ++;
+	}
+	return lr_num;
+}
+
 /* when a instrument instruction(lw or sw) lies in a 
  * branch delay slot, it cannot be instrumented */
 int entre_can_instrument_here(ADDRESS instrument_addr)
