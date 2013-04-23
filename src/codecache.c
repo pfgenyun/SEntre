@@ -52,7 +52,7 @@ ADDRESS entre_cc_get_top_address()
  * copy code from *code to codecache, the length of code is len. 
  * codecache_n is the point to the top of codecache.
  * ********************************************************************/
-void entre_cc_add_code(unsigned* code, unsigned len)
+ADDRESS entre_cc_add_code(unsigned* code, unsigned len)
 {
 	int i;
 	if( codecache_n + len > codecache_size )
@@ -63,6 +63,8 @@ void entre_cc_add_code(unsigned* code, unsigned len)
 	for(i=0; i<len; i++)
 		codecache[codecache_n+i] = code[i];
 	codecache_n += len;
+
+	return (ADDRESS) (&codecache[codecache_n]);
 }
 
 /*******************************************************************

@@ -30,6 +30,20 @@ struct function all_function[ALL_FUNCTION_SIZE];
 int all_function_size;
 int all_function_n;
 
+char * entre_find_funName_from_funOldAddr(ADDRESS oldAddr)
+{
+	int i;
+	struct function * fun;
+	
+	for(i=0; i<all_function_n; i++)
+	{
+		fun = &all_function[i];
+		if(oldAddr == fun->f_address)
+			return fun->f_name;
+	}
+	return NULL;
+}
+
 int entre_is_before_main(struct function * fun)
 {
 	if(strcmp(fun->f_name, "__start") == 0 ||

@@ -33,6 +33,66 @@ struct instrument_point instrument_omit[INSTRUMENT_OMIT_SIZE];
 int instrument_omit_size;
 int instrument_omit_num;
 
+/* map instruction address in codecache to the function name */
+ADDRESS entre_map_newAddr_2_oldInsnAddr(ADDRESS newAddr)
+{
+	int numPoint;
+	ADDRESS oldFunAddr;
+	ADDRESS newFunAddr;
+	ADDRESS oldInsnAddr;
+
+    oldFunAddr = entre_got_map_newAddr_2_oldFunAddr(newAddr);
+    newFunAddr = entre_got_map_oldAddr_2_newFunAddr(oldFunAddr);
+	numPoint = entre_got_find_instrument_num_from_newAddr(newAddr);
+	oldInsnAddr = oldFunAddr 
+		          + (newAddr - newFunAddr) 
+		          - numPoint*IN_CODE_BYTES
+	              - LOAD_T9_BYTES;
+
+	return oldInsnAddr;
+
+}
+
+/* map instruction address in codecache to the function name */
+char *entre_map_newAddr_2_oldFunName(ADDRESS newAddr)
+{
+	ADDRESS oldFunAddr;
+	char * funName;
+
+    oldFunAddr = entre_got_map_newAddr_2_oldFunAddr(newAddr);
+    funName = entre_find_funName_from_funOldAddr(oldFunAddr);
+
+	return funName;
+}
+
+/* map instruction address in origin address space to the 
+ * codecache function beginning */
+ADDRESS entre_map_oldAddr_2_newFunAddr(ADDRESS oldAddr)
+{
+	ADDRESS newFunAddr;
+    newFunAddr = entre_got_map_newAddr_2_oldFunAddr(oldAddr);
+
+	return newFunAddr;
+}
+
+/* map instruction address in codecache to the orignal address of 
+ * function beginning */
+ADDRESS entre_map_newAddr_2_oldFunAddr(ADDRESS newAddr)
+{
+	ADDRESS oldFunAddr;
+    oldFunAddr = entre_got_map_newAddr_2_oldFunAddr(newAddr);
+
+	return oldFunAddr;
+}
+
+
+void entre_record_instrument_point(ADDRESS oldAddr, ADDRESS newAddr)
+{
+    entre_got_add_instrument_point(oldAddr, newAddr);
+}
+
+/* calculate the num of instrumentation between the address of branch/jump 
+ * instruction and the target address */
 int entre_lr_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr)
 {
 	int lr_num = 0;
@@ -155,6 +215,8 @@ void entre_make_a_new_function(struct function * fun)
 	ADDRESS addr_end;
 	ADDRESS addr_start = fun_start_addr;
 	ADDRESS fun_next_addr = fun_start_addr + fun_size;
+	ADDRESS ccAddr_i;
+
 	for(addr_i=fun_start_addr; addr_i<fun_next_addr; addr_i+=INSN_BYTES)
 	{
 		addr_end = addr_i;
@@ -169,10 +231,12 @@ void entre_make_a_new_function(struct function * fun)
 			if(entre_can_instrument_here(addr_end))
 			{
 				entre_cc_add_code(incode_call, incode_call_size);
+				ccAddr_i = entre_cc_get_top_address();
+				entre_record_instrument_point(addr_end, ccAddr_i);
 			}
 			else
 			{
-				printf("EE: jalr instuction cannot be instrument here.\n");
+				printf("EE: jalr instuction cannot be instrumented here.\n");
 				exit(0);
 			}
 			addr_start = addr_end;
@@ -185,7 +249,11 @@ void entre_make_a_new_function(struct function * fun)
 #endif
 			entre_cc_add_code((INSN_T*)addr_start, (addr_end - addr_start) / INSN_BYTES);
 			if(entre_can_instrument_here(addr_end))
+			{
 				entre_cc_add_code(incode_mem, incode_mem_size);
+				ccAddr_i = entre_cc_get_top_address();
+				entre_record_instrument_point(addr_end, ccAddr_i);
+			}
 			else
 				entre_instrument_omit_record(addr_end);
 			addr_start = addr_end;
@@ -201,6 +269,8 @@ void entre_make_a_new_function(struct function * fun)
 			if(entre_can_instrument_here(addr_end))
 			{
 				entre_cc_add_code(incode_OOprofile, incode_OOprofile_size);
+				ccAddr_i = entre_cc_get_top_address();
+				entre_record_instrument_point(addr_end, ccAddr_i);
 			}
 			else
 			{
@@ -219,9 +289,13 @@ void entre_make_a_new_function(struct function * fun)
 			entre_cc_add_code((INSN_T*)addr_start, (addr_end - addr_start) / INSN_BYTES);
 			if(entre_can_instrument_here(addr_end) && !entre_is_instrument_instruction(insn))
 			{	
+			
 				ADDRESS counter_addr = entre_get_bb_counter_addr(addr_end);
 				entre_make_in_code_bb_freq(counter_addr);
 				entre_cc_add_code(incode_bb_freq, incode_bb_freq_size);
+              	ccAddr_i = entre_cc_get_top_address();
+				entre_record_instrument_point(addr_end, ccAddr_i);
+
 			}
 			else
 			{
@@ -231,7 +305,6 @@ void entre_make_a_new_function(struct function * fun)
 			addr_start = addr_end;
 		}
 #endif
-
 	}
 	entre_cc_add_code((INSN_T*)addr_start, (fun_next_addr - addr_start) / INSN_BYTES);
 #ifdef DEBUG

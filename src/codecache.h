@@ -30,7 +30,7 @@ void entre_init_cc();
 void entre_cc_flush();
 
 ADDRESS entre_cc_get_top_address();
-void entre_cc_add_code(unsigned* code, unsigned len);  /* add code to cc*/
+ADDRESS entre_cc_add_code(unsigned* code, unsigned len);  /* add code to cc*/
 void entre_cc_replace(ADDRESS, INSN_T);
 
 #endif

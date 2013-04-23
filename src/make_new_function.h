@@ -47,5 +47,10 @@ void entre_instrument_omit_record(ADDRESS );
 void entre_make_new_functions();
 void entre_make_a_new_function(struct function *);
 int entre_lr_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr);
+ADDRESS entre_map_newAddr_2_oldFunAddr(ADDRESS newAddr);
+ADDRESS entre_map_oldAddr_2_newFunAddr(ADDRESS oldAddr);
+char *entre_map_newAddr_2_oldFunName(ADDRESS newAddr);
+ADDRESS entre_map_newAddr_2_oldInsnAddr(ADDRESS newAddr);
+void entre_record_instrument_point(ADDRESS oldAddr, ADDRESS newAddr);
 
 #endif

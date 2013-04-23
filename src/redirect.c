@@ -293,9 +293,15 @@ void entre_call_redirect(struct context * context)
 	REG_T s_reg = S_REG(dirty_insn);
 
 #ifdef DUMP_DIRTY_CALL
+	ADDRESS map_funAddr = entre_map_newAddr_2_oldFunAddr(dirty_addr);
+	ADDRESS map_InsnAddr = entre_map_newAddr_2_oldInsnAddr(dirty_addr);
+	char* funName = entre_map_newAddr_2_oldFunName(dirty_addr);
+
 	printf("in call_redirect\n");
-	printf("dirty_addr: %x  dirty_insn: %x  main_op: %d  sub_op: %d s_reg: %d\n",
-			dirty_addr, dirty_insn, main_op, sub_op, s_reg);
+	printf("fun_name: %s  dirty_addr: %x  old_InsnAddr: %x  old_funAddr: %x  \
+dirty_insn: %x  main_op: %d  sub_op: %d s_reg: %d\n",
+			funName, dirty_addr, map_InsnAddr, map_funAddr, 
+			dirty_insn, main_op, sub_op, s_reg);
 #endif
 
 	if(main_op==0 && sub_op==9)
