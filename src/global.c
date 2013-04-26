@@ -79,7 +79,7 @@ void get_application_full_name(char * exe_name_full)
     if(length > 0)
     {
 #ifdef DEBUG
-        printf("the length of the path %d", length);
+        printf("the length of the path: %d \n", length);
 #endif
         exe_name_full[length] = '\0';
     }

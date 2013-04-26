@@ -29,6 +29,12 @@
 #define true 1
 #define false 0
 
+#ifdef DEBUG_REACH
+    #define ENTRE_REACH_HERE()    printf("reach file %s at line %d here.\n", __FILE__, __LINE__);
+#else
+    #define ENTRE_REACH_HERE() 
+#endif
+
 typedef unsigned ADDRESS;
 typedef unsigned UINT32;
 typedef int INT32;

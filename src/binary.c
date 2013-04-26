@@ -67,11 +67,13 @@ void entre_executable_flush(void)
 }
 
 /*******************************************************************
+ * bubble sort
  * after sorting:
  * rank[0] point to the min number
  * rank[n] point to the max number 
  * the order is according the st_value value
  * *****************************************************************/
+#if 0
 static void entre_function_sort(Elf32_Sym * sym, Elf32_Sym ** rank, int n)
 {
     int i,j,k;
@@ -103,6 +105,57 @@ static void entre_function_sort(Elf32_Sym * sym, Elf32_Sym ** rank, int n)
             }   
     }   
 }
+#endif
+
+/*******************************************************************
+ * quick sort
+ * after sorting:
+ * rank[0] point to the min number
+ * rank[n] point to the max number 
+ * the order is according the st_value value
+ * *****************************************************************/
+#if 1
+int entre_partition(Elf32_Sym ** rank, int low, int high)
+{
+	Elf32_Sym * tmp=rank[low];
+	ADDRESS pivotkey=rank[low]->st_value;
+	while(low<high)
+	{
+		while(low<high && rank[high]->st_value>=pivotkey) 
+			--high;
+		rank[low] = rank[high];
+		while(low<high && rank[low]->st_value<=pivotkey)
+			++low;
+		rank[high] = rank[low];
+	}
+	rank[low] = tmp;
+	return low;
+}
+
+void entre_qSort(Elf32_Sym ** rank, int low, int high)
+{
+	int pivotloc;
+
+    if(low<high)
+    {
+        pivotloc = entre_partition(rank, low, high);
+		entre_qSort(rank, low, pivotloc-1);   
+		entre_qSort(rank, pivotloc+1, high);         
+	}
+}
+
+static void entre_function_sort(Elf32_Sym * sym, Elf32_Sym ** rank, int n)
+{
+    int i,j,k;
+    ADDRESS min = 0, tmp;
+    Elf32_Sym * sym_p;
+				    
+    for(i = 0; i< n; i++)
+        rank[i] = sym + i;
+	
+	entre_qSort(rank, 0, n-1);
+}
+#endif
 
 /**********************************************************************
  * scan Symbol Table, extract STT_ST_FUNC type symbol and reorder them.
@@ -132,9 +185,17 @@ Status entre_IRMarkFunctions(void)
         printf("             **        %s\n", exe_name_full);
         printf("             **        STRIP: The symtab information is stripped!         \n");
         printf("             **                     Can't Instrument!                     \n");
-        printf("             *************************************************************\n");
+        printf("             *************************************************************\n\n");
         return STRIP;
     }
+//	else
+//	{/* spec-cpu2000 178.galgel will crash when print this message on srreen */
+//        printf("\n");
+//        printf("             *************************************************************\n");
+//        printf("             **        %s\n", exe_name_full);
+//        printf("             **        This Application is Running under SEntre!          \n");
+//        printf("             *************************************************************\n\n");
+//	}
 
     Executable.pSymTab = NULL;
     Executable.nSymTab = 0;
@@ -144,6 +205,8 @@ Status entre_IRMarkFunctions(void)
     /* temporary Symbol array used for function name sort. */
     Elf32_Sym *aSymTemp = (Elf32_Sym *) calloc(sizeof(Elf32_Sym), nSymTab);
     Elf32_Sym **SymRank = (Elf32_Sym **) calloc(sizeof(Elf32_Sym *), nSymTab);
+
+	ENTRE_REACH_HERE();
 
     for(i=1; i<nSymTab; i++)
     {
@@ -163,16 +226,21 @@ Status entre_IRMarkFunctions(void)
                 continue;
             if(strncmp(pSymTabItemName, "entre_", 6) == 0)
                 continue;
-            
+
 			/* the function Symbol has been recorded before. */
+			/* this condition will not happen & the code ruduce the performace */
+#if 0		
             int flag = 0;
             for(j=0; j<Executable.nSymTab; j++)
             {
                 if(pSymTabItem->st_value == aSymTemp[j].st_value)
+				{
                     flag = 1;
+					break;
+				}
             }
             if(flag == 1) continue;
-
+#endif
             /* need? */
             ADDRESS addr;
             if(strcmp(pSymTabItemName, "_flush_cache") == 0)
@@ -193,6 +261,8 @@ Status entre_IRMarkFunctions(void)
         }
     }/* end of for */
 
+	ENTRE_REACH_HERE();
+
     /* sort the function Symbols */
     entre_function_sort(aSymTemp, SymRank, Executable.nSymTab);
     
@@ -202,6 +272,8 @@ Status entre_IRMarkFunctions(void)
     {
         Executable.pSymTab[i] = *(SymRank[i]);
     }
+
+	ENTRE_REACH_HERE();
 
     /* the following change st_size if its value is 0. why? */
     for(i=0; i<Executable.nSymTab-1; i++)
@@ -224,7 +296,7 @@ Status entre_IRMarkFunctions(void)
     Executable.pStrTab = realloc(Executable.pStrTab, Executable.nStrTab);
 
 #ifdef DEBUG_REACH
-    printf("reach end of function entre_IRMarkFunctions.\n\n");
+    printf("reach end of function entre_IRMarkFunctions.\n");
 #endif
 
     return 0;
@@ -238,64 +310,25 @@ Status entre_IRMarkFunctions(void)
 void entre_BinaryLoad(void* start_fp)
 {
 #ifdef DEBUG_REACH
-    printf("reach begin of function entre_BinaryLoad.\n\n");
+    printf("reach begin of function entre_BinaryLoad.\n");
 #endif
 
     INDEX i,j;
  
-#ifdef DEBUG_REACH
-    printf("begin read systab information function entre_BinaryLoad.\n\n");
-#endif
-   
     Elf32_Ehdr *pElfHeader = (Elf32_Ehdr *) start_fp;    /* ELF Header address */
-
-#ifdef DEBUG_REACH
-    printf("1st read systab information function entre_BinaryLoad.\n\n");
-#endif
-
     UINT32      nSection = pElfHeader->e_shnum;    /* number of sections */
- 
-#ifdef DEBUG_REACH
-    printf("2th read systab information function entre_BinaryLoad.\n\n");
-#endif
-
     Elf32_Shdr *pSectionHeaderStart =(Elf32_Shdr *)((char*)pElfHeader + pElfHeader->e_shoff);  /* Section Header Table address */
-#ifdef DEBUG_REACH
-    printf("3th read systab information function entre_BinaryLoad.\n\n");
-#endif
 
     /* Section Name String Table info */
     Elf32_Shdr *pSectionHeaderItem = pSectionHeaderStart + pElfHeader->e_shstrndx;
 
-#ifdef DEBUG_REACH
-    printf("4st read systab information function entre_BinaryLoad.\n\n");
-#endif
-
-   char *pSectionNameStrTab = (char *)((char*)pElfHeader + pSectionHeaderItem->sh_offset); /* ? */
-
-#ifdef DEBUG_REACH
-    printf("5th read systab information function entre_BinaryLoad.\n\n");
-#endif
-
+    char *pSectionNameStrTab = (char *)((char*)pElfHeader + pSectionHeaderItem->sh_offset);
     Executable.pSectionNameStrTab = (char *)malloc(sizeof(pSectionHeaderItem->sh_size));
+    Executable.nSectionNameStrTab = pSectionHeaderItem->sh_size;
 
-#ifdef DEBUG_REACH
-    printf("6th read systab information function entre_BinaryLoad.\n\n");
-#endif
-
-    Executable.nSectionNameStrTab = pSectionHeaderItem->sh_size;  /* ? */
-
-#ifdef DEBUG_REACH
-    printf("7th read systab information function entre_BinaryLoad.\n\n");
-#endif
-
-    /* symtab, strtab, and got is unquie, assum text is also unquie (?)*/
+    /* symtab, strtab, and got is unquie, assum text is also unquie */
     for(i=1; i<nSection; i++)
     {
-#ifdef DEBUG_REACH
-    printf("for read systab information function entre_BinaryLoad.\n\n");
-#endif
-
         pSectionHeaderItem = pSectionHeaderStart + i;
         char *pSectionName = pSectionNameStrTab + pSectionHeaderItem->sh_name; /* type convect? */
         
@@ -330,16 +363,15 @@ void entre_BinaryLoad(void* start_fp)
             Executable.pCodeEnd   = pSectionHeaderItem->sh_addr + pSectionHeaderItem->sh_size ;
             Executable.pSize      = pSectionHeaderItem->sh_size;
         }   
-
-        ADDRESS pPageStart = Executable.pCodeStart & (~(pagesize - 1));
-        mprotect((void*)pPageStart, Executable.pCodeEnd - pPageStart, PROT_READ | PROT_WRITE | PROT_EXEC);
     }
+
+    ADDRESS pPageStart = Executable.pCodeStart & (~(pagesize - 1));
+    mprotect((void*)pPageStart, Executable.pCodeEnd - pPageStart, PROT_READ | PROT_WRITE | PROT_EXEC);
+
 #ifdef DEBUG_REACH
-    printf("reach end of function entre_BinaryLoad.\n\n");
+    printf("reach end of function entre_BinaryLoad.\n");
 #endif
 }
-
-
 
 Status entre_initExecutable(int fp)
 {
@@ -349,7 +381,7 @@ Status entre_initExecutable(int fp)
     void *start_fp;
 
 #ifdef DEBUG_REACH
-    printf("reach begin of function entre_initExecutable.\n\n");
+    printf("reach begin of function entre_initExecutable.\n");
 #endif
     fs = fstat(fp, &stat_date);
     start_fp = mmap(NULL, stat_date.st_size, PROT_READ, MAP_SHARED, fp, 0);
@@ -363,7 +395,7 @@ Status entre_initExecutable(int fp)
     if(status) return status;
     munmap(start_fp, stat_date.st_size);
 #ifdef DEBUG_REACH
-    printf("reach end of function entre_initExecutable.\n\n");
+    printf("reach end of function entre_initExecutable.\n");
 #endif
     return 0;
 }

@@ -158,7 +158,7 @@ int entre_add_bb_entry_to_addr_list(ADDRESS entry_addr)
         return 1;
 
 	if(addr_list_n >= ADDR_LIST_SIZE )
-		entre_my_error("address list size insufficient!");
+		entre_my_error("address list size insufficient!\n");
     
     /* insert the new entry_addr in addr_list */
     addr_list[addr_list_n].addr = entry_addr;
@@ -337,7 +337,6 @@ void entre_mark_bb(void)
         end_bb = all_bb_n;
 
         entre_init_one_function(fun, start_bb, end_bb-start_bb);
-        
     }
 }
 
