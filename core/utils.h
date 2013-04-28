@@ -78,6 +78,7 @@ bool ignore_assert(const char *assert_file_line, const char *expr);
 /* any value greater than LOCK_SET_STATE means multiple threads requested the lock */
 
 typedef void * contention_event_t;
+#define CONTENTION_EVENT_NOT_CREATED ((contention_event_t)0)
 
 typedef struct _mutex_t {
     volatile int lock_requests; /* number of threads requesting this lock minus 1 */
@@ -140,6 +141,87 @@ typedef struct _read_write_lock_t {
     /* make sure to update the two INIT_READWRITE_LOCK cases if you add new fields  */
 } read_write_lock_t;
 
+/* Ignore the arguments */
+#  define INIT_LOCK_NO_TYPE(name, rank) {LOCK_FREE_STATE, CONTENTION_EVENT_NOT_CREATED}
+
+/* FIXME: gcc 4.1.1 complains "initializer element is not constant"
+ * if we have our old (x) here; presumably some older gcc needed it;
+ * once sure nobody does let's remove this define altogether.
+ */
+#  define STRUCTURE_TYPE(x)
+
+#define EXPANDSTR(x) #x
+#define STRINGIFY(x) EXPANDSTR(x)
+
+#define INIT_LOCK_FREE(lock) STRUCTURE_TYPE(mutex_t) INIT_LOCK_NO_TYPE( \
+       #lock "(mutex)" "@" __FILE__ ":" STRINGIFY(__LINE__),          \
+       LOCK_RANK(lock))
+
+#define ASSIGN_INIT_LOCK_FREE(var, lock) do {                           \
+     mutex_t initializer_##lock = STRUCTURE_TYPE(mutex_t) INIT_LOCK_NO_TYPE(\
+            #lock "(mutex)" "@" __FILE__ ":" STRINGIFY(__LINE__),       \
+                                                 LOCK_RANK(lock));      \
+     var = initializer_##lock;                                          \
+   } while (0)
+
+#define ASSIGN_INIT_SPINMUTEX_FREE(var, spinmutex) \
+    ASSIGN_INIT_LOCK_FREE((var).lock, spinmutex)
+
+#define INIT_RECURSIVE_LOCK(lock) STRUCTURE_TYPE(recursive_lock_t) {       \
+     INIT_LOCK_NO_TYPE(                                                 \
+       #lock "(recursive)" "@" __FILE__ ":" STRINGIFY(__LINE__) ,       \
+       LOCK_RANK(lock)),                                                \
+     INVALID_THREAD_ID, 0                                               \
+   }
+
+#define INIT_READWRITE_LOCK(lock) STRUCTURE_TYPE(read_write_lock_t) {       \
+     INIT_LOCK_NO_TYPE(                                                 \
+       #lock "(readwrite)" "@" __FILE__ ":" STRINGIFY(__LINE__) ,       \
+       LOCK_RANK(lock)),                                                \
+       0, INVALID_THREAD_ID,                                            \
+       0,                                                               \
+       CONTENTION_EVENT_NOT_CREATED, CONTENTION_EVENT_NOT_CREATED       \
+   }
+#define INIT_READWRITE_LOCK(lock) STRUCTURE_TYPE(read_write_lock_t) {       \
+     INIT_LOCK_NO_TYPE(                                                 \
+       #lock "(readwrite)" "@" __FILE__ ":" STRINGIFY(__LINE__) ,       \
+       LOCK_RANK(lock)),                                                \
+       0, INVALID_THREAD_ID,                                            \
+       0,                                                               \
+       CONTENTION_EVENT_NOT_CREATED, CONTENTION_EVENT_NOT_CREATED       \
+   }
+
+#define ASSIGN_INIT_READWRITE_LOCK_FREE(var, lock) do {                 \
+     read_write_lock_t initializer_##lock = STRUCTURE_TYPE(read_write_lock_t)   \
+      {INIT_LOCK_NO_TYPE(                                               \
+            #lock "(readwrite)" "@" __FILE__ ":" STRINGIFY(__LINE__),   \
+                                                 LOCK_RANK(lock)),      \
+       0, INVALID_THREAD_ID,                                            \
+       0,                                                               \
+       CONTENTION_EVENT_NOT_CREATED, CONTENTION_EVENT_NOT_CREATED       \
+      };                                                                \
+     var = initializer_##lock;                                          \
+   } while (0)
+
+#define ASSIGN_INIT_RECURSIVE_LOCK_FREE(var, lock) do {                 \
+     recursive_lock_t initializer_##lock = STRUCTURE_TYPE(recursive_lock_t)   \
+      {INIT_LOCK_NO_TYPE(                                               \
+            #lock "(recursive)" "@" __FILE__ ":" STRINGIFY(__LINE__),   \
+                                                 LOCK_RANK(lock)),      \
+       INVALID_THREAD_ID, 0};                                           \
+     var = initializer_##lock;                                          \
+   } while (0)
+
+#define INIT_SPINLOCK_FREE(lock) STRUCTURE_TYPE(mutex_t) {SPINLOCK_FREE_STATE, }
+
+/* in order to use parallel names to the above INIT_*LOCK routines */
+#define DELETE_LOCK(lock) mutex_delete(&lock)
+#define DELETE_SPINMUTEX(spinmutex) spinmutex_delete(&spinmutex)
+#define DELETE_RECURSIVE_LOCK(rec_lock) mutex_delete(&(rec_lock).lock)
+#define DELETE_READWRITE_LOCK(rwlock) mutex_delete(&(rwlock).lock)
+
+/* mutexes need to release any kernel objects that were created */
+void mutex_delete(mutex_t *lock);
 
 /* basic synchronization functions */
 void mutex_lock(mutex_t *mutex);
@@ -184,6 +266,10 @@ bool write_trylock(read_write_lock_t *rw);
 void read_unlock(read_write_lock_t *rw);
 void write_unlock(read_write_lock_t *rw);
 bool self_owns_write_lock(read_write_lock_t *rw);
+
+/* test whether locks are held at all */
+#define WRITE_LOCK_HELD(rw) (mutex_testlock(&(rw)->lock) && ((rw)->num_readers == 0))
+#define READ_LOCK_HELD(rw) ((rw)->num_readers > 0)
 
 /**************************************************************************************/
 /**************************************************************************************/

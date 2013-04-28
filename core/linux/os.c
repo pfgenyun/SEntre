@@ -21,16 +21,17 @@
 /***************************************************************************
   os.c - Linux specific routines
  ***************************************************************************/
-
+#include <sys/syscall.h>
 #include "global.h"
 #include "os_private.h"
-#include "syscall.h"
+//#include "syscall.h"
 
 thread_id_t
 get_sys_thread_id()
 {
     thread_id_t id;
-    id = sentre_syscall(SYS_gettid, 0);
+    //id = sentre_syscall(SYS_gettid, 0);
+	id = syscall(SYS_gettid);
     return id;
 }
 
@@ -45,11 +46,23 @@ get_thread_id(void)
 void
 thread_yield()
 {
-    sentre_syscall(SYS_sched_yield);
+    //sentre_syscall(SYS_sched_yield);
+	syscall(SYS_sched_yield);
 }
 
 /*************************************************************************/
 /*************************************************************************/
+
+/* read_write_lock_t implementation doesn't expect the contention path
+   helpers to guarantee the lock is held (unlike mutexes) so simple
+   yields are still acceptable.
+*/
+void
+rwlock_wait_contended_writer(read_write_lock_t *rwlock)
+{
+    thread_yield();
+}
+
 
 void
 rwlock_wait_contended_reader(read_write_lock_t *rwlock)
@@ -62,6 +75,13 @@ rwlock_notify_readers(read_write_lock_t *rwlock)
 {
     /* nothing to do here */
 }
+
+void
+rwlock_notify_writer(read_write_lock_t *rwlock)
+{                     
+    /* nothing to do here */
+}
+
 
 void
 mutex_notify_released_lock(mutex_t *lock)

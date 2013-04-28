@@ -20,11 +20,11 @@ SHELL := /bin/bash
 OBJ = entre.o top_level.o global.o binary.o basicblock.o \
 	  codecache.o function.o stack.o got.o context_switch.o \
 	  isa.o in_code.o make_new_function.o control_trans.o redirect.o \
-	  trace.o OOprofile.o bb_freq.o utils.o options.o
+	  trace.o OOprofile.o bb_freq.o utils.o options.o os.o
 SOURCE = entre.c top_level.c global.c binary.c basicblock.c \
 	 codecache.c function.c stack.c got.c context_switch.c \
 	 isa.c in_code.c make_new_function.c control_trans.c redirect.c \
-	 trace.c OOprofile.c bb_freq.c utils.c options.c
+	 trace.c OOprofile.c bb_freq.c utils.c options.c os.c
 
 CC = gcc
 C_FLAG = -g -O0 -fPIC -shared 
@@ -110,6 +110,7 @@ ALL:
 	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}bb_freq.c              -c -o  ${OBJDIR}bb_freq.o;				\
 	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}utils.c                -c -o  ${OBJDIR}utils.o;				\
 	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}options.c              -c -o  ${OBJDIR}options.o;			\
+	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}os.c              -c -o  ${OBJDIR}os.o;			\
 															\
 	cd ${OBJDIR};											\
 	${CC} ${C_FLAG} ${LINK_FLAG}  -o ${INSTALL_HOME}sentre_multiThread.so $(OBJ);		\

@@ -23,6 +23,8 @@
  * utils.c - miscellaneous utilities
  */
 
+#include <stdlib.h>
+#include <unistd.h>
 #include "global.h"
 #include "utils.h"
 
@@ -36,7 +38,9 @@
 
 void internal_error(char *file, int line, char *expr)
 {
-    /* need to be fix */
+    fprintf(stderr, "ASSERT failed: %s:%d (%s)\n", file, line, expr);
+    fflush(stderr);
+    abort();
 }
 
 #endif
@@ -61,6 +65,73 @@ deadlock_avoidance_unlock(mutex_t *lock, bool ownable)
 #  define DEADLOCK_AVOIDANCE_UNLOCK(lock, ownable) /* do nothing */
 #endif /* DEADLOCK_AVOIDANCE */
 
+
+static inline 
+void
+own_recursive_lock(recursive_lock_t *lock)
+{
+    ASSERT(lock->owner == INVALID_THREAD_ID);
+    ASSERT(lock->count == 0);
+    lock->owner = get_thread_id();
+    ASSERT(lock->owner != INVALID_THREAD_ID);
+    lock->count = 1;
+}
+    
+/* FIXME: rename recursive routines to parallel mutex_ routines */
+void
+acquire_recursive_lock(recursive_lock_t *lock)
+{   
+    /* we no longer use the pattern of implementing acquire_lock as a
+       busy try_lock      
+    */                    
+                          
+    /* ASSUMPTION: reading owner field is atomic */
+    if (lock->owner == get_thread_id()) {
+        lock->count++;
+    } else {
+        mutex_lock(&lock->lock);
+        own_recursive_lock(lock);
+    }   
+} 
+
+bool                          
+try_recursive_lock(recursive_lock_t *lock)
+{                             
+    /* ASSUMPTION: reading owner field is atomic */
+    if (lock->owner == get_thread_id()) {
+        lock->count++;
+    } else {
+        if (!mutex_trylock(&lock->lock))
+            return false;
+        own_recursive_lock(lock);
+    }
+    return true;
+}
+
+void
+release_recursive_lock(recursive_lock_t *lock)
+{
+    ASSERT(lock->owner == get_thread_id());
+    ASSERT(lock->count > 0);
+    lock->count--;
+    if (lock->count == 0) {
+        lock->owner = INVALID_THREAD_ID;
+        mutex_unlock(&lock->lock);
+    }
+}
+
+bool
+self_owns_recursive_lock(recursive_lock_t *lock)
+{
+    /* ASSUMPTION: reading owner field is atomic */
+    return (lock->owner == get_thread_id());
+}
+
+/* returns true if var was equal to compare */
+static inline bool atomic_compare_exchange(volatile int *var,
+                                           int compare, int exchange) {
+    return (atomic_compare_exchange_int(var, compare, exchange) == (compare));
+}
 
 /**************************************************************************************/
 /**************************************************************************************/
@@ -347,6 +418,47 @@ void write_unlock(read_write_lock_t *rw)
     {
         /* after we've released the write lock, pending readers will no longer wait */
         rwlock_notify_readers(rw);
+    }
+}
+
+/* try once to grab the lock, return whether or not successful */
+bool
+mutex_trylock(mutex_t *lock)
+{
+    bool acquired;
+#ifdef DEADLOCK_AVOIDANCE
+    bool ownable = mutex_ownable(lock);
+#endif
+
+    if (INTERNAL_OPTION(spin_yield_mutex)) {
+        return spinmutex_trylock((spin_mutex_t *)lock);
+    }
+
+    /* preserve old value in case not LOCK_FREE_STATE */
+    acquired = atomic_compare_exchange(&lock->lock_requests,
+                                       LOCK_FREE_STATE, LOCK_SET_STATE);
+    /* if old value was free, that means we just obtained lock
+       old value may be >=0 when several threads are trying to acquire lock,
+       so we should return false
+     */
+    DEADLOCK_AVOIDANCE_LOCK(lock, acquired, ownable);
+    return acquired;
+}
+
+bool
+self_owns_write_lock(read_write_lock_t *rw)
+{
+    /* ASSUMPTION: reading owner field is atomic */
+    return (rw->writer == get_thread_id());
+}
+
+/* releases any associated kernel objects */
+void mutex_delete(mutex_t *lock)
+{
+    ASSERT(lock->lock_requests == LOCK_FREE_STATE);
+
+    if (lock->contended_event != CONTENTION_EVENT_NOT_CREATED) {
+        ASSERT_NOT_IMPLEMENTED(false);
     }
 }
 
