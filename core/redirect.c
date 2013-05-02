@@ -235,6 +235,17 @@ void entre_redirect_jalr(struct context * context)
 /* redirect jalr and jr instruction */
 void entre_call_redirect(struct context * context)
 {
+//when the parameter is a function pointer
+    ADDRESS new_addr;
+
+    if((new_addr = entre_got_find_final(context->a0)) != 0)
+        context->a0 = new_addr;
+    if((new_addr = entre_got_find_final(context->a1)) != 0)
+        context->a1 = new_addr;
+    if((new_addr = entre_got_find_final(context->a2)) != 0)
+        context->a2 = new_addr;
+    if((new_addr = entre_got_find_final(context->a3)) != 0)
+        context->a3 = new_addr;
 
 #ifdef DUMP_CONTEXT
 	entre_dump_context(context);
