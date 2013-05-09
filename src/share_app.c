@@ -18,20 +18,27 @@
  */
 
 
-#ifndef MAIN_ENTRY_H
-#define MAIN_ENTRY_H
+/********************************************************************
+ This file is for the application compiled with -fPIC -share option
+ (dynamic shared). For example : chrome.
+ When running, the address of the symbols is different of the .symtab
+ section in ELF file of the application.
+ *******************************************************************/
 
+#include "global.h"
+#include "share_app.h"
 #include "function.h"
+#include "binary.h"
 
-extern int got_n;
-extern struct got * got;
+extern void (*rel_main)();
+
+void entre_init_rel_offset(ADDRESS orig_main)
+{
+//	printf("the address of orignal main: %x\n", orig_main);
+//	printf("the address of main after relocaton: %x\n", *rel_main);
+	Executable.rel_offset = (ADDRESS)*rel_main - orig_main;
+
+//	printf("orig_main: %x rel_address: %x rel_offset: %x\n", orig_main, *rel_main, Executable.rel_offset);
+}
 
 
-void entre_call_redirect(struct context * context);
-void entre_redict_jalr(struct context * context);
-void entre_transfer_redirect(void);
-void entre_jal_b_redirect(struct function * fun);
-int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call_num);
-int entre_out_of_j_range(ADDRESS new_replace_addr, ADDRESS new_target_addr); 
-
-#endif

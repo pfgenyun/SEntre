@@ -19,11 +19,11 @@
 OBJ = entre.o top_level.o global.o binary.o basicblock.o \
 	  codecache.o function.o stack.o got.o context_switch.o \
 	  isa.o in_code.o make_new_function.o control_trans.o redirect.o \
-	  trace.o OOprofile.o bb_freq.o
+	  trace.o OOprofile.o bb_freq.o share_app.o
 SOURCE = entre.c top_level.c global.c binary.c basicblock.c \
 	 codecache.c function.c stack.c got.c context_switch.c \
 	 isa.c in_code.c make_new_function.c control_trans.c redirect.c \
-	 trace.c OOprofile.c bb_freq.c
+	 trace.c OOprofile.c bb_freq.c share_app.c
 
 CC = gcc
 C_FLAG = -g -O0 -fPIC -shared 
@@ -36,6 +36,7 @@ LINK_FLAG = -ldl
 #D_FLAG = -DDUMP_DIRTY_CALL
 #D_FLAG = -DDEBUG_REACH -DDEBUG 
 #D_FLAG = -DDEBUG
+#D_FLAG = -DDEBUG_REACH
 D_FLAG = 
 
 
@@ -71,6 +72,7 @@ ALL:
 	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} trace.c                -c -o  ${OBJDIR}trace.o;					\
 	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} OOprofile.c            -c -o  ${OBJDIR}OOprofile.o;				\
 	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} bb_freq.c              -c -o  ${OBJDIR}bb_freq.o;				\
+	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} share_app.c            -c -o  ${OBJDIR}share_app.o;				\
 															\
 	cd ${OBJDIR};											\
 	${CC} ${C_FLAG} ${LINK_FLAG}  -o sentre.so $(OBJ);		\

@@ -30,6 +30,7 @@
 
 #include "global.h"
 #include "binary.h"
+#include "share_app.h"
 
 struct struct_executable Executable;
 
@@ -208,6 +209,25 @@ Status entre_IRMarkFunctions(void)
 
 	ENTRE_REACH_HERE();
 
+ 	/* for app with -shared -fPIC */
+    for(i=1; i<nSymTab; i++)
+	{
+        Elf32_Sym *pSymTabItem = pSymTab + i;
+        unsigned char SymType = ELF32_ST_TYPE(pSymTabItem->st_info);
+
+        if( SymType==STT_FUNC && pSymTabItem->st_value >= Executable.pCodeStart 
+                              && pSymTabItem->st_value < Executable.pCodeEnd )
+        {
+            char *pSymTabItemName = pStrTab + pSymTabItem->st_name;
+            if(strncmp(pSymTabItemName, "main", 5) == 0)
+    		{
+//    			printf("main address: %x\n", pSymTabItem->st_value);
+    			entre_init_rel_offset(pSymTabItem->st_value);
+    			break;
+    		}
+		}
+	} /* end of for */
+
     for(i=1; i<nSymTab; i++)
     {
         Elf32_Sym *pSymTabItem = pSymTab + i;
@@ -227,9 +247,9 @@ Status entre_IRMarkFunctions(void)
             if(strncmp(pSymTabItemName, "entre_", 6) == 0)
                 continue;
 
+#if 0		
 			/* the function Symbol has been recorded before. */
 			/* this condition will not happen & the code ruduce the performace */
-#if 0		
             int flag = 0;
             for(j=0; j<Executable.nSymTab; j++)
             {
@@ -251,7 +271,8 @@ Status entre_IRMarkFunctions(void)
             if(addr == pSymTabItem->st_value)
                 continue;
 
-            aSymTemp[Executable.nSymTab].st_value = pSymTabItem->st_value;
+			/* +Executable.rel_offset is for app with -shared -fPIC */
+            aSymTemp[Executable.nSymTab].st_value = pSymTabItem->st_value + Executable.rel_offset;
             aSymTemp[Executable.nSymTab].st_size = pSymTabItem->st_size;
             aSymTemp[Executable.nSymTab].st_name = Executable.nStrTab;
 			strcpy(Executable.pStrTab + Executable.nStrTab, pSymTabItemName);
@@ -261,7 +282,10 @@ Status entre_IRMarkFunctions(void)
         }
     }/* end of for */
 
+#ifdef DEBUG
+	printf("Executable.ref_offset = %x\n", Executable.rel_offset);
 	ENTRE_REACH_HERE();
+#endif
 
     /* sort the function Symbols */
     entre_function_sort(aSymTemp, SymRank, Executable.nSymTab);
@@ -273,21 +297,40 @@ Status entre_IRMarkFunctions(void)
         Executable.pSymTab[i] = *(SymRank[i]);
     }
 
+#ifdef DEBUG
+    for(i=0; i<10; i++)
+    {
+		printf("the %d symble address: %x\n", i, Executable.pSymTab[i].st_value);
+    }
+#endif
+
 	ENTRE_REACH_HERE();
+
+    Executable.pCodeStart = Executable.pCodeStart + Executable.rel_offset;
+    Executable.pCodeEnd = Executable.pCodeEnd + Executable.rel_offset;
+
+	ADDRESS pPageStart = Executable.pCodeStart & (~(pagesize - 1));
+    mprotect((void*)pPageStart, Executable.pCodeEnd - pPageStart, PROT_READ | PROT_WRITE | PROT_EXEC);
 
     /* the following change st_size if its value is 0. why? */
     for(i=0; i<Executable.nSymTab-1; i++)
     {
-        if(Executable.pSymTab[i].st_size == 0)
+        if(Executable.pSymTab[i].st_size <= 0)
         {
+//			printf("i: %d current st_value: %x, next st_value: %x \n",
+//					i, Executable.pSymTab[i].st_value, Executable.pSymTab[i+1].st_value);
             Executable.pSymTab[i].st_size = Executable.pSymTab[i+1].st_value - 
 				                            Executable.pSymTab[i].st_value;
         }
     }
-    if(Executable.pSymTab[Executable.nSymTab-1].st_size == 0)
+    if(Executable.pSymTab[Executable.nSymTab-1].st_size <= 0)
+	{
+//			printf("i: %d pcodeEnd: %x, current st_value: %x \n",
+//					nSymTab-1, Executable.pCodeEnd, Executable.pSymTab[Executable.nSymTab-1].st_value);
+
         Executable.pSymTab[Executable.nSymTab-1].st_size = Executable.pCodeEnd -
                         Executable.pSymTab[Executable.nSymTab-1].st_value;
-
+	}
     free(aSymTemp);
     free(SymRank);
 
@@ -323,7 +366,7 @@ void entre_BinaryLoad(void* start_fp)
     Elf32_Shdr *pSectionHeaderItem = pSectionHeaderStart + pElfHeader->e_shstrndx;
 
     char *pSectionNameStrTab = (char *)((char*)pElfHeader + pSectionHeaderItem->sh_offset);
-    Executable.pSectionNameStrTab = (char *)malloc(sizeof(pSectionHeaderItem->sh_size));
+//    Executable.pSectionNameStrTab = (char *)malloc(sizeof(pSectionHeaderItem->sh_size));
     Executable.nSectionNameStrTab = pSectionHeaderItem->sh_size;
 
     /* symtab, strtab, and got is unquie, assum text is also unquie */
@@ -394,6 +437,7 @@ Status entre_initExecutable(int fp)
     status = entre_IRMarkFunctions();
     if(status) return status;
     munmap(start_fp, stat_date.st_size);
+
 #ifdef DEBUG_REACH
     printf("reach end of function entre_initExecutable.\n");
 #endif

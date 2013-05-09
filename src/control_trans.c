@@ -41,7 +41,7 @@ void entre_control_transfer()
 	main_new_addr = entre_got_find_final(main_old_addr);
 
 #ifdef DDEBUG
-	printf("control_tran, old_address %x\t new_address %x", main_old_addr, main_new_addr);
+	printf("control_tran, old_address %x\t new_address %x\n", main_old_addr, main_new_addr);
 #endif
 
 	if(main_new_addr == 0)
@@ -55,7 +55,6 @@ void entre_control_transfer()
 	trans[1] = entre_make_inc_x(REG_T9, main_new_addr&0xffff);
 	trans[2] = entre_make_jr(REG_T9);
 	trans[3] = entre_make_nop();
-
 	for(i=0; i<4; i++)
 		INSN_AT(main_old_addr + i*4) = trans[i];
 

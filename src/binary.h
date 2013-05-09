@@ -27,6 +27,9 @@
 
 struct struct_executable
 {
+	/* rel_offset = (rel)main - (ori)main */
+    UINT32 rel_offset;		/* for PIC app */
+    
     ADDRESS pCodeStart;  /* code segment start address */
     ADDRESS pCodeEnd;    /* code segment end address */
     UINT32 pSize;        /* size of code section */

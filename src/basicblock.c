@@ -19,6 +19,7 @@
 
 #include <elf.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "global.h"
 #include "basicblock.h"
 #include "binary.h"
@@ -33,6 +34,7 @@ unsigned all_bb_size;       /* the basic block array size */
 unsigned all_bb_n;          /* the real basic block num */
 
 struct address_list addr_list[ADDR_LIST_SIZE]; /* contain all BB addr */
+//struct address_list * addr_list; /* contain all BB addr */
 unsigned addr_list_n;      /* the real address  number */
 
 /******************************************************************
@@ -98,18 +100,20 @@ void entre_fini_addr_list(void)
     tmp_bb_n = all_bb_n;
 
     if(all_bb_n + addr_list_n > all_bb_size) 
+	{
+		printf("all_bb_n: %d, addr_list_n:%d, all_bb_size: %d\n", all_bb_n, addr_list_n, all_bb_size);
         entre_my_error("all_basic_block size insufficient!\n");
-
+	}
     /* copy entry address from addr_list to all_bb */
     for(index=addr_list[0].next; index!=NULL_INDEX; index=addr_list[index].next)
     {
         addr = addr_list[index].addr;
         all_bb[tmp_bb_n].start = addr;
         tmp_bb_n ++;
-#ifdef DEBUG
+//#ifdef DEBUG
 		if(all_bb[tmp_bb_n-1].start == all_bb[tmp_bb_n-2].start)
 			entre_my_error("basic block divided error, redundant basic block.\n\n");
-#endif
+//#endif
     }
 
     /* calculate basic block size, bb sequence is order between function
@@ -139,7 +143,11 @@ int entre_add_bb_entry_to_addr_list(ADDRESS entry_addr)
 
     if(entry_addr < current_fun->st_value || 
        entry_addr >= current_fun->st_value + current_fun->st_size)
+	{
+		printf("entry_addr: %x fun_start: %x fun_end: %x\n", 
+				entry_addr, current_fun->st_value, current_fun->st_value + current_fun->st_size);
         entre_my_error("entry_error!");
+	}
 
     /* find the right place to insert entry_addr in addr_list */
     while(index_p != NULL_INDEX)
@@ -267,10 +275,19 @@ INSN_CLASS entre_insn_type(INSN_T insn)
  * *******************************************************************/
 void entre_init_addr_list(void)
 {
+//	ENTRE_REACH_HERE();
+//    addr_list =  malloc(ADDR_LIST_SIZE * sizeof(struct address_list));
+//	if(addr_list == NULL)
+//	{
+//        printf("malloc of addr_list failed!\n");
+//		exit(0);
+//	}
     addr_list[0].addr = MIN_ADDR;
     addr_list[0].next = NULL_INDEX;
 
     addr_list_n = 1;
+
+//	ENTRE_REACH_HERE();
 }
 
 
@@ -288,7 +305,10 @@ void entre_mark_bb_in_function(void)
 
     FOR_EACH_INSN_IN_FUN(current_fun, addr)
     {
+//        printf("ADDR_AT: %x", addr);
+//		ENTRE_REACH_HERE();
         insn = INSN_AT(addr);
+//		ENTRE_REACH_HERE();
         class = entre_insn_type(insn);
         
         switch(class)
@@ -329,8 +349,11 @@ void entre_mark_bb(void)
     int end_bb;
     Elf32_Sym *fun;
 
+//    entre_init_addr_list();
+
     FOR_EACH_FUNCTION(fun)
     {
+//        entre_init_one_function_for_share_pic(fun);
         start_bb = all_bb_n;
         current_fun = fun;
         entre_mark_bb_in_function();

@@ -27,6 +27,9 @@
 #include "in_code.h"
 #include "redirect.h"
 #include "make_new_function.h"
+#include "got.h"
+
+unsigned  global_var =0;
 
 /* judje whether the new target of j/jal instruction out of range.
  * new_replace_addr is the address of the j/jal instruction at new space
@@ -239,6 +242,129 @@ void entre_redirect_jr_call(struct context * context)
 /* redirect jalr instruction*/
 void entre_redirect_jalr(struct context * context)
 {
+
+#ifdef DEBUG
+	if(global_var++%10000 == 0)
+	{
+	  printf("In jalr !!!!!\n");
+	}
+#endif
+
+    //when the parameter is a function pointer
+    ADDRESS new_addr;
+
+	/* spec-cpu2000 can not pass with runspec: segmentation fault */
+#if 0
+    new_addr = entre_got_find_final(context->a0);
+	if (new_addr != 0)
+        context->a0 = new_addr;
+    new_addr = entre_got_find_final(context->a1);
+	if (new_addr != 0)
+        context->a1 = new_addr;
+    new_addr = entre_got_find_final(context->a2);
+	if (new_addr != 0)
+        context->a2 = new_addr;
+    new_addr = entre_got_find_final(context->a3);
+	if (new_addr != 0)
+        context->a3 = new_addr;
+#endif
+
+///////////////////////////////////////////////////
+//////// binary research in got table /////////////
+    int low = 0;
+	int high = got_n - 1;
+	int mid = 0;
+
+	if(context->a0 == GOT_OLD_ADDR(low))
+        context->a0 = GOT_NEW_ADDR_FINAL(low);
+	if(context->a0 == GOT_OLD_ADDR(high))
+        context->a0 = GOT_NEW_ADDR_FINAL(high);
+
+	while(low <= high)
+	{
+		mid = low + (high - low)/2;
+		if(context->a0 == GOT_OLD_ADDR(mid))
+				
+	if(context->a0 == GOT_OLD_ADDR(mid))
+        context->a0 = GOT_NEW_ADDR_FINAL(mid);
+
+		if(GOT_OLD_ADDR(mid) > context->a0)
+		    high = mid - 1;
+		else
+		    low = mid + 1;
+	}
+	
+	low = 0;
+	high = got_n - 1;
+	mid = 0;
+
+	if(context->a1 == GOT_OLD_ADDR(low))
+        context->a1 = GOT_NEW_ADDR_FINAL(low);
+	if(context->a1 == GOT_OLD_ADDR(high))
+        context->a1 = GOT_NEW_ADDR_FINAL(high);
+	
+	while(low <= high)
+	{
+		mid = low + (high - low)/2;
+		if(context->a1 == GOT_OLD_ADDR(mid))
+				
+	if(context->a1 == GOT_OLD_ADDR(mid))
+        context->a1 = GOT_NEW_ADDR_FINAL(mid);
+
+		if(GOT_OLD_ADDR(mid) > context->a1)
+		    high = mid - 1;
+		else
+		    low = mid + 1;
+	}
+
+	low = 0;
+	high = got_n - 1;
+	mid = 0;
+
+	if(context->a2 == GOT_OLD_ADDR(low))
+        context->a2 = GOT_NEW_ADDR_FINAL(low);
+	if(context->a2 == GOT_OLD_ADDR(high))
+        context->a2 = GOT_NEW_ADDR_FINAL(high);
+
+	while(low <= high)
+	{
+		mid = low + (high - low)/2;
+		if(context->a2 == GOT_OLD_ADDR(mid))
+				
+	if(context->a2 == GOT_OLD_ADDR(mid))
+        context->a2 = GOT_NEW_ADDR_FINAL(mid);
+
+		if(GOT_OLD_ADDR(mid) > context->a2)
+		    high = mid - 1;
+		else
+		    low = mid + 1;
+	}
+
+	low = 0;
+	high = got_n - 1;
+	mid = 0;
+
+	if(context->a3 == GOT_OLD_ADDR(low))
+        context->a3 = GOT_NEW_ADDR_FINAL(low);
+	if(context->a3 == GOT_OLD_ADDR(high))
+        context->a3 = GOT_NEW_ADDR_FINAL(high);
+
+	while(low <= high)
+	{
+		mid = low + (high - low)/2;
+		if(context->a3 == GOT_OLD_ADDR(mid))
+				
+	if(context->a3 == GOT_OLD_ADDR(mid))
+        context->a3 = GOT_NEW_ADDR_FINAL(mid);
+
+		if(GOT_OLD_ADDR(mid) > context->a3)
+		    high = mid - 1;
+		else
+		    low = mid + 1;
+	}
+////// end of binary research in got table ////////
+///////////////////////////////////////////////////
+
 	ADDRESS jalr_addr = context->ra + IN_CODE_LW_NUM;
 	INSN_T jalr_insn = INSN_AT(jalr_addr);
 
@@ -252,7 +378,7 @@ void entre_redirect_jalr(struct context * context)
 		entre_my_error("entre_redirect_jalr reg error!");
 
 	ADDRESS old_addr;
-	ADDRESS new_addr;
+//	ADDRESS new_addr;
 
 	if(s_reg == REG_T9)
 	{

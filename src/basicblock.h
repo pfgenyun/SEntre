@@ -46,7 +46,7 @@ struct bb
     BB_CLASS type;
 };
 
-#define BB_SIZE (1*MEGA_1)
+#define BB_SIZE (1*MEGA_1) * 5
 
 struct address_list
 {
@@ -54,7 +54,8 @@ struct address_list
     int next;
 };
 
-#define ADDR_LIST_SIZE	10240
+#define ADDR_LIST_SIZE	10240 
+//#define ADDR_LIST_SIZE	1024 * 1024
 #define NULL_INDEX		-1
 #define MIN_ADDR		0
 

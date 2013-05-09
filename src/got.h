@@ -24,6 +24,7 @@
 #include "global.h"
 
 #define INSTRUMENT_SIZE	1204
+//#define INSTRUMENT_SIZE	100
 
 /* record the instrument point information in a function */
 struct instrumentRecordTable

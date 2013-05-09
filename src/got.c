@@ -73,6 +73,52 @@ ADDRESS entre_got_map_newAddr_2_oldFunAddr(ADDRESS newAddr)
 	return 0;
 }
 
+#if 1
+/* binary search in got table */
+int entre_binary_search(ADDRESS old_address)
+{
+	int low, high, mid;
+
+    low = 0;
+	high = got_n - 1;
+	mid = 0;
+
+	if(old_address == GOT_OLD_ADDR(low))
+        return low;
+	if(old_address == GOT_OLD_ADDR(high))
+        return high;
+	
+	while(low <= high)
+	{
+		mid = low + (high - low)/2;
+//		mid = (high + low)/2;
+		if(old_address == GOT_OLD_ADDR(mid))
+		    return mid;
+		
+		if(GOT_OLD_ADDR(mid) > old_address)
+		    high = mid - 1;
+		else
+		    low = mid + 1;
+	}
+
+	if(low > high)
+	    return -1;
+}
+
+ADDRESS entre_got_find_final(ADDRESS old_address)
+{
+	int index;
+	
+	index = entre_binary_search(old_address);
+	if(index != -1)
+		return GOT_NEW_ADDR_FINAL(index);
+
+	return 0;
+}
+#endif
+
+#if 0
+/* sequential search in got table */
 ADDRESS entre_got_find_final(ADDRESS old_address)
 {
 	int i;
@@ -83,6 +129,7 @@ ADDRESS entre_got_find_final(ADDRESS old_address)
 	}
 	return 0;
 }
+#endif
 
 ADDRESS entre_got_find_func(ADDRESS old_address)
 {
@@ -196,5 +243,5 @@ void entre_got_init(int size)
 		exit(0);
 	}
 
-    entre_got_init_instrument_point();
+//    entre_got_init_instrument_point();
 }
