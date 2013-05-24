@@ -231,8 +231,10 @@ void entre_make_a_new_function(struct function * fun)
 			if(entre_can_instrument_here(addr_end))
 			{
 				entre_cc_add_code(incode_call, incode_call_size);
-//				ccAddr_i = entre_cc_get_top_address();
-//				entre_record_instrument_point(addr_end, ccAddr_i);
+#ifdef MAP
+				ccAddr_i = entre_cc_get_top_address();
+				entre_record_instrument_point(addr_end, ccAddr_i);
+#endif
 			}
 			else
 			{

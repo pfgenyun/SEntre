@@ -255,16 +255,16 @@ void entre_redirect_jalr(struct context * context)
 
 	/* spec-cpu2000 can not pass with runspec: segmentation fault */
 #if 0
-    new_addr = entre_got_find_final(context->a0);
+    new_addr = entre_got_find_final((UINT32)(context->a0));
 	if (new_addr != 0)
         context->a0 = new_addr;
-    new_addr = entre_got_find_final(context->a1);
+    new_addr = entre_got_find_final( (UINT32)(context->a1));
 	if (new_addr != 0)
         context->a1 = new_addr;
-    new_addr = entre_got_find_final(context->a2);
+    new_addr = entre_got_find_final( (UINT32)(context->a2));
 	if (new_addr != 0)
         context->a2 = new_addr;
-    new_addr = entre_got_find_final(context->a3);
+    new_addr = entre_got_find_final( (UINT32)(context->a3));
 	if (new_addr != 0)
         context->a3 = new_addr;
 #endif
@@ -283,10 +283,9 @@ void entre_redirect_jalr(struct context * context)
 	while(low <= high)
 	{
 		mid = low + (high - low)/2;
-		if(context->a0 == GOT_OLD_ADDR(mid))
 				
-	if(context->a0 == GOT_OLD_ADDR(mid))
-        context->a0 = GOT_NEW_ADDR_FINAL(mid);
+	    if(context->a0 == GOT_OLD_ADDR(mid))
+            context->a0 = GOT_NEW_ADDR_FINAL(mid);
 
 		if(GOT_OLD_ADDR(mid) > context->a0)
 		    high = mid - 1;
@@ -306,10 +305,9 @@ void entre_redirect_jalr(struct context * context)
 	while(low <= high)
 	{
 		mid = low + (high - low)/2;
-		if(context->a1 == GOT_OLD_ADDR(mid))
 				
-	if(context->a1 == GOT_OLD_ADDR(mid))
-        context->a1 = GOT_NEW_ADDR_FINAL(mid);
+	    if(context->a1 == GOT_OLD_ADDR(mid))
+            context->a1 = GOT_NEW_ADDR_FINAL(mid);
 
 		if(GOT_OLD_ADDR(mid) > context->a1)
 		    high = mid - 1;
@@ -329,10 +327,9 @@ void entre_redirect_jalr(struct context * context)
 	while(low <= high)
 	{
 		mid = low + (high - low)/2;
-		if(context->a2 == GOT_OLD_ADDR(mid))
 				
-	if(context->a2 == GOT_OLD_ADDR(mid))
-        context->a2 = GOT_NEW_ADDR_FINAL(mid);
+	    if(context->a2 == GOT_OLD_ADDR(mid))
+            context->a2 = GOT_NEW_ADDR_FINAL(mid);
 
 		if(GOT_OLD_ADDR(mid) > context->a2)
 		    high = mid - 1;
@@ -352,10 +349,9 @@ void entre_redirect_jalr(struct context * context)
 	while(low <= high)
 	{
 		mid = low + (high - low)/2;
-		if(context->a3 == GOT_OLD_ADDR(mid))
 				
-	if(context->a3 == GOT_OLD_ADDR(mid))
-        context->a3 = GOT_NEW_ADDR_FINAL(mid);
+	    if(context->a3 == GOT_OLD_ADDR(mid))
+            context->a3 = GOT_NEW_ADDR_FINAL(mid);
 
 		if(GOT_OLD_ADDR(mid) > context->a3)
 		    high = mid - 1;

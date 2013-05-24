@@ -243,5 +243,7 @@ void entre_got_init(int size)
 		exit(0);
 	}
 
-//    entre_got_init_instrument_point();
+#ifdef MAP
+    entre_got_init_instrument_point();
+#endif
 }
