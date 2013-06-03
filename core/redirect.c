@@ -402,6 +402,8 @@ void entre_redirect_jalr(struct context * context)
 /* redirect jalr and jr instruction */
 void entre_call_redirect(struct context * context)
 {
+//when the parameter is a function pointer
+    ADDRESS new_addr;
 
 #ifdef DUMP_CONTEXT
 	entre_dump_context(context);

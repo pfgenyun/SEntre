@@ -22,12 +22,18 @@
 #define GLOBAL_H
 
 #include <stdio.h>
+#include <sys/types.h>
+
+#include "globals_shared.h"
+
+#include "utils.h"
+#include "options.h"
+
+#include "os_exports.h"
+#include "arch_exports.h"
 
 #define MEGA_1 (1024*1024)  /* 1M */
 #define INSN_BYTES 4        /* bytes of instruction */
-
-#define true 1
-#define false 0
 
 #ifdef DEBUG_REACH
     #define ENTRE_REACH_HERE()    printf("reach file %s at line %d here.\n", __FILE__, __LINE__);
@@ -35,19 +41,18 @@
     #define ENTRE_REACH_HERE() 
 #endif
 
-typedef unsigned ADDRESS;
-typedef unsigned UINT32;
-typedef int INT32;
-typedef int INDEX;
-typedef unsigned INSN_T;
-typedef int REG_T;
-typedef long long UINT64;
-
 enum STATUS
 {
     NORMAL  =	0x00,
     STRIP   =	0x01,
 };
+
+/* FIXME: what is range of thread_id_t on linux?
+ * linux routines use -1 as sentinel, right?
+ * if so, change thread_id_t to be a signed int and use -1?
+ * For now, based on observation, no process on linux has id 0.
+ */
+#define INVALID_THREAD_ID  0
 
 typedef enum STATUS Status;
 
