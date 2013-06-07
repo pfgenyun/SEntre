@@ -180,15 +180,15 @@ Status entre_IRMarkFunctions(void)
 	get_application_full_name(exe_name_full);
 
     if (nSymTab == 0)
-    {
-        printf("\n");
-        printf("             *************************************************************\n");
-        printf("             **        %s\n", exe_name_full);
-        printf("             **        STRIP: The symtab information is stripped!         \n");
-        printf("             **                     Can't Instrument!                     \n");
-        printf("             *************************************************************\n\n");
+//    {
+//        printf("\n");
+//        printf("             *************************************************************\n");
+//        printf("             **        %s\n", exe_name_full);
+//        printf("             **        STRIP: The symtab information is stripped!         \n");
+//        printf("             **                     Can't Instrument!                     \n");
+//        printf("             *************************************************************\n\n");
         return STRIP;
-    }
+//    }
 //	else
 //	{/* spec-cpu2000 178.galgel will crash when print this message on srreen */
 //        printf("\n");

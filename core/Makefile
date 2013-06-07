@@ -30,11 +30,16 @@ CC = gcc
 C_FLAG = -g -O0 -fPIC -shared 
 LINK_FLAG = -ldl 
 
+##### Debug Flags
 #D_FLAG = -DDEBUG -DDUMP_FUNC -DDUMP_BB -DDUMP_CONTEXT -DDUMP_DIRTY_CALL -DDEBUG_REACH
 #D_FLAG = -DDEBUG -DDUMP_FUNC -DDUMP_BB
 #D_FLAG = -DDUMP_BB
 D_FLAG = 
 
+##### Function Flags ## for chrome don't define -DMAP
+F_FLAG = -DMAP
+
+#####Tool Flags
 #TOOL_FLAG = -DTRACE
 #TOOL_FLAG = -DOOprofile
 #TOOL_FLAG = -DBB_FREQ -DDEBUG
@@ -89,32 +94,32 @@ ALL:
 	cp	linux/*	${SRCDIR};			\
 	cp	mips/*	${SRCDIR};			\
 							\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}entre.c                -c -o  ${OBJDIR}entre.o;					\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}top_level.c            -c -o  ${OBJDIR}top_level.o;				\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}global.c               -c -o  ${OBJDIR}global.o;					\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}binary.c               -c -o  ${OBJDIR}binary.o;					\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}basicblock.c           -c -o  ${OBJDIR}basicblock.o;				\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}codecache.c            -c -o  ${OBJDIR}codecache.o;				\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}function.c             -c -o  ${OBJDIR}function.o;				\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}stack.c                -c -o  ${OBJDIR}stack.o;					\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}got.c                  -c -o  ${OBJDIR}got.o;					\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}context_switch.c       -c -o  ${OBJDIR}context_switch.o;			\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}isa.c                  -c -o  ${OBJDIR}isa.o;					\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}in_code.c              -c -o  ${OBJDIR}in_code.o;				\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}make_new_function.c    -c -o  ${OBJDIR}make_new_function.o;		\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}control_trans.c        -c -o  ${OBJDIR}control_trans.o;			\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}context_switch.c       -c -o  ${OBJDIR}context_switch.o;			\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}redirect.c             -c -o  ${OBJDIR}redirect.o;				\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}trace.c                -c -o  ${OBJDIR}trace.o;					\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}OOprofile.c            -c -o  ${OBJDIR}OOprofile.o;				\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}bb_freq.c              -c -o  ${OBJDIR}bb_freq.o;				\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}utils.c                -c -o  ${OBJDIR}utils.o;				\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}options.c              -c -o  ${OBJDIR}options.o;			\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}os.c                   -c -o  ${OBJDIR}os.o;			\
-	$(CC) ${C_FLAG} ${D_FLAG} ${TOOL_FLAG} ${SRCDIR}share_app.c            -c -o  ${OBJDIR}share_app.o;			\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}entre.c                -c -o  ${OBJDIR}entre.o;					\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}top_level.c            -c -o  ${OBJDIR}top_level.o;				\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}global.c               -c -o  ${OBJDIR}global.o;					\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}binary.c               -c -o  ${OBJDIR}binary.o;					\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}basicblock.c           -c -o  ${OBJDIR}basicblock.o;				\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}codecache.c            -c -o  ${OBJDIR}codecache.o;				\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}function.c             -c -o  ${OBJDIR}function.o;				\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}stack.c                -c -o  ${OBJDIR}stack.o;					\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}got.c                  -c -o  ${OBJDIR}got.o;					\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}context_switch.c       -c -o  ${OBJDIR}context_switch.o;			\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}isa.c                  -c -o  ${OBJDIR}isa.o;					\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}in_code.c              -c -o  ${OBJDIR}in_code.o;				\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}make_new_function.c    -c -o  ${OBJDIR}make_new_function.o;		\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}control_trans.c        -c -o  ${OBJDIR}control_trans.o;			\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}context_switch.c       -c -o  ${OBJDIR}context_switch.o;			\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}redirect.c             -c -o  ${OBJDIR}redirect.o;				\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}trace.c                -c -o  ${OBJDIR}trace.o;					\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}OOprofile.c            -c -o  ${OBJDIR}OOprofile.o;				\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}bb_freq.c              -c -o  ${OBJDIR}bb_freq.o;				\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}utils.c                -c -o  ${OBJDIR}utils.o;				\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}options.c              -c -o  ${OBJDIR}options.o;			\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}os.c                   -c -o  ${OBJDIR}os.o;			\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}share_app.c            -c -o  ${OBJDIR}share_app.o;			\
 															\
 	cd ${OBJDIR};											\
-	${CC} ${C_FLAG} ${LINK_FLAG}  -o ${INSTALL_HOME}sentre_multiThread.so $(OBJ);		\
+	${CC} ${C_FLAG} ${LINK_FLAG}  -o ${INSTALL_HOME}sentre.so $(OBJ);		\
 	cd -;													
 
 	
