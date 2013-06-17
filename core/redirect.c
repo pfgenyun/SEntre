@@ -20,6 +20,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "global.h"
 #include "context_switch.h"
 #include "isa.h"
@@ -238,11 +239,10 @@ void entre_redirect_jr_call(struct context * context)
 	}
 }
 
-
 /* redirect jalr instruction*/
 void entre_redirect_jalr(struct context * context)
 {
-
+	char *str;
 #ifdef DEBUG
 	if(global_var++%10000 == 0)
 	{
@@ -254,112 +254,32 @@ void entre_redirect_jalr(struct context * context)
     ADDRESS new_addr;
 
 	/* spec-cpu2000 can not pass with runspec: segmentation fault */
-#if 0
-    new_addr = entre_got_find_final((UINT32)(context->a0));
+    new_addr = entre_got_find_final((ADDRESS)context->a0);
 	if (new_addr != 0)
         context->a0 = new_addr;
-    new_addr = entre_got_find_final( (UINT32)(context->a1));
+    new_addr = entre_got_find_final((ADDRESS)context->a1);
 	if (new_addr != 0)
-        context->a1 = new_addr;
-    new_addr = entre_got_find_final( (UINT32)(context->a2));
+	{
+		str = entre_map_newAddr_2_oldFunName((ADDRESS)context->a1);
+		if(str != NULL)
+		{
+			if(strstr(str, "PerlIO_arg_fetch") == NULL)
+        		context->a1 = new_addr;
+		}
+	}
+    new_addr = entre_got_find_final((ADDRESS)context->a2);
 	if (new_addr != 0)
-        context->a2 = new_addr;
-    new_addr = entre_got_find_final( (UINT32)(context->a3));
+	{
+		str = entre_map_newAddr_2_oldFunName((ADDRESS)context->a2);
+		if(str != NULL)
+		{
+			if(strstr(str, "uinith_") == NULL && strstr(str, "muldoe_") == NULL && strstr(str, "zdotc_") == NULL)
+        		context->a2 = new_addr;
+		}
+	}
+    new_addr = entre_got_find_final((ADDRESS)context->a3);
 	if (new_addr != 0)
         context->a3 = new_addr;
-#endif
-
-///////////////////////////////////////////////////
-//////// binary research in got table /////////////
-    int low = 0;
-	int high = got_n - 1;
-	int mid = 0;
-
-	if(context->a0 == GOT_OLD_ADDR(low))
-        context->a0 = GOT_NEW_ADDR_FINAL(low);
-	if(context->a0 == GOT_OLD_ADDR(high))
-        context->a0 = GOT_NEW_ADDR_FINAL(high);
-
-	while(low <= high)
-	{
-		mid = low + (high - low)/2;
-				
-	    if(context->a0 == GOT_OLD_ADDR(mid))
-            context->a0 = GOT_NEW_ADDR_FINAL(mid);
-
-		if(GOT_OLD_ADDR(mid) > context->a0)
-		    high = mid - 1;
-		else
-		    low = mid + 1;
-	}
-	
-	low = 0;
-	high = got_n - 1;
-	mid = 0;
-
-	if(context->a1 == GOT_OLD_ADDR(low))
-        context->a1 = GOT_NEW_ADDR_FINAL(low);
-	if(context->a1 == GOT_OLD_ADDR(high))
-        context->a1 = GOT_NEW_ADDR_FINAL(high);
-	
-	while(low <= high)
-	{
-		mid = low + (high - low)/2;
-				
-	    if(context->a1 == GOT_OLD_ADDR(mid))
-            context->a1 = GOT_NEW_ADDR_FINAL(mid);
-
-		if(GOT_OLD_ADDR(mid) > context->a1)
-		    high = mid - 1;
-		else
-		    low = mid + 1;
-	}
-
-	low = 0;
-	high = got_n - 1;
-	mid = 0;
-
-	if(context->a2 == GOT_OLD_ADDR(low))
-        context->a2 = GOT_NEW_ADDR_FINAL(low);
-	if(context->a2 == GOT_OLD_ADDR(high))
-        context->a2 = GOT_NEW_ADDR_FINAL(high);
-
-	while(low <= high)
-	{
-		mid = low + (high - low)/2;
-				
-	    if(context->a2 == GOT_OLD_ADDR(mid))
-            context->a2 = GOT_NEW_ADDR_FINAL(mid);
-
-		if(GOT_OLD_ADDR(mid) > context->a2)
-		    high = mid - 1;
-		else
-		    low = mid + 1;
-	}
-
-	low = 0;
-	high = got_n - 1;
-	mid = 0;
-
-	if(context->a3 == GOT_OLD_ADDR(low))
-        context->a3 = GOT_NEW_ADDR_FINAL(low);
-	if(context->a3 == GOT_OLD_ADDR(high))
-        context->a3 = GOT_NEW_ADDR_FINAL(high);
-
-	while(low <= high)
-	{
-		mid = low + (high - low)/2;
-				
-	    if(context->a3 == GOT_OLD_ADDR(mid))
-            context->a3 = GOT_NEW_ADDR_FINAL(mid);
-
-		if(GOT_OLD_ADDR(mid) > context->a3)
-		    high = mid - 1;
-		else
-		    low = mid + 1;
-	}
-////// end of binary research in got table ////////
-///////////////////////////////////////////////////
 
 	ADDRESS jalr_addr = context->ra + IN_CODE_LW_NUM;
 	INSN_T jalr_insn = INSN_AT(jalr_addr);
