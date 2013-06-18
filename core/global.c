@@ -48,7 +48,9 @@ void entre_global_file_close()
 
 void entre_memory_free()
 {
+#ifndef INSN_IN_DATE
     free(codecache);
+#endif
 }
 
 void entre_global_env_init(void)

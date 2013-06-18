@@ -28,7 +28,13 @@
 #include "binary.h"
 
 /* Each mips instruction 32 bits*/
+
+#ifdef INSN_IN_DATE
+unsigned codecache[CODECACHE_SIZE];
+#else
 unsigned *codecache;
+#endif
+
 unsigned codecache_size; 
 unsigned codecache_n;
 
@@ -36,7 +42,11 @@ void entre_init_cc(void)
 {
     ADDRESS pPageStart;
     codecache_size = Executable.pSize;
+#ifdef INSN_IN_DATE
+//    codecache = malloc(codecache_size * sizeof(unsigned));
+#else
     codecache = malloc(codecache_size * sizeof(unsigned));
+#endif
     codecache_n = 0;
 
     pPageStart = (unsigned)codecache & (~(pagesize - 1));

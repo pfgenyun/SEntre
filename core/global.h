@@ -60,7 +60,12 @@ extern int pagesize;
 #ifdef TRACE
 extern FILE * stdtrace;
 #endif
+
+#ifdef INSN_IN_DATE
+extern unsigned codecache[];
+#else
 extern unsigned * codecache;
+#endif
 
 void entre_global_env_init(void);
 void entre_my_error(char *);

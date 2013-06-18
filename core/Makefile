@@ -37,14 +37,14 @@ LINK_FLAG = -ldl
 D_FLAG = 
 
 ##### Function Flags ## for chrome don't define -DMAP
-F_FLAG = -DMAP
+F_FLAG = -DMAP -DINSN_IN_DATE
 
 #####Tool Flags
 #TOOL_FLAG = -DTRACE
 #TOOL_FLAG = -DOOprofile
 #TOOL_FLAG = -DBB_FREQ -DDEBUG
-#TOOL_FLAG = -DBB_FREQ
-TOOL_FLAG =
+TOOL_FLAG = -DBB_FREQ
+#TOOL_FLAG =
  
 BUILD_HOME = ~/.SEntre/
 INSTALL_HOME = ~/.SEntre/

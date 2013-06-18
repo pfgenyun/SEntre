@@ -111,36 +111,53 @@ int entre_lr_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr)
 	{
 		start_addr = b_addr;
 		end_addr = target_addr;
+		/*when branch down, the first and the end instruction will be omit*/
+    	for(addr_i=start_addr+INSN_BYTES; addr_i<end_addr; addr_i+=INSN_BYTES)
+    	{
+    		INSN_T insn = INSN_AT(addr_i);
+    //		if(entre_is_instrument_instruction(insn) && 
+    //		   entre_is_bb_begine(addr_i))
+    //		{
+    //			printf("instrument and bb_begine. addr: 0x%x\t insn: 0x%x\n",
+    //					addr_i, insn);
+    //			entre_my_error("Cannot reach here!");
+    //		}
+    #ifdef BB_FREQ
+    		if((entre_is_instrument_instruction(insn) || 
+    			entre_is_bb_begine(addr_i)) && 
+    			entre_can_instrument_here(addr_i))
+    #else
+    		if(entre_is_instrument_instruction(insn) && 
+    		   entre_can_instrument_here(addr_i))
+    #endif
+    			lr_num ++;
+    	}
 	}
 	else
 	{
 		start_addr = target_addr;
 		end_addr = b_addr;
-	}
-#ifdef BB_FREQ
-	for(addr_i=start_addr; addr_i<=end_addr; addr_i+=INSN_BYTES)
-#else
-	for(addr_i=start_addr; addr_i<end_addr; addr_i+=INSN_BYTES)
-//	for(addr_i=start_addr; addr_i<=end_addr; addr_i+=INSN_BYTES)
-#endif
-	{
-		INSN_T insn = INSN_AT(addr_i);
-//		if(entre_is_instrument_instruction(insn) && 
-//		   entre_is_bb_begine(addr_i))
-//		{
-//			printf("instrument and bb_begine. addr: 0x%x\t insn: 0x%x\n",
-//					addr_i, insn);
-//			entre_my_error("Cannot reach here!");
-//		}
-#ifdef BB_FREQ
-		if((entre_is_instrument_instruction(insn) || 
-			entre_is_bb_begine(addr_i)) && 
-			entre_can_instrument_here(addr_i))
-#else
-		if(entre_is_instrument_instruction(insn) && 
-		   entre_can_instrument_here(addr_i))
-#endif
-			lr_num ++;
+		/*when branch up, the first and the end instruction will be calculated*/
+    	for(addr_i=start_addr; addr_i<=end_addr; addr_i+=INSN_BYTES)
+    	{
+    		INSN_T insn = INSN_AT(addr_i);
+    //		if(entre_is_instrument_instruction(insn) && 
+    //		   entre_is_bb_begine(addr_i))
+    //		{
+    //			printf("instrument and bb_begine. addr: 0x%x\t insn: 0x%x\n",
+    //					addr_i, insn);
+    //			entre_my_error("Cannot reach here!");
+    //		}
+    #ifdef BB_FREQ
+    		if((entre_is_instrument_instruction(insn) || 
+    			entre_is_bb_begine(addr_i)) && 
+    			entre_can_instrument_here(addr_i))
+    #else
+    		if(entre_is_instrument_instruction(insn) && 
+    		   entre_can_instrument_here(addr_i))
+    #endif
+    			lr_num ++;
+    	}
 	}
 	return lr_num;
 }
