@@ -39,6 +39,8 @@ unsigned addr_list_n;      /* the real address  number */
 
 /******************************************************************
  * ***************************************************************/
+#if 0
+/* sequential search in all_bb */
 int entre_is_bb_begine(ADDRESS addr)
 {
 	int i;
@@ -48,8 +50,41 @@ int entre_is_bb_begine(ADDRESS addr)
 			return 1;
 	}
 	return 0;
-
 }
+#endif
+
+/* binary search in all_bb */
+#if 1
+int entre_is_bb_begine(ADDRESS addr)
+{
+	int low, high, mid;
+
+    low = 0;
+	high = all_bb_n - 1;
+	mid = 0;
+
+	if(addr == all_bb[low].start)
+        return 1;
+	if(addr == all_bb[high].start)
+        return 1;
+	
+	while(low <= high)
+	{
+		mid = low + (high - low)/2;
+//		mid = (high + low)/2;
+		if(addr == all_bb[mid].start)
+		    return 1;
+		
+		if(all_bb[mid].start > addr)
+		    high = mid - 1;
+		else
+		    low = mid + 1;
+	}
+
+	if(low > high)
+	    return 0;
+}
+#endif
 
 /********************************************************************
  * return the basic block index according to the text address addr.
