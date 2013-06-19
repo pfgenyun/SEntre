@@ -89,6 +89,7 @@ int entre_is_bb_begine(ADDRESS addr)
 /********************************************************************
  * return the basic block index according to the text address addr.
  * *****************************************************************/
+#if 0
 int entre_get_bb_index(ADDRESS addr)
 {
 	int i=0;
@@ -99,6 +100,40 @@ int entre_get_bb_index(ADDRESS addr)
 	}
 	return -1;
 }
+#endif
+
+/* binary search in all_bb */
+#if 1
+int entre_get_bb_index(ADDRESS addr)
+{
+	int low, high, mid;
+
+    low = 0;
+	high = all_bb_n - 1;
+	mid = 0;
+
+	if(addr == all_bb[low].start)
+        return low;
+	if(addr == all_bb[high].start)
+        return high;
+	
+	while(low <= high)
+	{
+		mid = low + (high - low)/2;
+//		mid = (high + low)/2;
+		if(addr == all_bb[mid].start)
+		    return mid;
+		
+		if(all_bb[mid].start > addr)
+		    high = mid - 1;
+		else
+		    low = mid + 1;
+	}
+
+	if(low > high)
+	    return -1;
+}
+#endif
 
 /********************************************************************
  * return the address of demain counter of basic block according to
@@ -432,8 +467,8 @@ void entre_dump_bb()
 	fp = fopen("entre_bb_counter.txt", "w");
 	FOR_EACH_BB(bb_p, i)
 	{
-		printf("start: %x\tinsn_num: %d\tin_point: %x\ti1: %x\ti2: %x\tcounter: %ld\n",
-	bb_p->start, bb_p->insn_num, bb_p->in_point, bb_p->i1, bb_p->i2, bb_p->counter);
+//		printf("start: %x\tinsn_num: %d\tin_point: %x\ti1: %x\ti2: %x\tcounter: %ld\n",
+//	bb_p->start, bb_p->insn_num, bb_p->in_point, bb_p->i1, bb_p->i2, bb_p->counter);
 		fprintf(fp, "start: %x\tend: %x \tinsn_num: %d \tcounter: %d\n",
 	bb_p->start, bb_p->start + bb_p->insn_num * 4, bb_p->insn_num, bb_p->counter);
 	}

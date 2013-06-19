@@ -270,8 +270,10 @@ void entre_make_a_new_function(struct function * fun)
 			if(entre_can_instrument_here(addr_end))
 			{
 				entre_cc_add_code(incode_mem, incode_mem_size);
+#ifdef MAP
 				ccAddr_i = entre_cc_get_top_address();
 				entre_record_instrument_point(addr_end, ccAddr_i);
+#endif
 			}
 			else
 				entre_instrument_omit_record(addr_end);
@@ -288,8 +290,10 @@ void entre_make_a_new_function(struct function * fun)
 			if(entre_can_instrument_here(addr_end))
 			{
 				entre_cc_add_code(incode_OOprofile, incode_OOprofile_size);
+#ifdef MAP
 				ccAddr_i = entre_cc_get_top_address();
 				entre_record_instrument_point(addr_end, ccAddr_i);
+#endif
 			}
 			else
 			{
@@ -312,9 +316,10 @@ void entre_make_a_new_function(struct function * fun)
 				ADDRESS counter_addr = entre_get_bb_counter_addr(addr_end);
 				entre_make_in_code_bb_freq(counter_addr);
 				entre_cc_add_code(incode_bb_freq, incode_bb_freq_size);
+#ifdef MAP
               	ccAddr_i = entre_cc_get_top_address();
 				entre_record_instrument_point(addr_end, ccAddr_i);
-
+#endif
 			}
 			else
 			{

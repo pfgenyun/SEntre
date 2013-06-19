@@ -36,8 +36,11 @@ LINK_FLAG = -ldl
 #D_FLAG = -DDUMP_BB
 D_FLAG = 
 
-##### Function Flags ## for chrome don't define -DMAP
-F_FLAG = -DMAP -DINSN_IN_DATE
+##### Function Flags 
+##### for chrome don't define -DMAP
+##### -DINSN_IN_DATE used for gdb, for large app, eg. GCC, don't define -DINSN_IN_DATE
+#F_FLAG = -DMAP -DINSN_IN_DATE
+F_FLAG = -DMAP 
 
 #####Tool Flags
 #TOOL_FLAG = -DTRACE
