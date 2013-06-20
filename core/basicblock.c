@@ -41,7 +41,7 @@ unsigned addr_list_n;      /* the real address  number */
  * ***************************************************************/
 #if 0
 /* sequential search in all_bb */
-int entre_is_bb_begine(ADDRESS addr)
+int entre_is_bb_begin(ADDRESS addr)
 {
 	int i;
 	for(i=0; i<all_bb_n; i++)
@@ -55,7 +55,7 @@ int entre_is_bb_begine(ADDRESS addr)
 
 /* binary search in all_bb */
 #if 1
-int entre_is_bb_begine(ADDRESS addr)
+int entre_is_bb_begin(ADDRESS addr)
 {
 	int low, high, mid;
 
@@ -147,8 +147,8 @@ ADDRESS entre_get_bb_counter_addr(ADDRESS addr)
 	bb_index = entre_get_bb_index(addr);
 	if(bb_index < 0)
 	{
-		printf("basic block begine addr: 0x%x\n", addr);
-		entre_my_error("basic block begine addr error");
+		printf("basic block begin addr: 0x%x\n", addr);
+		entre_my_error("basic block begin addr error");
 	}
 	bb_counter_addr =(ADDRESS)&(all_bb[bb_index].counter);
 

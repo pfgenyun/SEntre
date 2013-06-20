@@ -40,7 +40,7 @@ struct got
     ADDRESS old_addr;
     ADDRESS new_addr_orig;	//function start addr without new instruction
     ADDRESS new_addr_t9;	//function start addr with t9 dealing code
-    ADDRESS new_addr_func;	//function start addr with function begine and end instrument code
+    ADDRESS new_addr_func;	//function start addr with function begin and end instrument code
 	ADDRESS new_addr_final;	//function start addr finally
 	struct instrumentRecordTable *funInstrumentP;
 	int instrumentPointNum;

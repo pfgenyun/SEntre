@@ -24,7 +24,7 @@
 void entre_OOprofile_init();
 void entre_OOprofile_fini();
 void entre_OOprofile_record(struct context * context);
-void entre_func_begine_OOprofile(struct context * context);
+void entre_func_begin_OOprofile(struct context * context);
 void entre_func_end_OOprofile(struct context * context);
 
 #define OPCONTROL_INIT		\

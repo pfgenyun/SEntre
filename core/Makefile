@@ -40,7 +40,8 @@ D_FLAG =
 ##### for chrome don't define -DMAP
 ##### -DINSN_IN_DATE used for gdb, for large app, eg. GCC, don't define -DINSN_IN_DATE
 #F_FLAG = -DMAP -DINSN_IN_DATE
-F_FLAG = -DMAP 
+#F_FLAG = -DMAP 
+F_FLAG = 
 
 #####Tool Flags
 #TOOL_FLAG = -DTRACE
@@ -80,7 +81,7 @@ ALL:
 	fi;							
 							\
 	if test -d $(OBJDIR); then			\
-		echo "BUILD OBJ:$(OBJSRCDIR) exits!";		\
+		echo "BUILD OBJ:$(OBJDIR) exits!";		\
 	else						\
 		mkdir $(OBJDIR);			\
 	fi;							

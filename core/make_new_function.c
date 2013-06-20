@@ -116,15 +116,15 @@ int entre_lr_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr)
     	{
     		INSN_T insn = INSN_AT(addr_i);
     //		if(entre_is_instrument_instruction(insn) && 
-    //		   entre_is_bb_begine(addr_i))
+    //		   entre_is_bb_begin(addr_i))
     //		{
-    //			printf("instrument and bb_begine. addr: 0x%x\t insn: 0x%x\n",
+    //			printf("instrument and bb_begin. addr: 0x%x\t insn: 0x%x\n",
     //					addr_i, insn);
     //			entre_my_error("Cannot reach here!");
     //		}
     #ifdef BB_FREQ
     		if((entre_is_instrument_instruction(insn) || 
-    			entre_is_bb_begine(addr_i)) && 
+    			entre_is_bb_begin(addr_i)) && 
     			entre_can_instrument_here(addr_i))
     #else
     		if(entre_is_instrument_instruction(insn) && 
@@ -142,15 +142,15 @@ int entre_lr_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr)
     	{
     		INSN_T insn = INSN_AT(addr_i);
     //		if(entre_is_instrument_instruction(insn) && 
-    //		   entre_is_bb_begine(addr_i))
+    //		   entre_is_bb_begin(addr_i))
     //		{
-    //			printf("instrument and bb_begine. addr: 0x%x\t insn: 0x%x\n",
+    //			printf("instrument and bb_begin. addr: 0x%x\t insn: 0x%x\n",
     //					addr_i, insn);
     //			entre_my_error("Cannot reach here!");
     //		}
     #ifdef BB_FREQ
     		if((entre_is_instrument_instruction(insn) || 
-    			entre_is_bb_begine(addr_i)) && 
+    			entre_is_bb_begin(addr_i)) && 
     			entre_can_instrument_here(addr_i))
     #else
     		if(entre_is_instrument_instruction(insn) && 
@@ -304,10 +304,10 @@ void entre_make_a_new_function(struct function * fun)
 		}
 #endif
 #ifdef BB_FREQ
-		else if(entre_is_bb_begine(addr_end))
+		else if(entre_is_bb_begin(addr_end))
 		{
 #ifdef DEBUG
-			printf("bb begine addr:0x%x\tin function:%s\n", addr_end, fun->f_name);
+			printf("bb begin addr:0x%x\tin function:%s\n", addr_end, fun->f_name);
 #endif
 			entre_cc_add_code((INSN_T*)addr_start, (addr_end - addr_start) / INSN_BYTES);
 			if(entre_can_instrument_here(addr_end) && !entre_is_instrument_instruction(insn))

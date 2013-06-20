@@ -38,7 +38,7 @@ typedef enum
 struct bb
 {
     UINT32 counter;        /* executable times */
-    ADDRESS start;         /* BB begine virtual address */
+    ADDRESS start;         /* BB begin virtual address */
     int insn_num;          /* instructions in BB */
     INSN_T i1;
     INSN_T i2;
@@ -67,7 +67,7 @@ void entre_dump_one_bb(struct bb * bb_p);
 
 ADDRESS entre_get_bb_counter_addr(ADDRESS );
 int entre_get_bb_index(ADDRESS );
-int entre_is_bb_begine(ADDRESS);
+int entre_is_bb_begin(ADDRESS);
 
 #define FOR_EACH_BB(bb, i) for(bb=all_bb+0, i=0; i<all_bb_n; ++i, bb=all_bb+i)
 #define BASIC_BLOCK(index) (&all_bb[index])

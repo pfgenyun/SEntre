@@ -119,7 +119,7 @@ void entre_jal_b_redirect(struct function * fun)
 		/* in_code instruction number */
 #ifdef BB_FREQ
 		if((entre_is_instrument_instruction(insn) || 
-			entre_is_bb_begine(addr_i)) &&
+			entre_is_bb_begin(addr_i)) &&
 			entre_can_instrument_here(addr_i))
 #else	
 		if(entre_is_instrument_instruction(insn) &&

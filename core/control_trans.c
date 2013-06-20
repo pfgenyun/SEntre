@@ -48,7 +48,7 @@ void entre_control_transfer()
 		entre_my_error("can not find main.\n");
 //	main_new_addr -= 8;		/* gcc4.3 use t9 when entry main */
 #ifdef OOprofile
-	main_new_addr -= IN_CODE_BYTES;		/* OOpfofile function begine INCODE not exec except main */
+	main_new_addr -= IN_CODE_BYTES;		/* OOpfofile function begin INCODE not exec except main */
 #endif
 
 	trans[0] = entre_make_lui(REG_T9, main_new_addr>>16);

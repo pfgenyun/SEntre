@@ -37,7 +37,7 @@ void entre_OOprofile_fini()
 	system(OPCONTROL_FINI);
 }
 
-void entre_func_begine_OOprofile(struct context * context)
+void entre_func_begin_OOprofile(struct context * context)
 {
 	system(OPCONTROL_SETUP);
 }
@@ -61,7 +61,7 @@ void entre_OOprofile_record(struct context * context)
 	}
 	else if(entre_is_t9_instruction(OOprofile_insn))
 	{
-		entre_func_begine_OOprofile(context);
+		entre_func_begin_OOprofile(context);
 	}
 	else
 	{
