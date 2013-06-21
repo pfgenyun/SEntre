@@ -133,6 +133,8 @@ void entre_jal_b_redirect(struct function * fun)
         {
 			old_target = TARGET(insn)<<2;
 			new_target = entre_got_find_final(old_target);
+			if(new_target == 0)			/*for gcc-4.6 jal to .plt */
+				new_target = old_target;
 			if(entre_is_jal(insn))
 				insn_redirect = entre_make_jal(new_target);
 			else if(entre_is_j(insn))
