@@ -20,6 +20,8 @@
 #include <elf.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include "global.h"
 #include "basicblock.h"
 #include "binary.h"
@@ -461,10 +463,21 @@ void entre_init_mark_bb(void)
 void entre_dump_bb()
 {
 	struct bb * bb_p;
-	int i;
+	int i, length;
 	FILE * fp;
 
-	fp = fopen("entre_bb_counter.txt", "w");
+	char * short_name;
+	char full_name[256]={0} ; 
+	char output_file[256]={0} ; 
+	
+	short_name = get_application_short_name(full_name);
+
+	length = strlen(short_name);
+	for(i=0; i<length; i++)
+	    output_file[i] = short_name[i];
+	strcpy(&output_file[i], "_bb.sentre");
+
+	fp = fopen(output_file, "w");
 	FOR_EACH_BB(bb_p, i)
 	{
 //		printf("start: %x\tinsn_num: %d\tin_point: %x\ti1: %x\ti2: %x\tcounter: %ld\n",

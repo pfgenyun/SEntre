@@ -74,5 +74,6 @@ void entre_global_file_close();
 void entre_memory_free();
 
 void get_application_full_name(char *);
+char * get_application_short_name(char *);
 
 #endif

@@ -30,10 +30,13 @@
 int pagesize;
 #ifdef TRACE
 FILE * stdtrace;
-#endif
+#endif 
 
 void entre_global_file_open()
 {
+	/* For multithead and multiprocess,the output file
+	 * shoud not open here. because every thread and 
+	 * process should hava its own output file. */
 #ifdef TRACE
     stdtrace = fopen("entre_trace.txt", "w");
 #endif
@@ -66,6 +69,14 @@ void entre_my_error(char *msg)
     printf("Can't reach here!\n");
 }
 
+char * get_application_short_name(char * exe_name_full)
+{
+	char * ptr;
+
+	get_application_full_name(exe_name_full);
+	ptr = strrchr(exe_name_full, '/');
+	return ptr+1;
+}
 void get_application_full_name(char * exe_name_full)
 {
     int pid;
