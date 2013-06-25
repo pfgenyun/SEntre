@@ -181,6 +181,7 @@ void entre_fini_addr_list(void)
     {
         addr = addr_list[index].addr;
         all_bb[tmp_bb_n].start = addr;
+		all_bb[tmp_bb_n].fun_name = (char *) &(Executable.pStrTab[(int)current_fun->st_name]);
         tmp_bb_n ++;
 //#ifdef DEBUG
 		if(all_bb[tmp_bb_n-1].start == all_bb[tmp_bb_n-2].start)
@@ -453,6 +454,7 @@ void entre_init_mark_bb(void)
         all_bb[i].i2       = 0;
         all_bb[i].in_point = 0;
         all_bb[i].type     = 0;
+        all_bb[i].fun_name = '\0';
     }
 }
 
@@ -482,8 +484,8 @@ void entre_dump_bb()
 	{
 //		printf("start: %x\tinsn_num: %d\tin_point: %x\ti1: %x\ti2: %x\tcounter: %ld\n",
 //	bb_p->start, bb_p->insn_num, bb_p->in_point, bb_p->i1, bb_p->i2, bb_p->counter);
-		fprintf(fp, "start: %x\tend: %x \tinsn_num: %d \tcounter: %d\n",
-	bb_p->start, bb_p->start + bb_p->insn_num * 4, bb_p->insn_num, bb_p->counter);
+		fprintf(fp, "start: %x\tend: %x \tinsn_num: %d \tcounter: %-14d\tfun_name: %s\n",
+	bb_p->start, bb_p->start + bb_p->insn_num * 4, bb_p->insn_num, bb_p->counter, bb_p->fun_name);
 	}
 	fclose(fp);
 }

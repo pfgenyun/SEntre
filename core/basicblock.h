@@ -44,6 +44,7 @@ struct bb
     INSN_T i2;
     ADDRESS in_point;
     BB_CLASS type;
+    char * fun_name;       /* function name */
 };
 
 #define BB_SIZE (1*MEGA_1) * 5
