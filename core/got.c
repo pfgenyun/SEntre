@@ -45,7 +45,6 @@ int entre_got_find_instrument_num_from_newAddr(ADDRESS newAddr)
 			break;
 		}
 	}
-	printf("instrument point j: %d\n", j);
 	return j;
 }
 
