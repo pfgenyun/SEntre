@@ -313,8 +313,8 @@ void entre_make_a_new_function(struct function * fun)
 			if(entre_can_instrument_here(addr_end) && !entre_is_instrument_instruction(insn))
 			{	
 			
-				ADDRESS counter_addr = entre_get_bb_counter_addr(addr_end);
-				entre_make_in_code_bb_freq(counter_addr);
+//				ADDRESS counter_addr = entre_get_bb_counter_addr(addr_end);
+//				entre_make_in_code_bb_freq(counter_addr);
 				entre_cc_add_code(incode_bb_freq, incode_bb_freq_size);
 #ifdef MAP
               	ccAddr_i = entre_cc_get_top_address();

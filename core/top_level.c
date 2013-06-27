@@ -85,9 +85,9 @@ Status entre_optimize(int fp)
 #endif
 
 #ifdef BB_FREQ
-//	ADDRESS context_switch_addr_bb_freq =
-//	entre_make_context_switch_code((ADDRESS)entre_bb_freq_record);
-//	entre_make_in_code_bb_freq(context_switch_addr_bb_freq);
+	ADDRESS context_switch_addr_bb_freq =
+	entre_make_context_switch_code((ADDRESS)entre_bb_freq_record);
+	entre_make_in_code_bb_freq(context_switch_addr_bb_freq);
 #endif
 
     entre_instrument_omit_init();

@@ -120,16 +120,26 @@ void entre_make_in_code_OOprofile(ADDRESS context_switch_addr)
  * *********************************************************************/
 void entre_make_in_code_bb_freq(ADDRESS bb_counter_addr)
 {
-	in_code_bb_freq[0] = entre_make_sd(REG_SP, REG_T1, -8);
-	in_code_bb_freq[1] = entre_make_sd(REG_SP, REG_T2, -16);
-
-	in_code_bb_freq[2] = entre_make_lui(REG_T1, bb_counter_addr>>16);
-	in_code_bb_freq[3] = entre_make_inc_x(REG_T1, bb_counter_addr&0xffff);
-	in_code_bb_freq[4] = entre_make_ld(REG_T1, REG_T2, 0);
-	in_code_bb_freq[5] = entre_make_addiu(REG_T2, REG_T2, 1);
-	in_code_bb_freq[6] = entre_make_sd(REG_T1, REG_T2, 0);
-
-	in_code_bb_freq[7] = entre_make_ld(REG_SP, REG_T2, -16);
-	in_code_bb_freq[8] = entre_make_ld(REG_SP, REG_T1, -8);
-	in_code_bb_freq[9] = entre_make_nop();
+//	in_code_bb_freq[0] = entre_make_sd(REG_SP, REG_T1, -8);
+//	in_code_bb_freq[1] = entre_make_sd(REG_SP, REG_T2, -16);
+//
+//	in_code_bb_freq[2] = entre_make_lui(REG_T1, bb_counter_addr>>16);
+//	in_code_bb_freq[3] = entre_make_inc_x(REG_T1, bb_counter_addr&0xffff);
+//	in_code_bb_freq[4] = entre_make_ld(REG_T1, REG_T2, 0);
+//	in_code_bb_freq[5] = entre_make_addiu(REG_T2, REG_T2, 1);
+//	in_code_bb_freq[6] = entre_make_sd(REG_T1, REG_T2, 0);
+//
+//	in_code_bb_freq[7] = entre_make_ld(REG_SP, REG_T2, -16);
+//	in_code_bb_freq[8] = entre_make_ld(REG_SP, REG_T1, -8);
+//	in_code_bb_freq[9] = entre_make_nop();
+	in_code_bb_freq[0] = entre_make_sd(REG_SP, REG_RA, -8);
+	in_code_bb_freq[1] = entre_make_sd(REG_SP, REG_SP, -16);
+	in_code_bb_freq[2] = entre_make_sd(REG_SP, REG_T9, -24);
+	in_code_bb_freq[3] = entre_make_lui(REG_T9, bb_counter_addr>>16);
+	in_code_bb_freq[4] = entre_make_inc_x(REG_T9, bb_counter_addr&0xffff);
+	in_code_bb_freq[5] = entre_make_jalr(REG_T9);
+	in_code_bb_freq[6] = entre_make_nop();
+	in_code_bb_freq[7] = entre_make_ld(REG_SP, REG_T9, -24);
+	in_code_bb_freq[8] = entre_make_ld(REG_SP, REG_SP, -16);
+	in_code_bb_freq[9] = entre_make_ld(REG_SP, REG_RA, -8);
 }

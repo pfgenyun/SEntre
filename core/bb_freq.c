@@ -19,8 +19,16 @@
 
 #include <stdio.h>
 #include "context_switch.h"
+#include "in_code.h"
+#include "isa.h"
+#include "make_new_function.h"
 
 void entre_bb_freq_record(struct context * context)
 {
-	printf("hellooooooooooooobb_freqqqqqqqqqq\n");
+	ADDRESS old_addr, new_addr, counter_addr;
+
+	new_addr = context->ra + IN_CODE_LW_NUM;
+	old_addr = entre_map_newAddr_2_oldInsnAddr(new_addr);
+	counter_addr = entre_get_bb_counter_addr(old_addr);
+	ATOMIC_INC(int, *(ADDRESS *)counter_addr);
 }

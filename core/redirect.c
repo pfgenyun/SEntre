@@ -262,30 +262,30 @@ void entre_redirect_jalr(struct context * context)
     new_addr = entre_got_find_final((ADDRESS)context->a1);
 	if (new_addr != 0)
 	{
-#ifdef MAP /*168 pass, chromium cann't pass*/	
-		str = entre_map_newAddr_2_oldFunName((ADDRESS)context->a1);
-		if(str != NULL)
-		{
-			if(strstr(str, "PerlIO_arg_fetch") == NULL)
-        		context->a1 = new_addr;
-		}
-#else	/*168 cann't pass, chromuim pass*/
+//#ifdef MAP /*168 pass, chromium cann't pass*/	
+//		str = entre_map_newAddr_2_oldFunName((ADDRESS)context->a1);
+//		if(str != NULL)
+//		{
+//			if(strstr(str, "PerlIO_arg_fetch") == NULL)
+//        		context->a1 = new_addr;
+//		}
+//#else	/*168 cann't pass, chromuim pass*/
         context->a1 = new_addr;
-#endif
+//#endif
 	}
     new_addr = entre_got_find_final((ADDRESS)context->a2);
 	if (new_addr != 0)
 	{
-#ifdef MAP /*168 pass, chromium cann't pass*/	
-		str = entre_map_newAddr_2_oldFunName((ADDRESS)context->a2);
-		if(str != NULL)
-		{
-			if(strstr(str, "uinith_") == NULL && strstr(str, "muldoe_") == NULL && strstr(str, "zdotc_") == NULL)
-        		context->a2 = new_addr;
-		}
-#else	/*168 cann't pass, chromuim pass*/
+//#ifdef MAP /*168 pass, chromium cann't pass*/	
+//		str = entre_map_newAddr_2_oldFunName((ADDRESS)context->a2);
+//		if(str != NULL)
+//		{
+//			if(strstr(str, "uinith_") == NULL && strstr(str, "muldoe_") == NULL && strstr(str, "zdotc_") == NULL)
+//        		context->a2 = new_addr;
+//		}
+//#else	/*168 cann't pass, chromuim pass*/
         context->a2 = new_addr;
-#endif
+//#endif
 	}
     new_addr = entre_got_find_final((ADDRESS)context->a3);
 	if (new_addr != 0)
