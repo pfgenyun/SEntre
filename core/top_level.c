@@ -72,6 +72,7 @@ Status entre_optimize(int fp)
 	entre_make_context_switch_code((ADDRESS)entre_call_redirect);
     entre_make_in_code_call(context_switch_addr_call);
 
+#ifndef API_TOOL
 #ifdef TRACE
 	ADDRESS context_switch_addr_mem =
 	entre_make_context_switch_code((ADDRESS)entre_trace_record);
@@ -90,6 +91,9 @@ Status entre_optimize(int fp)
 	entre_make_in_code_bb_freq(context_switch_addr_bb_freq);
 #endif
 
+#else
+	api_tool();
+#endif
     entre_instrument_omit_init();
     entre_make_new_functions();
     entre_transfer_redirect();
@@ -98,7 +102,6 @@ Status entre_optimize(int fp)
 #ifdef OOprofile
     entre_OOprofile_init();
 #endif
-
     entre_executable_flush();
     entre_cc_flush();
 
