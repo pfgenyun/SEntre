@@ -33,15 +33,11 @@
 #include "control_trans.h"
 #include "redirect.h"
 
-#ifdef TRACE
-#include "trace.h"
+#ifdef API_MODE
+#include "mode.h"
 #endif
-#ifdef OOprofile
-#include "OOprofile.h"
-#endif
-#ifdef BB_FREQ
-#include "bb_freq.h"
-#endif
+
+extern void SEntre_analysis(struct context * context);
 
 Status entre_optimize(int fp)
 {
@@ -72,28 +68,12 @@ Status entre_optimize(int fp)
 	entre_make_context_switch_code((ADDRESS)entre_call_redirect);
     entre_make_in_code_call(context_switch_addr_call);
 
-#ifndef API_TOOL
-#ifdef TRACE
-	ADDRESS context_switch_addr_mem =
-	entre_make_context_switch_code((ADDRESS)entre_trace_record);
-	entre_make_in_code_mem(context_switch_addr_mem);
+#ifdef API_MODE
+	ADDRESS context_switch_addr_analysis =
+	entre_make_context_switch_code((ADDRESS)SEntre_analysis);
+	entre_make_in_code_mode(context_switch_addr_analysis);
 #endif
 
-#ifdef OOprofile
-	ADDRESS context_switch_addr_OOprofile =
-	entre_make_context_switch_code((ADDRESS)entre_OOprofile_record);
-	entre_make_in_code_OOprofile(context_switch_addr_OOprofile);
-#endif
-
-#ifdef BB_FREQ
-	ADDRESS context_switch_addr_bb_freq =
-	entre_make_context_switch_code((ADDRESS)entre_bb_freq_record);
-	entre_make_in_code_bb_freq(context_switch_addr_bb_freq);
-#endif
-
-#else
-	api_tool();
-#endif
     entre_instrument_omit_init();
     entre_make_new_functions();
     entre_transfer_redirect();

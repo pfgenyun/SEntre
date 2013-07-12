@@ -21,30 +21,32 @@
 #define SE_api_H
 
 #include <sys/types.h>
+
+/***********************************************************************
+ * contains the basicblock table definition and some related functions.
+ * ********************************************************************/
 #include "se_basicblock.h"
+
+/***********************************************************************
+ * contains the fun table definition and some related functions.
+ * ********************************************************************/
 #include "se_fun.h"
+
+/***********************************************************************
+ * contains the got table definition and some related functions.
+ * ********************************************************************/
 #include "se_got.h"
-#include "se_incode.h"
+
+/***********************************************************************
+ * contains the context definition and identification of some
+ * instructions.
+ * ********************************************************************/
 #include "se_isa.h"
+
+/***********************************************************************
+ * contains some lock manipulation functions, such an atomic manipulation
+ * functions, mutex lock, read-write lock, recursive lock.
+ * ********************************************************************/
 #include "se_utils.h"
-
-/***********************************************************************
- * tool entry point, all the tools should be implemented in the
- * functions. 
- * ********************************************************************/
-void api_tool(void);
-
-/***********************************************************************
- * record context on stack, and handle it, then restore context.
- * ********************************************************************/
-extern ADDRESS entre_make_context_switch_code(ADDRESS target_addr);
-
-extern void entre_make_new_functions();
-
-/***********************************************************************
- * copy code from *code to codecache, the length of code is len. 
- * codecache_n is the point to the top of codecache.
- * ********************************************************************/
-extern ADDRESS entre_cc_add_code(unsigned* code, unsigned len);
 
 #endif

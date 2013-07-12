@@ -24,7 +24,7 @@ DECLARE_CXTSWPROT_VAR(mutex_t thread_initexit_lock,
                       INIT_LOCK_FREE(thread_initexit_lock));
 #endif
 
-void bb_freq_record(struct context * context)
+void SEntre_analysis(struct context * context)
 {
     ADDRESS old_addr, new_addr, counter_addr;
     
@@ -40,12 +40,3 @@ void bb_freq_record(struct context * context)
 //	mutex_unlock(&thread_initexit_lock);
 #endif
 } 
-
-void api_tool(void)
-{
-#ifdef BB_FREQ
-    ADDRESS context_switch_addr_bb_freq =
-    entre_make_context_switch_code((ADDRESS)bb_freq_record);
-    entre_make_in_code_bb_freq(context_switch_addr_bb_freq);
-#endif
-}

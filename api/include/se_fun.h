@@ -62,8 +62,6 @@ extern ADDRESS entre_function_next_address(struct function * fun);
  * *****************************************************************/
 extern struct function * entre_find_function(char * name);
 
-extern void entre_for_all_function(void (*my_fun)(struct function *));
-
 /********************************************************************
  * return the name of the function according to the old address.
  * *****************************************************************/

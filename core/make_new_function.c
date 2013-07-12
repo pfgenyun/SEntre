@@ -29,6 +29,10 @@
 #include "make_new_function.h"
 #include "in_code.h"
 
+#ifdef API_MODE
+#include "mode.h"
+#endif
+
 struct instrument_point instrument_omit[INSTRUMENT_OMIT_SIZE];
 int instrument_omit_size;
 int instrument_omit_num;
@@ -122,7 +126,7 @@ int entre_lr_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr)
     //					addr_i, insn);
     //			entre_my_error("Cannot reach here!");
     //		}
-    #ifdef BB_FREQ
+    #ifdef API_MODE
     		if((entre_is_instrument_instruction(insn) || 
     			entre_is_bb_begin(addr_i)) && 
     			entre_can_instrument_here(addr_i))
@@ -148,7 +152,7 @@ int entre_lr_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr)
     //					addr_i, insn);
     //			entre_my_error("Cannot reach here!");
     //		}
-    #ifdef BB_FREQ
+    #ifdef API_MODE
     		if((entre_is_instrument_instruction(insn) || 
     			entre_is_bb_begin(addr_i)) && 
     			entre_can_instrument_here(addr_i))
@@ -206,20 +210,9 @@ void entre_make_a_new_function(struct function * fun)
 
 	INSN_T* incode_call;
 	int incode_call_size = entre_in_code_call_get(&incode_call);
-#ifdef TRACE
-	INSN_T* incode_mem;
-	int incode_mem_size = entre_in_code_mem_get(&incode_mem);
-#endif
-#ifdef OOprofile
-	INSN_T* incode_OOprofile;
-	int incode_OOprofile_size = entre_in_code_OOprofile_get(&incode_OOprofile);
-#endif
-#ifdef OOprofile
-	entre_cc_add_code(incode_OOprofile, IN_CODE_SIZE);
-#endif
-#ifdef BB_FREQ
-	INSN_T* incode_bb_freq;
-	int incode_bb_freq_size = entre_in_code_bb_freq_get(&incode_bb_freq);
+#ifdef API_MODE
+	INSN_T* incode_mode;
+	int incode_mode_size = entre_in_code_mode_get(&incode_mode);
 #endif
 
 	INSN_T load_t9[LOAD_T9_NUM];
@@ -260,51 +253,8 @@ void entre_make_a_new_function(struct function * fun)
 			}
 			addr_start = addr_end;
 		}
-#ifdef TRACE
-		else if(entre_is_mem_instruction(insn))
-		{
-#ifdef DEBUG
-			printf("memory access insn:0x%x\tin function:%s\n", addr_end, fun->f_name);
-#endif
-			entre_cc_add_code((INSN_T*)addr_start, (addr_end - addr_start) / INSN_BYTES);
-			if(entre_can_instrument_here(addr_end))
-			{
-				entre_cc_add_code(incode_mem, incode_mem_size);
-#ifdef MAP
-				ccAddr_i = entre_cc_get_top_address();
-				entre_record_instrument_point(addr_end, ccAddr_i);
-#endif
-			}
-			else
-				entre_instrument_omit_record(addr_end);
-			addr_start = addr_end;
-		}
-#endif
-#ifdef OOprofile
-		else if(entre_is_return_instruction(insn))
-		{
-#ifdef DEBUG
-			printf("return insn:0x%x\tin function:%s\n", addr_end, fun->f_name);
-#endif
-			entre_cc_add_code((INSN_T*)addr_start, (addr_end - addr_start) / INSN_BYTES);
-			if(entre_can_instrument_here(addr_end))
-			{
-				entre_cc_add_code(incode_OOprofile, incode_OOprofile_size);
-#ifdef MAP
-				ccAddr_i = entre_cc_get_top_address();
-				entre_record_instrument_point(addr_end, ccAddr_i);
-#endif
-			}
-			else
-			{
-				entre_instrument_omit_record(addr_end);
-				entre_my_error("OOprofile can not stop!\n");
-			}
-			addr_start = addr_end;
-		}
-#endif
-#ifdef BB_FREQ
-		else if(entre_is_bb_begin(addr_end))
+#ifdef API_MODE
+		else if(SEntre_mode(addr_end))
 		{
 #ifdef DEBUG
 			printf("bb begin addr:0x%x\tin function:%s\n", addr_end, fun->f_name);
@@ -315,7 +265,7 @@ void entre_make_a_new_function(struct function * fun)
 			
 //				ADDRESS counter_addr = entre_get_bb_counter_addr(addr_end);
 //				entre_make_in_code_bb_freq(counter_addr);
-				entre_cc_add_code(incode_bb_freq, incode_bb_freq_size);
+				entre_cc_add_code(incode_mode, incode_mode_size);
 #ifdef MAP
               	ccAddr_i = entre_cc_get_top_address();
 				entre_record_instrument_point(addr_end, ccAddr_i);

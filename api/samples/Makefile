@@ -40,7 +40,7 @@ D_FLAG =
 ##### for chrome don't define -DMAP
 ##### -DINSN_IN_DATE used for gdb, for large app, eg. GCC, don't define -DINSN_IN_DATE
 #F_FLAG = -DMAP -DINSN_IN_DATE
-F_FLAG = -DMAP -DAPI_TOOL
+F_FLAG = -DMAP -DAPI_MODE -DAPI_ANALYSIS
 #F_FLAG = 
 
 #####Tool Flags
@@ -92,12 +92,12 @@ ALL:
 		mkdir $(LIBDIR);			\
 	fi;							
 							\
-	cp	../core/*.h	${SRCDIR};			\
-	cp	../core/*.c	${SRCDIR};			\
-	cp	../core/lib/*	${SRCDIR};			\
-	cp	../core/linux/*	${SRCDIR};			\
-	cp	../core/mips/*	${SRCDIR};			\
-	cp	*.h	${SRCDIR};			\
+	cp	../../core/*.h	${SRCDIR};			\
+	cp	../../core/*.c	${SRCDIR};			\
+	cp	../../core/lib/*	${SRCDIR};			\
+	cp	../../core/linux/*	${SRCDIR};			\
+	cp	../../core/mips/*	${SRCDIR};			\
+	cp	../include/*.h	${SRCDIR};			\
 	cp	*.c	${SRCDIR};			\
 							\
 	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}entre.c                -c -o  ${OBJDIR}entre.o;					\
