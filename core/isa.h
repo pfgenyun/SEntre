@@ -85,7 +85,7 @@ inline int entre_is_swc1(INSN_T insn);
 inline int entre_is_ldc1(INSN_T insn);
 inline int entre_is_sdc1(INSN_T insn);
 inline int entre_is_lui(INSN_T insn);
-ADDRESS entre_mem_access_addr(ADDRESS b_reg, ADDRESS offset);
+ADDRESS entre_mem_access_addr(ADDRESS b_reg, INT offset);
 
 #define entre_make_move(d, s)	entre_make_or(d, REG_ZERO, s)
 

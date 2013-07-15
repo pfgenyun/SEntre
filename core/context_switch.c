@@ -40,23 +40,43 @@ ADDRESS entre_make_context_switch_code(ADDRESS target_addr)
     insn_i = 0;
 
 	/* 36 position was used 33 in fact. the remaining 3 was used in in_code function. */
-    scode[insn_i++] = entre_make_addiu(REG_SP, REG_SP, (-(36*8)));	/* stack space */
+    scode[insn_i++] = entre_make_addiu(REG_SP, REG_SP, (-CONTEXT_STACK_SIZE));	/* stack space */
     for(i=0; i<32; i++)
     {
         scode[insn_i++] = entre_make_sd(REG_SP, (REG_T)i, (i+1)*8);		/* record context on stack */
     }
-    scode[insn_i++] = entre_make_move(REG_A0, REG_SP);				/* parameter pass to entre_main_entry */
+	for(i=32; i<64; i++)
+    {
+        scode[insn_i++] = entre_make_s_d(REG_SP, (REG_T)(i-32), (i+1)*8);		/* record context on stack */
+    }
+
+    scode[insn_i++] = entre_make_mflo(REG_T1);		/* record context on stack */
+    scode[insn_i++] = entre_make_mfhi(REG_T2);		/* record context on stack */
+    scode[insn_i++] = entre_make_sd(REG_SP, REG_T1, CONTEXT_STACK_LO*8);		/* record context on stack */
+    scode[insn_i++] = entre_make_sd(REG_SP, REG_T2, CONTEXT_STACK_HI*8);		/* record context on stack */
+    
+	scode[insn_i++] = entre_make_move(REG_A0, REG_SP);				/* parameter pass to entre_main_entry */
     scode[insn_i++] = entre_make_sd(REG_SP, REG_SP, 0);				/* parameter stored into stack */
 	scode[insn_i++] = entre_make_lui(REG_T9,target_addr>>16);
 	scode[insn_i++] = entre_make_inc_x(REG_T9, target_addr&0xffff);
 	scode[insn_i++] = entre_make_jalr(REG_T9);
 	scode[insn_i++] = entre_make_nop();
+
+    scode[insn_i++] = entre_make_ld(REG_SP, REG_T2, CONTEXT_STACK_HI*8);		/* record context on stack */
+    scode[insn_i++] = entre_make_ld(REG_SP, REG_T1, CONTEXT_STACK_LO*8);		/* record context on stack */
+    scode[insn_i++] = entre_make_mthi(REG_T2);		/* record context on stack */
+    scode[insn_i++] = entre_make_mtlo(REG_T1);		/* record context on stack */
+
 	for(i=0; i<32; i++)
 	{
 	    scode[insn_i++] = entre_make_ld(REG_SP, (REG_T)i, (i+1)*8);
 	}
+	for(i=32; i<64; i++)
+	{
+	    scode[insn_i++] = entre_make_l_d(REG_SP, (REG_T)(i-32), (i+1)*8);
+	}
 	scode[insn_i++] = entre_make_jr(REG_RA);
-	scode[insn_i++] = entre_make_addiu(REG_SP, REG_SP, (36*8));		/* exe before jr */
+	scode[insn_i++] = entre_make_addiu(REG_SP, REG_SP, CONTEXT_STACK_SIZE);		/* exe before jr */
 //	scode[insn_i++] = entre_make_nop();
 
     context_addr = entre_cc_get_top_address();		/* copy this code to cc */
