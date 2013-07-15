@@ -26,29 +26,30 @@ SOURCE = entre.c top_level.c global.c binary.c basicblock.c \
 	 isa.c in_code.c make_new_function.c control_trans.c redirect.c \
 	 trace.c OOprofile.c bb_freq.c utils.c options.c os.c share_app.c
 
-CC = gcc
+CC = gcc-4.4
 C_FLAG = -g -O0 -fPIC -shared 
 LINK_FLAG = -ldl 
 
 ##### Debug Flags
 #D_FLAG = -DDEBUG -DDUMP_FUNC -DDUMP_BB -DDUMP_CONTEXT -DDUMP_DIRTY_CALL -DDEBUG_REACH
 #D_FLAG = -DDEBUG -DDUMP_FUNC -DDUMP_BB
-#D_FLAG = -DDUMP_BB
+#D_FLAG = -DDEBUG -DDUMP_DIRTY_CALL -DDUMP_FUNC
 D_FLAG = 
 
 ##### Function Flags 
 ##### for chrome don't define -DMAP
 ##### -DINSN_IN_DATE used for gdb, for large app, eg. GCC, don't define -DINSN_IN_DATE
+##### when gcc version is over 4.6, we can not use -DINSN_IN_DATE
 #F_FLAG = -DMAP -DINSN_IN_DATE
 F_FLAG = -DMAP 
 #F_FLAG = 
 
 #####Tool Flags
-#TOOL_FLAG = -DTRACE
+TOOL_FLAG = -DTRACE
 #TOOL_FLAG = -DOOprofile
 #TOOL_FLAG = -DBB_FREQ -DDEBUG
 #TOOL_FLAG = -DBB_FREQ
-TOOL_FLAG =
+#TOOL_FLAG =
  
 BUILD_HOME = ~/.SEntre/
 INSTALL_HOME = ~/.SEntre/

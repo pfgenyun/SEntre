@@ -41,10 +41,10 @@ unsigned codecache_n;
 void entre_init_cc(void)
 {
     ADDRESS pPageStart;
-    codecache_size = Executable.pSize;
 #ifdef INSN_IN_DATE
-//    codecache = malloc(codecache_size * sizeof(unsigned));
+    codecache_size = CODECACHE_SIZE;
 #else
+    codecache_size = 2 * Executable.pSize;
     codecache = malloc(codecache_size * sizeof(unsigned));
 #endif
     codecache_n = 0;
@@ -67,7 +67,8 @@ ADDRESS entre_cc_add_code(unsigned* code, unsigned len)
 	int i;
 	if( codecache_n + len > codecache_size )
 	{
-		printf(" ADD CODE ERROR, codecache overflow!\n");
+		printf("codecache_n:%d len:%d codecache_size:%d\n", codecache_n, len, codecache_size);
+		printf("EE: ADD CODE ERROR, codecache overflow!\n");
 		exit(1);
 	}
 	for(i=0; i<len; i++)

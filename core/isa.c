@@ -22,7 +22,7 @@
 #include "isa.h"
 #include "reg.h"
 
-ADDRESS entre_mem_access_addr(ADDRESS b_reg, ADDRESS offset)
+ADDRESS entre_mem_access_addr(ADDRESS b_reg, INT offset)
 {
 	return (b_reg + offset);
 }
@@ -275,11 +275,54 @@ inline INSN_T entre_make_sd(REG_T b, REG_T t, unsigned offset)
 	return insn;
 }
 
+inline INSN_T entre_make_l_d(REG_T b, REG_T ft, unsigned offset)
+{
+	INSN_T insn;
+//	insn = INSN_MAIN_OP(55) | INSN_S_REG(b) | INSN_T_REG(t) | (0x0000ffff&offset);
+	insn = INSN_MAIN_OP(53) | INSN_S_REG(b) | INSN_T_REG(ft) | (0x0000ffff&offset);
+	return insn;
+}
+
+inline INSN_T entre_make_s_d(REG_T b, REG_T ft, unsigned offset)
+{
+	INSN_T insn;
+//	insn = INSN_MAIN_OP(63) | INSN_S_REG(b) | INSN_T_REG(t) | (0x0000ffff&offset);
+	insn = INSN_MAIN_OP(61) | INSN_S_REG(b) | INSN_T_REG(ft) | (0x0000ffff&offset);
+	return insn;
+}
+
+inline INSN_T entre_make_mfhi(REG_T d)
+{
+	INSN_T insn;
+	insn =  INSN_MAIN_OP(0) | INSN_D_REG(d) | INSN_SUB_OP(16);
+	return insn;
+}
+
+inline INSN_T entre_make_mflo(REG_T d)
+{
+	INSN_T insn;
+	insn =  INSN_MAIN_OP(0) | INSN_D_REG(d) | INSN_SUB_OP(18);
+	return insn;
+}
+
+inline INSN_T entre_make_mthi(REG_T s)
+{
+	INSN_T insn;
+	insn =  INSN_MAIN_OP(0) | INSN_S_REG(s) | INSN_SUB_OP(17);
+	return insn;
+}
+
+inline INSN_T entre_make_mtlo(REG_T s)
+{
+	INSN_T insn;
+	insn =  INSN_MAIN_OP(0) | INSN_S_REG(s) | INSN_SUB_OP(19);
+	return insn;
+}
+
 inline INSN_T entre_make_nop()
 {
 	return 0;
 }
-
 
 ADDRESS entre_offset_cvt(ADDRESS offset)
 {

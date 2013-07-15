@@ -38,7 +38,21 @@ void entre_global_file_open()
 	 * shoud not open here. because every thread and 
 	 * process should hava its own output file. */
 #ifdef TRACE
-    stdtrace = fopen("entre_trace.txt", "w");
+	int i, length;
+	char * short_name;
+	char full_name[256]={0} ; 
+	char output_file[256]={0} ; 
+	
+	short_name = get_application_short_name(full_name);
+	length = strlen(short_name);
+	for(i=0; i<length; i++)
+	    output_file[i] = short_name[i];
+	strcpy(&output_file[i], "_trace.sentre");
+
+	if(NULL == (stdtrace = fopen(output_file, "w")))
+	{
+		printf("EE: Can not open file stdtrace\n");
+	}
 #endif
 }
 

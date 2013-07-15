@@ -202,6 +202,7 @@ Status entre_IRMarkFunctions(void)
     Executable.nSymTab = 0;
     Executable.pStrTab = (char *)malloc(nStrTab);
     Executable.nStrTab = 0;
+    Executable.rel_offset = 0;
 
     /* temporary Symbol array used for function name sort. */
     Elf32_Sym *aSymTemp = (Elf32_Sym *) calloc(sizeof(Elf32_Sym), nSymTab);
@@ -289,7 +290,6 @@ Status entre_IRMarkFunctions(void)
 
     /* sort the function Symbols */
     entre_function_sort(aSymTemp, SymRank, Executable.nSymTab);
-    
 	/* copy recoreded Function Symbol from aSymTemp to Executable.pSymTab orderly.*/
     Executable.pSymTab = (Elf32_Sym *) malloc(sizeof(Elf32_Sym)*Executable.nSymTab);
     for(i=0; i<Executable.nSymTab; i++)
