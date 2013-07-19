@@ -1,3 +1,4 @@
+/* SEntre_api_begin */
 /************************************************************
  * Copyright (c) 2010-present Peng Fei.  All rights reserved.
  ************************************************************/
@@ -23,6 +24,7 @@
 
 #include "global.h"
 
+/* SEntre_api_end */
 typedef enum
 {
     GENERAL,     /* normal instruction */
@@ -34,6 +36,10 @@ typedef enum
     J_NO_LINK,   /* jump , j */
 }INSN_CLASS;
 
+/* SEntre_api_begin */
+/***********************************************************************
+ * instruction parsing.
+ * ********************************************************************/
 #define MAIN_OP(insn)   ((insn) >> 26)  
 #define SUB_OP(insn)    ((insn) & 0x3f) 
 #define EXT_OP(insn)    (((insn) >> 21) & 0x1f) 
@@ -53,6 +59,7 @@ typedef enum
 #define INSN_D_REG(d)		((d)<<11)
 #define INSN_SUB_OP(op)		((op)&0x3f)
 #define INSN_TARGET(t)		(((t)>>2)&0x3ffffff)
+/* SEntre_api_end */
 
 ADDRESS entre_offset_cvt(ADDRESS offset);
 ADDRESS entre_branch_target(ADDRESS pc, INSN_T br);
@@ -69,6 +76,11 @@ inline INSN_T entre_make_ld(REG_T b, REG_T t, unsigned offset);
 inline INSN_T entre_make_sd(REG_T b, REG_T t, unsigned offset);
 inline INSN_T entre_make_b(INSN_T insn, unsigned broffset);
 inline INSN_T entre_make_addiu(REG_T d, REG_T s, int j);
+/* SEntre_api_begin */
+
+/***********************************************************************
+ * instruction recognition.
+ * ********************************************************************/
 inline int entre_is_jr(INSN_T insn);
 inline int entre_is_jr_ra(INSN_T insn);
 inline int entre_is_jr_call(INSN_T insn);
@@ -86,12 +98,14 @@ inline int entre_is_ldc1(INSN_T insn);
 inline int entre_is_sdc1(INSN_T insn);
 inline int entre_is_lui(INSN_T insn);
 ADDRESS entre_mem_access_addr(ADDRESS b_reg, INT offset);
+/* SEntre_api_end */
 
 #define entre_make_move(d, s)	entre_make_or(d, REG_ZERO, s)
 
 //#define entre_is_call_instruction(insn)			\
 	(entre_is_jalr(insn) || entre_is_jr(insn))
 
+/* SEntre_api_begin */
 /* jr ra instruction is used for function return. 
  * does not need to be redirected*/
 #define entre_is_call_instruction(insn)			\
@@ -140,3 +154,4 @@ ADDRESS entre_mem_access_addr(ADDRESS b_reg, INT offset);
 #endif
 
 #endif
+/* SEntre_api_end */

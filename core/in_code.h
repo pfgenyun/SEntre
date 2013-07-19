@@ -1,3 +1,4 @@
+/* SEntre_api_begin */
 /************************************************************
  * Copyright (c) 2010-present Peng Fei.  All rights reserved.
  ************************************************************/
@@ -23,9 +24,15 @@
 
 #include "global.h"
 
+/* SEntre_api_end */
 #define IN_CODE_SIZE	10
 #define IN_CODE_BYTES	IN_CODE_SIZE*INSN_BYTES
+/* SEntre_api_begin */
+/***********************************************************************
+ * deal with for context->ra.
+ * ********************************************************************/
 #define IN_CODE_LW_NUM	3*INSN_BYTES
+/* SEntre_api_end */
 
 void entre_make_in_code_call(ADDRESS);
 void entre_make_in_code_mem(ADDRESS);
@@ -35,5 +42,7 @@ int entre_in_code_call_get(INSN_T ** code_array);
 int entre_in_code_mem_get(INSN_T ** code_array);
 int entre_in_code_OOprofile_get(INSN_T ** code_array);
 int entre_in_code_bb_freq_get(INSN_T ** code_array);
+/* SEntre_api_begin */
 
 #endif
+/* SEntre_api_end */

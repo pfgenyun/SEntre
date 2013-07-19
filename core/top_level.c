@@ -34,10 +34,23 @@
 #include "redirect.h"
 
 #ifdef API_MODE
-#include "mode.h"
+#ifdef TRACE
+#include "trace.h"
 #endif
 
-extern void SEntre_analysis(struct context * context);
+#ifdef OOprofile
+#include "OOprofile.h"
+#endif
+
+#ifdef BB_FREQ
+#include "bb_freq.h"
+#endif
+
+#include "se_mode.h"
+#endif
+
+#ifdef API_MODE
+#endif
 
 Status entre_optimize(int fp)
 {

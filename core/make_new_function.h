@@ -1,3 +1,4 @@
+/* SEntre_api_begin */
 /************************************************************
  * Copyright (c) 2010-present Peng Fei.  All rights reserved.
  ************************************************************/
@@ -24,6 +25,7 @@
 #include "function.h"
 #include "global.h"
 
+/* SEntre_api_end */
 #define LOAD_T9_NUM  2
 #define LOAD_T9_BYTES  LOAD_T9_NUM*INSN_BYTES
 #define INSTRUMENT_OMIT_SIZE  1000
@@ -47,10 +49,31 @@ void entre_instrument_omit_record(ADDRESS );
 void entre_make_new_functions();
 void entre_make_a_new_function(struct function *);
 int entre_lr_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr);
+/* SEntre_api_begin */
+/********************************************************************
+ * map instruction address in codecache to the old function address.
+ * *****************************************************************/
 ADDRESS entre_map_newAddr_2_oldFunAddr(ADDRESS newAddr);
+
+/********************************************************************
+ * map old address to the new function address.
+ * *****************************************************************/
 ADDRESS entre_map_oldAddr_2_newFunAddr(ADDRESS oldAddr);
+
+/********************************************************************
+ * map instruction address in codecache to the function name.
+ * *****************************************************************/
 char *entre_map_newAddr_2_oldFunName(ADDRESS newAddr);
+
+/********************************************************************
+ * map instruction address in codecache to the old instruction 
+ * address.
+ * *****************************************************************/
 ADDRESS entre_map_newAddr_2_oldInsnAddr(ADDRESS newAddr);
+/* SEntre_api_end */
 void entre_record_instrument_point(ADDRESS oldAddr, ADDRESS newAddr);
 
+/* SEntre_api_begin */
+
 #endif
+/* SEntre_api_end */

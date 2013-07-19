@@ -1,3 +1,4 @@
+/* SEntre_api_begin */
 /************************************************************
  * Copyright (c) 2010-present Peng Fei.  All rights reserved.
  ************************************************************/
@@ -26,6 +27,7 @@
 #ifndef ARCH_EXPORTS_H
 #define ARCH_EXPORTS_H 
 
+/* SEntre_api_end */
 #define atomic_swap(v, new)    xchg(v, new)
 
 #define xchg(ptr,x)                         \
@@ -140,7 +142,13 @@ static inline unsigned long __xchg(volatile void * ptr, unsigned long x, int siz
 
 #define ATOMIC_INC_int(var) atomic_add_return(1, (volatile int *)&(var))
 #define ATOMIC_INC_int64(var) atomic64_add_return(1, (volatile long *)&(var))
+/* SEntre_api_begin */
+
+/**************************************************************************
+ * Atomic operation.
+ *************************************************************************/
 #define ATOMIC_INC(type, var) ATOMIC_INC_##type(var)
+/* SEntre_api_end */
 
 static inline int atomic_add_return(int i, volatile int *v)
 {
@@ -182,7 +190,9 @@ static inline long atomic64_add_return(long i, volatile long *v)
 
 #define ATOMIC_DEC_int(var) atomic_sub_return(1, (volatile int *)&(var))
 #define ATOMIC_DEC_int64(var) atomic64_sub_return(1, (volatile long *)&(var))
+/* SEntre_api_begin */
 #define ATOMIC_DEC(type, var) ATOMIC_DEC_##type(var)
+/* SEntre_api_end */
 
 static inline int atomic_sub_return(int i, volatile int *v)
 {
@@ -247,4 +257,7 @@ static inline bool atomic_dec_becomes_zero(volatile int *var)
 	return (ATOMIC_DEC(int, *(var)) == 0);
 }
 
+/* SEntre_api_begin */
+
 #endif
+/* SEntre_api_end */

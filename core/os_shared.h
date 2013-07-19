@@ -1,3 +1,4 @@
+/* SEntre_api_begin */
 /************************************************************
  * Copyright (c) 2010-present Peng Fei.  All rights reserved.
  ************************************************************/
@@ -28,7 +29,7 @@
 #ifndef OS_SHARED_H
 #define OS_SHARED_H
 
-
+/* SEntre_api_end */
 thread_id_t get_thread_id(void);
 process_id_t get_process_id(void);
 void thread_yield(void);
@@ -39,6 +40,7 @@ void thread_yield(void);
 #define FREQ_PROTECTED_SECTION   ".fspdata"
 #define CXTSW_PROTECTED_SECTION  ".cspdata"
 
+/* SEntre_api_begin */
 /* User MUST supply an init value, or else cl will leave in .bss (will show up
  * at end of .data), which is why we hardcode the = here!
  * We use varargs to allow commas in the init if a struct.
@@ -58,6 +60,7 @@ void thread_yield(void);
     var VAR_IN_SECTION(NEVER_PROTECTED_SECTION) = __VA_ARGS__; \
     END_DATA_SECTION() 
 
+/* SEntre_api_end */
 
 /* contended path of rwlock operations */
 void rwlock_wait_contended_writer(read_write_lock_t *rwlock);
@@ -69,4 +72,6 @@ void rwlock_notify_readers(read_write_lock_t *rwlock);
 void mutex_wait_contended_lock(mutex_t *lock);
 void mutex_notify_released_lock(mutex_t *lock);
 
+/* SEntre_api_begin */
 #endif
+/* SEntre_api_end */

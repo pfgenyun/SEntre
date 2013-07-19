@@ -17,13 +17,14 @@
  * and/or other materials provided with the distribution.
  */
 
-
-#include <stdio.h>
+#include "se_api.h"
+//#include <stdio.h>
 #include <stdlib.h>
-#include "trace.h"
-#include "context_switch.h"
-#include "isa.h"
-#include "in_code.h"
+
+//#include "trace.h"
+//#include "context_switch.h"
+//#include "isa.h"
+//#include "in_code.h"
 
 
 ADDRESS entre_get_mem_access_addr(struct context * context)

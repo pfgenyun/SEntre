@@ -1,4 +1,4 @@
-
+/* SEntre_api_begin */
 /************************************************************
  * Copyright (c) 2010-present Peng Fei.  All rights reserved.
  ************************************************************/
@@ -22,6 +22,11 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#ifdef API_MODE
+#include "utils.h"
+#endif
+
+/* SEntre_api_end */
 //#include "global.h"
 
 /**************************************************************************************/
@@ -223,10 +228,15 @@ typedef struct _read_write_lock_t {
 /* mutexes need to release any kernel objects that were created */
 void mutex_delete(mutex_t *lock);
 
-/* basic synchronization functions */
+/* SEntre_api_begin */
+
+/**************************************************************************
+ * basic synchronization functions.
+ *************************************************************************/
 void mutex_lock(mutex_t *mutex);
 bool mutex_trylock(mutex_t *mutex);
 void mutex_unlock(mutex_t *mutex);
+/* SEntre_api_end */
 void mutex_fork_reset(mutex_t *mutex);
 
 /* spinmutex synchronization */
@@ -252,19 +262,29 @@ mutex_testlock(mutex_t *lock)
     return lock->lock_requests > LOCK_FREE_STATE;
 }
 
+/* SEntre_api_begin */
 
-/* A recursive lock can be taken more than once by the owning thread */
+/**************************************************************************
+ * A recursive lock can be taken more than once by the owning thread.
+ *************************************************************************/
 void acquire_recursive_lock(recursive_lock_t *lock);
 bool try_recursive_lock(recursive_lock_t *lock);
 void release_recursive_lock(recursive_lock_t *lock);
+/* SEntre_api_end */
 bool self_owns_recursive_lock(recursive_lock_t *lock);
 
-/* A read write lock allows multiple readers or alternatively a single writer */
+/* SEntre_api_begin */
+
+/**************************************************************************
+ * A read write lock allows multiple readers or alternatively a single 
+ * writer.
+ *************************************************************************/
 void read_lock(read_write_lock_t *rw);
 void write_lock(read_write_lock_t *rw);
 bool write_trylock(read_write_lock_t *rw);
 void read_unlock(read_write_lock_t *rw);
 void write_unlock(read_write_lock_t *rw);
+/* SEntre_api_end */
 bool self_owns_write_lock(read_write_lock_t *rw);
 
 /* test whether locks are held at all */
@@ -284,5 +304,8 @@ bool self_owns_write_lock(read_write_lock_t *rw);
 
 
 
+/* SEntre_api_begin */
+
 #endif
+/* SEntre_api_end */
 

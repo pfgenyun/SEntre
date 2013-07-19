@@ -1,3 +1,4 @@
+/* SEntre_api_begin */
 /************************************************************
  * Copyright (c) 2010-present Peng Fei.  All rights reserved.
  *************************************************************/
@@ -22,6 +23,7 @@
 #define BASICBLOCK_H
 #include "global.h"
 
+/* SEntre_api_end */
 
 typedef enum
 {
@@ -66,9 +68,21 @@ void entre_mark_bb();
 void entre_dump_bb();
 void entre_dump_one_bb(struct bb * bb_p);
 
+/* SEntre_api_begin */
+/********************************************************************
+ * return the address of demain counter of basic block according to
+ * the text address addr.
+ * *****************************************************************/
 ADDRESS entre_get_bb_counter_addr(ADDRESS );
+/* SEntre_api_end */
 int entre_get_bb_index(ADDRESS );
+/* SEntre_api_begin */
+
+/********************************************************************
+ * binary search in all_bb for the begin of basic block. 
+ * *****************************************************************/
 int entre_is_bb_begin(ADDRESS);
+/* SEntre_api_end */
 
 #define FOR_EACH_BB(bb, i) for(bb=all_bb+0, i=0; i<all_bb_n; ++i, bb=all_bb+i)
 #define BASIC_BLOCK(index) (&all_bb[index])
@@ -77,4 +91,7 @@ extern struct bb all_bb[];
 extern unsigned all_bb_size;
 extern unsigned all_bb_n;
 
+/* SEntre_api_begin */
+
 #endif
+/* SEntre_api_end */

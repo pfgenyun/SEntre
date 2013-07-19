@@ -1,3 +1,4 @@
+/* SEntre_api_begin */
 /************************************************************
  * Copyright (c) 2010-present Peng Fei.  All rights reserved.
  ************************************************************/
@@ -24,6 +25,7 @@
 #include <elf.h>
 #include "global.h"
 
+/* SEntre_api_end */
 #define ALL_FUNCTION_SIZE (1024*24*10)
 
 struct function
@@ -44,10 +46,18 @@ int entre_function_size(struct function * fun);
 struct function * entre_find_function(char * name);
 void entre_for_all_function(void (*my_fun)(struct function *));
 int entre_is_before_main(struct function * fun);
+/* SEntre_api_begin */
+/********************************************************************
+ * return the name of the function according to the old address.
+ * *****************************************************************/
 char * entre_find_funName_from_funOldAddr(ADDRESS oldAddr);
+/* SEntre_api_end */
 
 #define FUNCTION_NUMS entre_function_num()
 #define FUNCTION_START_ADDRESS(fun) entre_function_start_address(fun)
 #define FUNCTION_SIZE entre_function_size(fun);
 
+/* SEntre_api_begin */
+
 #endif
+/* SEntre_api_end */

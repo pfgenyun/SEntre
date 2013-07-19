@@ -1,3 +1,4 @@
+/* SEntre_api_begin */
 /************************************************************
  * Copyright (c) 2010-present Peng Fei.  All rights reserved.
  ************************************************************/
@@ -23,6 +24,7 @@
 
 #include "global.h"
 
+/* SEntre_api_end */
 //#define SCODE_SIZE (73+8)
 //#define CONTEXT_STACK_NUM	(32+3+1+2)
 
@@ -32,6 +34,10 @@
 #define CONTEXT_STACK_HI	(32+1+32+1)
 #define CONTEXT_STACK_SIZE	(CONTEXT_STACK_NUM*8)
 
+/* SEntre_api_begin */
+/***********************************************************************
+ * context defined.
+ * ********************************************************************/
 struct context
 {
 	UINT64  stack;
@@ -106,10 +112,13 @@ struct context
     UINT64  old_ra;    
 };
 
+/* SEntre_api_end */
 ADDRESS entre_make_context_switch_code(ADDRESS target_addr);
 void entre_dump_context(struct context * context);
 
 #define GET_CONTEXT(reg,context)       (((UINT64*)(context))[reg])
 #define PUT_CONTEXT(reg,context,val)   ( (((UINT64*)(context))[reg])= (val))
 
+/* SEntre_api_begin */
 #endif
+/* SEntre_api_end */

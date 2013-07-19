@@ -30,7 +30,7 @@
 #include "in_code.h"
 
 #ifdef API_MODE
-#include "mode.h"
+#include "se_mode.h"
 #endif
 
 struct instrument_point instrument_omit[INSTRUMENT_OMIT_SIZE];
@@ -126,7 +126,7 @@ int entre_lr_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr)
     //					addr_i, insn);
     //			entre_my_error("Cannot reach here!");
     //		}
-    #ifdef API_MODE
+    #ifdef BB_FREQ
     		if((entre_is_instrument_instruction(insn) || 
     			entre_is_bb_begin(addr_i)) && 
     			entre_can_instrument_here(addr_i))
@@ -152,7 +152,7 @@ int entre_lr_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr)
     //					addr_i, insn);
     //			entre_my_error("Cannot reach here!");
     //		}
-    #ifdef API_MODE
+    #ifdef BB_FREQ
     		if((entre_is_instrument_instruction(insn) || 
     			entre_is_bb_begin(addr_i)) && 
     			entre_can_instrument_here(addr_i))
@@ -254,17 +254,18 @@ void entre_make_a_new_function(struct function * fun)
 			addr_start = addr_end;
 		}
 #ifdef API_MODE
-		else if(SEntre_mode(addr_end))
+		else if(SEntre_mode)
 		{
 #ifdef DEBUG
-			printf("bb begin addr:0x%x\tin function:%s\n", addr_end, fun->f_name);
+			printf("insn addr:0x%x\tin function:%s\n", addr_end, fun->f_name);
 #endif
 			entre_cc_add_code((INSN_T*)addr_start, (addr_end - addr_start) / INSN_BYTES);
+#ifdef BB_FREQ
 			if(entre_can_instrument_here(addr_end) && !entre_is_instrument_instruction(insn))
+#else
+			if(entre_can_instrument_here(addr_end))
+#endif
 			{	
-			
-//				ADDRESS counter_addr = entre_get_bb_counter_addr(addr_end);
-//				entre_make_in_code_bb_freq(counter_addr);
 				entre_cc_add_code(incode_mode, incode_mode_size);
 #ifdef MAP
               	ccAddr_i = entre_cc_get_top_address();
@@ -272,10 +273,7 @@ void entre_make_a_new_function(struct function * fun)
 #endif
 			}
 			else
-			{
 				entre_instrument_omit_record(addr_end);
-				entre_my_error("bb_freq insn vill not reach here!\n");
-			}
 			addr_start = addr_end;
 		}
 #endif

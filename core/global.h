@@ -1,3 +1,4 @@
+/* SEntre_api_begin */
 /************************************************************
  * Copyright (c) 2010-present Peng Fei.  All rights reserved.
  ************************************************************/
@@ -32,9 +33,15 @@
 #include "os_exports.h"
 #include "arch_exports.h"
 
+/* SEntre_api_end */
 #define MEGA_1 (1024*1024)  /* 1M */
-#define INSN_BYTES 4        /* bytes of instruction */
+/* SEntre_api_begin */
+/***********************************************************************
+ * bytes of instruction.
+ * ********************************************************************/
+#define INSN_BYTES 4
 
+/* SEntre_api_end */
 #ifdef DEBUG_REACH
     #define ENTRE_REACH_HERE()    printf("reach file %s at line %d here.\n", __FILE__, __LINE__);
 #else
@@ -76,4 +83,6 @@ void entre_memory_free();
 void get_application_full_name(char *);
 char * get_application_short_name(char *);
 
+/* SEntre_api_begin */
 #endif
+/* SEntre_api_end */

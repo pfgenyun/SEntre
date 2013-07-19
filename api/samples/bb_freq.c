@@ -1,5 +1,5 @@
 /************************************************************
- * Copyright (c) 2013-present MeiWenBin.  All rights reserved.
+ * Copyright (c) 2010-present Peng Fei.  All rights reserved.
  ************************************************************/
 
 /*
@@ -18,25 +18,18 @@
  */
 
 #include "se_api.h"
+//#include <stdio.h>
+//#include "context_switch.h"
+//#include "in_code.h"
+//#include "isa.h"
+//#include "make_new_function.h"
 
-#if 0
-DECLARE_CXTSWPROT_VAR(mutex_t thread_initexit_lock,
-                      INIT_LOCK_FREE(thread_initexit_lock));
-#endif
-
-void SEntre_analysis(struct context * context)
+void entre_bb_freq_record(struct context * context)
 {
-    ADDRESS old_addr, new_addr, counter_addr;
-    
-    new_addr = context->ra + IN_CODE_LW_NUM;
-    old_addr = entre_map_newAddr_2_oldInsnAddr(new_addr);
-    counter_addr = entre_get_bb_counter_addr(old_addr);
-#if 1
-    ATOMIC_INC(int, *(ADDRESS *)counter_addr);
-#endif
-#if 0
-//	mutex_lock(&thread_initexit_lock);
-//	*(ADDRESS *)counter_addr += 1;
-//	mutex_unlock(&thread_initexit_lock);
-#endif
-} 
+	ADDRESS old_addr, new_addr, counter_addr;
+
+	new_addr = context->ra + IN_CODE_LW_NUM;
+	old_addr = entre_map_newAddr_2_oldInsnAddr(new_addr);
+	counter_addr = entre_get_bb_counter_addr(old_addr);
+	ATOMIC_INC(int, *(ADDRESS *)counter_addr);
+}
