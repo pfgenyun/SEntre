@@ -47,9 +47,7 @@
 #endif
 
 #include "se_mode.h"
-#endif
-
-#ifdef API_MODE
+extern void SEntre_analysis(struct context * context);
 #endif
 
 Status entre_optimize(int fp)
@@ -108,12 +106,20 @@ void entre_collection()
 {
     entre_global_file_close();
     entre_memory_free();
+#ifdef API_MODE
 #ifdef OOprofile
     entre_OOprofile_fini();
 #endif
 
 #ifdef BB_FREQ
 	entre_dump_bb();
+#endif
+
+#ifndef OOprofile
+#ifndef BB_FREQ
+	entre_dump_api();
+#endif
+#endif
 #endif
 }
 

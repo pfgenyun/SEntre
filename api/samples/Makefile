@@ -20,11 +20,13 @@ SHELL := /bin/bash
 OBJ = entre.o top_level.o global.o binary.o basicblock.o \
 	  codecache.o function.o stack.o got.o context_switch.o \
 	  isa.o in_code.o make_new_function.o control_trans.o redirect.o \
-	  trace.o OOprofile.o bb_freq.o utils.o options.o os.o share_app.o
+	  trace.o OOprofile.o bb_freq.o utils.o options.o os.o share_app.o \
+	  bb_num.o
 SOURCE = entre.c top_level.c global.c binary.c basicblock.c \
 	 codecache.c function.c stack.c got.c context_switch.c \
 	 isa.c in_code.c make_new_function.c control_trans.c redirect.c \
-	 trace.c OOprofile.c bb_freq.c utils.c options.c os.c share_app.c
+	 trace.c OOprofile.c bb_freq.c utils.c options.c os.c share_app.c \
+	 bb_num.c
 
 CC = gcc
 C_FLAG = -g -O0 -fPIC -shared 
@@ -44,10 +46,10 @@ F_FLAG = -DMAP -DAPI_MODE
 #F_FLAG = 
 
 #####Tool Flags
-TOOL_FLAG = -DTRACE
+#TOOL_FLAG = -DTRACE
 #TOOL_FLAG = -DOOprofile
 #TOOL_FLAG = -DBB_FREQ -DDEBUG
-#TOOL_FLAG = -DBB_FREQ
+TOOL_FLAG = -DBB_FREQ
 #TOOL_FLAG =
  
 BUILD_HOME = ~/.SEntre/
@@ -123,6 +125,7 @@ ALL:
 	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}options.c              -c -o  ${OBJDIR}options.o;			\
 	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}os.c                   -c -o  ${OBJDIR}os.o;			\
 	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}share_app.c            -c -o  ${OBJDIR}share_app.o;			\
+	$(CC) ${C_FLAG} ${D_FLAG} ${F_FLAG} ${TOOL_FLAG} ${SRCDIR}bb_num.c               -c -o  ${OBJDIR}bb_num.o;			\
 															\
 	cd ${OBJDIR};											\
 	${CC} ${C_FLAG} ${LINK_FLAG}  -o ${INSTALL_HOME}sentre.so $(OBJ);		\

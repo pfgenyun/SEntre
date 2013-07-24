@@ -24,6 +24,10 @@
 
 #include "global.h"
 
+#ifdef API_MODE
+#include "se_mode.h"
+#endif
+
 /* SEntre_api_end */
 typedef enum
 {
@@ -124,33 +128,17 @@ ADDRESS entre_mem_access_addr(ADDRESS b_reg, INT offset);
 	 entre_is_lwc1(insn) || entre_is_swc1(insn) ||	\
 	 entre_is_ldc1(insn) || entre_is_sdc1(insn))
 
-#ifdef TRACE
-#ifdef OOprofile
-#define entre_is_instrument_instruction(insn)	\
-	(entre_is_call_instruction(insn) || entre_is_mem_instruction(insn) \
-	 entre_is_return_insn(insn))
+#ifdef API_MODE
+#ifdef BB_FREQ
+#define entre_is_instrument_instruction(insn)   \
+        (entre_is_call_instruction(insn))
+#else
+#define entre_is_instrument_instruction(insn)   \
+        (entre_is_call_instruction(insn) || SEntre_mode)
 #endif
-#endif
-
-#ifdef TRACE
-#ifndef OOprofile
-#define entre_is_instrument_instruction(insn)	\
-	(entre_is_call_instruction(insn) || entre_is_mem_instruction(insn))
-#endif
-#endif
-
-#ifdef OOprofile
-#ifndef TRACE
-#define entre_is_instrument_instruction(insn)	\
-	(entre_is_call_instruction(insn) || entre_is_return_instruction(insn))
-#endif
-#endif
-
-#ifndef TRACE
-#ifndef OOprofile
-#define entre_is_instrument_instruction(insn)	\
-	(entre_is_call_instruction(insn))
-#endif
+#else
+#define entre_is_instrument_instruction(insn)   \
+        (entre_is_call_instruction(insn))
 #endif
 
 #endif
