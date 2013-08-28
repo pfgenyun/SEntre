@@ -35,6 +35,12 @@ struct instrumentRecordTable
 	ADDRESS newInstrumentP;	//addresss of instrument point in codecache 
 };
 
+struct jump_RecordTable
+{
+    ADDRESS old_jP; //address of instrument point in origin address space
+    ADDRESS new_jP; //addresss of instrument point in codecache 
+};
+
 /* copy code from original palce to codecache, got is used to record 
    the old address and the new address of functions */
 struct got
@@ -45,7 +51,9 @@ struct got
     ADDRESS new_addr_func;	//function start addr with function begin and end instrument code
 	ADDRESS new_addr_final;	//function start addr finally
 	struct instrumentRecordTable *funInstrumentP;
+	struct jump_RecordTable *fun_jP;
 	int instrumentPointNum;
+	int jPointNum;
 };
 
 void entre_got_init(int);

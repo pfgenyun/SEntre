@@ -55,13 +55,13 @@ int entre_out_of_j_range(ADDRESS new_replace_addr, ADDRESS new_target_addr)
  * b_addr is b instruction address at orignal space
  * fun_call_num is jalr and jr instruction number between 
  * old_target_addr and b_addr */
-int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call_num)
+int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call_num, int j_call_num)
 {
 	ADDRESS new_target_addr;
 
 	if(old_target_addr > b_addr)	/* branch after*/
 	{
-		new_target_addr = old_target_addr + fun_call_num*IN_CODE_SIZE*INSN_BYTES;
+		new_target_addr = old_target_addr + fun_call_num*IN_CODE_SIZE*INSN_BYTES + + j_call_num*J_JAL_T9_NUM*INSN_BYTES;
 		if((new_target_addr-b_addr)/INSN_BYTES-1>0x8fff)
 		{
             printf("             ************************************************************\n");
@@ -72,7 +72,7 @@ int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call
 	}
 	else							/* branch before*/
 	{
-		new_target_addr = old_target_addr - fun_call_num*IN_CODE_SIZE*INSN_BYTES;
+		new_target_addr = old_target_addr - fun_call_num*IN_CODE_SIZE*INSN_BYTES - j_call_num*J_JAL_T9_NUM*INSN_BYTES;
 		if((b_addr-new_target_addr)/INSN_BYTES-1>0x8fff && (b_addr != old_target_addr))
 		{
             printf("             ************************************************************\n");
@@ -85,6 +85,73 @@ int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call
 	return new_target_addr;
 }
 
+/*******************************************************************
+ redirect j and jal instruction's target from orignal space to new 
+ space in codecache.
+*******************************************************************/
+int 
+entre_jump_redirect(int jump_insn_index_new, ADDRESS jump_new_start_addr, ADDRESS jump_new_target, ADDRESS jump_next_addr, INSN_T jump_insn)
+{
+	int insn_index_new = jump_insn_index_new;
+	ADDRESS new_start_addr = jump_new_start_addr;
+	ADDRESS new_target = jump_new_target;
+	ADDRESS addr_next = jump_next_addr;
+	ADDRESS new_replace_addr;
+	INSN_T new_insn, insn_redirect, next_insn;
+	INSN_T insn = jump_insn;
+
+	new_replace_addr = new_start_addr + (insn_index_new-1)*INSN_BYTES;
+	new_insn = INSN_AT(new_replace_addr);
+	if(entre_is_nop(new_insn))
+	{
+		insn_redirect = entre_make_sd(REG_SP, REG_T9, -8);
+		entre_cc_replace(new_replace_addr, insn_redirect);
+	}
+	else
+		printf("error: 0x%x in not nop!\n", new_replace_addr);
+	insn_index_new++;
+	new_replace_addr = new_start_addr + (insn_index_new-1)*INSN_BYTES;
+	new_insn = INSN_AT(new_replace_addr);
+	if(entre_is_nop(new_insn))
+	{   
+		insn_redirect = entre_make_lui(REG_T9, new_target>>16);
+		entre_cc_replace(new_replace_addr, insn_redirect);
+	}
+	else
+		printf("error: 0x%x in not nop!\n", new_replace_addr);
+	insn_index_new++;
+	new_replace_addr = new_start_addr + (insn_index_new-1)*INSN_BYTES;
+	new_insn = INSN_AT(new_replace_addr);
+	if(entre_is_nop(new_insn))
+	{
+		insn_redirect = entre_make_inc_x(REG_T9, new_target&0xffff);
+		entre_cc_replace(new_replace_addr, insn_redirect);
+	}
+	else
+		printf("error: 0x%x in not nop!\n", new_replace_addr);
+	insn_index_new++;
+	new_replace_addr = new_start_addr + (insn_index_new-1)*INSN_BYTES;
+	new_insn = INSN_AT(new_replace_addr);
+	if(entre_is_nop(new_insn))
+	{
+		if(entre_is_j(insn))
+			insn_redirect = entre_make_jr(REG_T9);
+		else
+			insn_redirect = entre_make_jalr(REG_T9);
+		entre_cc_replace(new_replace_addr, insn_redirect);
+	}
+	else
+		printf("error: 0x%x in not nop!\n", new_replace_addr);
+	insn_index_new++;
+	next_insn = INSN_AT(addr_next);
+	new_replace_addr = new_start_addr + (insn_index_new-1)*INSN_BYTES;
+	new_insn = INSN_AT(new_replace_addr);
+	entre_cc_replace(new_replace_addr, next_insn);
+	insn_index_new++;
+	new_replace_addr = new_start_addr + (insn_index_new-1)*INSN_BYTES;
+	insn_redirect = entre_make_ld(REG_SP, REG_T9, -8);
+    entre_cc_replace(new_replace_addr, insn_redirect);
+}
 
 /*******************************************************************
  redirect jal and b instruction's target from orignal space to new 
@@ -92,13 +159,12 @@ int entre_get_b_new_target(ADDRESS old_target_addr, ADDRESS b_addr, int fun_call
 *******************************************************************/
 void entre_jal_b_redirect(struct function * fun)
 {
+	ADDRESS new_start_addr, addr_i, addr_t, old_replace_addr, new_replace_addr;
 	ADDRESS fun_start_addr = FUNCTION_START_ADDRESS(fun);
-	ADDRESS new_start_addr;
     int fun_size = FUNCTION_SIZE(fun);
     ADDRESS fun_next_addr = fun_start_addr + fun_size;
-	int insn_index_old=0;
-	int insn_index_new=0;
-	ADDRESS addr_i;
+	int insn_index_old= 0, insn_index_new = 0;
+	int fun_call_num, jump_num, jump_call_num;
 
 	new_start_addr = entre_got_find_orig(fun_start_addr);
 	if(new_start_addr == 0)
@@ -106,12 +172,9 @@ void entre_jal_b_redirect(struct function * fun)
 
 	for(addr_i=fun_start_addr; addr_i<fun_next_addr; addr_i+=INSN_BYTES)
     {
-		ADDRESS old_target=0;
-		ADDRESS new_target=0;
-		ADDRESS old_replace_addr;
-		ADDRESS new_replace_addr;
+		ADDRESS old_target=0, new_target = 0, offset = 0;
+		INSN_T insn_redirect, new_insn, old_insn;
         INSN_T insn = INSN_AT(addr_i);
-		INSN_T insn_redirect;
 
 		insn_index_old++;
 		insn_index_new++;
@@ -125,16 +188,46 @@ void entre_jal_b_redirect(struct function * fun)
 		if(entre_is_instrument_instruction(insn) &&
 		   entre_can_instrument_here(addr_i))
 #endif
-		{
 			insn_index_new += IN_CODE_SIZE;
-		}
 
         if(entre_is_jal(insn) || entre_is_j(insn))
         {
 			old_target = TARGET(insn)<<2;
-			new_target = entre_got_find_final(old_target);
-			if(new_target == 0)			/*for gcc-4.6 jal to .plt */
-				new_target = old_target;
+			if(old_target >= entre_function_next_address(fun) || old_target < fun_start_addr )
+			{
+				new_target = entre_got_find_final(old_target);
+				if(new_target == 0)			/*for gcc-4.6 jal to .plt */
+					new_target = old_target;
+				new_replace_addr = new_start_addr + (insn_index_new-1)*INSN_BYTES;
+				if(entre_out_of_j_range(new_replace_addr, new_target))
+				{
+					addr_i += INSN_BYTES;
+					entre_jump_redirect(insn_index_new, new_start_addr, new_target, addr_i, insn);
+					insn_index_new += 5;
+					insn_index_old += 2;
+					continue;
+				}
+			}
+			else
+			{
+                fun_call_num = 0;
+                jump_num = 0;
+                for(addr_t = fun_start_addr; addr_t <= old_target; addr_t+=INSN_BYTES)
+                {
+                    new_insn = INSN_AT(addr_t);
+#ifdef BB_FREQ
+                    if((entre_is_instrument_instruction(new_insn) || entre_is_bb_begin(addr_t)) && entre_can_instrument_here(addr_t))
+                        fun_call_num++;
+#else
+                    if(entre_is_instrument_instruction(new_insn) && entre_can_instrument_here(addr_t))
+                        fun_call_num++;
+#endif
+                    if(entre_is_jal(new_insn) || entre_is_j(new_insn))
+                        jump_num++;
+                }
+                offset = old_target - fun_start_addr;
+                new_target = new_start_addr + offset + fun_call_num*IN_CODE_SIZE*INSN_BYTES + jump_num*J_JAL_T9_NUM*INSN_BYTES;
+			}
 			if(entre_is_jal(insn))
 				insn_redirect = entre_make_jal(new_target);
 			else if(entre_is_j(insn))
@@ -143,22 +236,18 @@ void entre_jal_b_redirect(struct function * fun)
 			printf("old_jal_j_target:0x%x\tnew_jal_j_target:0x%x\tfunction name:%-20s\n",
                    old_target, new_target, fun->f_name);
 #endif
+			insn_index_new += J_JAL_T9_NUM;
 			old_replace_addr = fun_start_addr + (insn_index_old-1)*INSN_BYTES;
 			new_replace_addr = new_start_addr + (insn_index_new-1)*INSN_BYTES;
 			entre_cc_replace(new_replace_addr, insn_redirect);
-
-			if(entre_out_of_j_range(new_replace_addr, new_target))
-			{
-                 printf("             **********************************************************\n");
-                 printf("             ******       WARNING3: Jump Target Over 2^26!       ******\n");
-                 printf("             ******            Suggest Not Instrument!           ******\n");
-                 printf("             **********************************************************\n");
-			}
-
+            insn_index_new++;
+            insn_index_old++;
+            addr_i += INSN_BYTES;
 #ifdef DEBUG
             printf("old_jal_j_addr:0x%x\tnew_jal_j_addr:0x%x\tfunction name:%-20s\n\n",
                    old_replace_addr, new_replace_addr, fun->f_name);
 #endif
+			continue;
         }
 
 		if(entre_is_b(insn))
@@ -168,8 +257,9 @@ void entre_jal_b_redirect(struct function * fun)
 			printf("old_b_insn: 0x%x\told_b_target: 0x%x\tfunction name: %-20s\n",
 					insn, old_target, fun->f_name);
 #endif
-			int fun_call_num = entre_lr_num(fun, old_target, addr_i);
-			new_target = entre_get_b_new_target(old_target, addr_i, fun_call_num);
+			fun_call_num = entre_lr_num(fun, old_target, addr_i);
+			jump_call_num = entre_jump_num(fun, old_target, addr_i);
+			new_target = entre_get_b_new_target(old_target, addr_i, fun_call_num, jump_call_num);
 			insn_redirect = entre_make_b(insn, (new_target-addr_i)/INSN_BYTES-1); /* -1 is for broffset*/
 #ifdef DEBUG
 	        printf("new_b_insn: 0x%x\told_b_target: 0x%x\tnew_b_target: 0x%x\tlr_num: %d\t function name: %-20s\n",

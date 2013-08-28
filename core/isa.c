@@ -164,6 +164,14 @@ inline int entre_is_jal(INSN_T insn)
 		return 0;
 }
 
+inline int entre_is_nop(INSN_T insn)
+{
+    if((MAIN_OP(insn) == 0) && (SUB_OP(insn) == 0))
+        return 1;
+    else
+        return 0;
+}
+
 inline int entre_is_jalr(INSN_T insn)
 {
 	if((MAIN_OP(insn)==0) && (SUB_OP(insn)==9))

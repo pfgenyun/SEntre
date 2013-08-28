@@ -33,19 +33,29 @@ int entre_got_find_instrument_num_from_newAddr(ADDRESS newAddr)
     int i, j;
 	for(i=0; GOT_NEW_ADDR(i)<=newAddr; i++)
 	    ;
-//		printf("new addr in got: %x %x\n", GOT_NEW_ADDR(i), newAddr);
 	for(j=0; j<got[i-1].instrumentPointNum; j++)
 	{
-//        printf("old instrumentP:%x  new instrumentP %x PointNum%d in got\n", 
-//				got[i-1].funInstrumentP[j].oldInstrumentP, 
-//				got[i-1].funInstrumentP[j].newInstrumentP, 
-//				got[i-1].instrumentPointNum);
 		if(newAddr<got[i-1].funInstrumentP[j].newInstrumentP)
 		{
 			break;
 		}
 	}
 	return j;
+}
+
+int entre_got_find_j_num_from_newAddr(ADDRESS newAddr)
+{
+    int i, j;
+    for(i=0; GOT_NEW_ADDR(i)<=newAddr; i++)
+        ;
+    for(j=0; j<got[i-1].jPointNum; j++)
+    {
+        if(newAddr<got[i-1].fun_jP[j].new_jP)
+        {
+            break;
+        }
+    }
+    return j;
 }
 
 ADDRESS entre_got_map_oldAddr_2_newFunAddr(ADDRESS oldAddr)
@@ -170,19 +180,37 @@ void entre_got_init_instrument_point()
 	for(i=0; i<got_size; i++)
 	{
 		got[i].instrumentPointNum = 0;
+		got[i].jPointNum = 0;
 		got[i].funInstrumentP = (struct instrumentRecordTable *)malloc(INSTRUMENT_SIZE*sizeof(struct instrumentRecordTable));
 		if(got[i].funInstrumentP == NULL)
 		{
 		    printf("EE: MALLOC ERROR in GOT INIT!\n");
 			exit(0);
 		}
+		got[i].fun_jP = (struct jump_RecordTable *)malloc(INSTRUMENT_SIZE*sizeof(struct jump_RecordTable));
+		if(got[i].fun_jP == NULL)
+		{
+			printf("EE: MALLOC fun_jP ERROR in GOT INIT!\n");
+			exit(0);
+		}
 	    for(j=0; j<INSTRUMENT_SIZE; j++)
 		{
 			got[i].funInstrumentP[j].oldInstrumentP = 0;
 			got[i].funInstrumentP[j].newInstrumentP = 0;
+			got[i].fun_jP[j].old_jP = 0;
+			got[i].fun_jP[j].new_jP = 0;
 		}
 	}
 }
+
+void entre_got_add_jump_point(ADDRESS oldAddr, ADDRESS newAddr)
+{
+    /* -1 is for got_n++ in the entre_got_add_entry() */
+    int numP = got[got_n-1].jPointNum;
+    got[got_n-1].fun_jP[numP].old_jP = oldAddr;
+    got[got_n-1].fun_jP[numP].new_jP = newAddr;
+    got[got_n-1].jPointNum++;
+}  
 
 void entre_got_add_instrument_point(ADDRESS oldAddr, ADDRESS newAddr)
 {

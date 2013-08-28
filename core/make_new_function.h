@@ -27,6 +27,7 @@
 
 /* SEntre_api_end */
 #define LOAD_T9_NUM  2
+#define J_JAL_T9_NUM 4
 #define LOAD_T9_BYTES  LOAD_T9_NUM*INSN_BYTES
 #define INSTRUMENT_OMIT_SIZE  1000
 
