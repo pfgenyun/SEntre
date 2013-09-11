@@ -28,6 +28,7 @@
 #include "reg.h"
 #include "make_new_function.h"
 #include "in_code.h"
+#include "binary.h"
 
 #ifdef API_MODE
 #include "se_mode.h"
@@ -327,6 +328,19 @@ void entre_make_a_new_function(struct function * fun)
 #endif
 			addr_start = addr_end;
 		}
+        if((addr_end > Executable.PltStart) && (addr_end <= Executable.PltEnd))
+        {   
+			entre_cc_add_code((INSN_T*)addr_start, (addr_end - addr_start) / INSN_BYTES);
+            if(((insn >> 24) & 0x000000ff) == 0x3c)
+            {   
+				if(addr_end != fun_start_addr)
+				{
+              		ccAddr_i = entre_cc_get_top_address();
+					entre_got_add_entry(addr_end, ccAddr_i);
+				}
+            }   
+			addr_start = addr_end;
+        } 
 	}
 	entre_cc_add_code((INSN_T*)addr_start, (fun_next_addr - addr_start) / INSN_BYTES);
 #ifdef DEBUG

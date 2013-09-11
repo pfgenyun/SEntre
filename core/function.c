@@ -113,7 +113,17 @@ void entre_call_for_all_function(void (*my_fun)(struct function *))
 
 inline int entre_function_num()
 {
-    return all_function_n;
+	ADDRESS addr_i;
+	INSN_T insn;
+	int plt_fun_num = 0;
+
+	for(addr_i = Executable.PltStart + INSN_BYTES; addr_i < Executable.PltEnd; addr_i += INSN_BYTES)
+	{
+		insn = INSN_AT(addr_i);
+    	if(((insn >> 24) & 0x000000ff) == 0x3c)
+			plt_fun_num++;
+	}
+    return (all_function_n + plt_fun_num);
 }
 
 void entre_init_one_function_for_share_pic(Elf32_Sym *sym)

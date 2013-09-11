@@ -345,7 +345,6 @@ Status entre_IRMarkFunctions(void)
     return 0;
 }
 
-
 /* *******************************************************************
  * record the executable sections info, incluing symtab strtab dynsym 
  * strsym got and text.
@@ -368,6 +367,10 @@ void entre_BinaryLoad(void* start_fp)
     char *pSectionNameStrTab = (char *)((char*)pElfHeader + pSectionHeaderItem->sh_offset);
 //    Executable.pSectionNameStrTab = (char *)malloc(sizeof(pSectionHeaderItem->sh_size));
     Executable.nSectionNameStrTab = pSectionHeaderItem->sh_size;
+
+    Executable.PltStart = 0;
+    Executable.PltEnd = 0;
+    Executable.PltSize = 0;
 
     /* symtab, strtab, and got is unquie, assum text is also unquie */
     for(i=1; i<nSection; i++)
@@ -400,11 +403,20 @@ void entre_BinaryLoad(void* start_fp)
             Executable.pDynamicStrTab = (char *)pSectionHeaderItem->sh_addr;         /* virtual address */
             Executable.nDynamicStrTab = pSectionHeaderItem->sh_size / sizeof(char);
         }
+        else if(strcmp(pSectionName,".plt")==0)
+        { /* .text exists when executing, get its virtual address. assum .text is unquie */
+            Executable.PltStart = pSectionHeaderItem->sh_addr;
+            Executable.PltEnd   = pSectionHeaderItem->sh_addr + pSectionHeaderItem->sh_size;
+            Executable.PltSize  = pSectionHeaderItem->sh_size;
+        } 
 		else if(strcmp(pSectionName,".text")==0)
         { /* .text exists when executing, get its virtual address. assum .text is unquie */
-            Executable.pCodeStart = pSectionHeaderItem->sh_addr;
+            if(Executable.PltStart != 0)
+                Executable.pCodeStart = Executable.PltStart;
+            else
+            	Executable.pCodeStart = pSectionHeaderItem->sh_addr;
             Executable.pCodeEnd   = pSectionHeaderItem->sh_addr + pSectionHeaderItem->sh_size ;
-            Executable.pSize      = pSectionHeaderItem->sh_size;
+            Executable.pSize      = pSectionHeaderItem->sh_size + Executable.PltSize;
         }   
     }
 
