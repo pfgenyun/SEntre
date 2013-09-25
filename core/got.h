@@ -41,6 +41,12 @@ struct jump_RecordTable
     ADDRESS new_jP; //addresss of instrument point in codecache 
 };
 
+struct bal_RecordTable
+{
+    ADDRESS old_bP; //address of instrument point in origin address space
+    ADDRESS new_bP; //addresss of instrument point in codecache 
+};
+
 /* copy code from original palce to codecache, got is used to record 
    the old address and the new address of functions */
 struct got
@@ -52,8 +58,10 @@ struct got
 	ADDRESS new_addr_final;	//function start addr finally
 	struct instrumentRecordTable *funInstrumentP;
 	struct jump_RecordTable *fun_jP;
+	struct bal_RecordTable *fun_bP;
 	int instrumentPointNum;
 	int jPointNum;
+	int bPointNum;
 };
 
 void entre_got_init(int);
@@ -92,6 +100,7 @@ ADDRESS entre_got_map_newAddr_2_oldFunAddr(ADDRESS newAddr);
  * return the new address according to the old address.
  * ********************************************************************/
 ADDRESS entre_got_map_oldAddr_2_newFunAddr(ADDRESS oldAddr);
+ADDRESS entre_got_map_oldAddr_2_oldFunAddr(ADDRESS oldAddr);
 /* SEntre_api_end */
 void entre_init_instrument_point(void);
 void entre_got_add_instrument_point(ADDRESS oldAddr, ADDRESS newAddr);

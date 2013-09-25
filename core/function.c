@@ -126,7 +126,11 @@ inline int entre_function_num()
     return (all_function_n + plt_fun_num);
 }
 
+#ifdef N64
+void entre_init_one_function_for_share_pic(Elf64_Sym *sym)
+#else
 void entre_init_one_function_for_share_pic(Elf32_Sym *sym)
+#endif
 {
     int i;
 
@@ -138,7 +142,11 @@ void entre_init_one_function_for_share_pic(Elf32_Sym *sym)
 // 	all_function_n = 0;
 }
 
+#ifdef N64
+void entre_init_one_function(Elf64_Sym *sym, unsigned first_bb, unsigned bb_num)
+#else
 void entre_init_one_function(Elf32_Sym *sym, unsigned first_bb, unsigned bb_num)
+#endif
 {
     int i;
 
@@ -152,7 +160,11 @@ void entre_init_one_function(Elf32_Sym *sym, unsigned first_bb, unsigned bb_num)
 
 void entre_init_function(void)
 {
+#ifdef N64
+    Elf64_Sym *sym;
+#else
     Elf32_Sym *sym;
+#endif
     
     all_function_size = Executable.nSymTab;
     all_function_n = 0;

@@ -26,8 +26,9 @@ SOURCE = entre.c top_level.c global.c binary.c basicblock.c \
 	 isa.c in_code.c make_new_function.c control_trans.c redirect.c \
 	 utils.c options.c os.c share_app.c
 
+MABI = n32
 CC = gcc-4.4
-C_FLAG = -g -O0 -fPIC -shared 
+C_FLAG = -g -O0 -fPIC -shared -mabi=$(MABI)
 LINK_FLAG = -ldl 
 
 ##### Debug Flags
@@ -41,7 +42,15 @@ D_FLAG =
 ##### -DINSN_IN_DATE used for gdb, for large app, eg. GCC, don't define -DINSN_IN_DATE
 ##### when gcc version is over 4.6, we can not use -DINSN_IN_DATE
 #F_FLAG = -DMAP -DINSN_IN_DATE
-F_FLAG = -DMAP 
+ifeq ($(MABI),64)
+   F_FLAG = -DMAP -DN64
+endif
+ifeq ($(MABI),n32)
+   F_FLAG = -DMAP -DN32
+endif
+ifeq ($(MABI),o32)
+   F_FLAG = -DMAP -DO32
+endif
 #F_FLAG = 
  
 BUILD_HOME = ~/.SEntre/

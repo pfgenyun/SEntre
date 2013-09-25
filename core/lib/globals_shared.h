@@ -54,7 +54,11 @@ typedef long long int INT64;
 typedef long long int int64;
 
 typedef byte * app_pc;
+#ifdef N64
+typedef UINT64 ADDRESS;
+#else
 typedef UINT ADDRESS;
+#endif
 typedef INT INDEX;
 typedef UINT INSN_T;
 

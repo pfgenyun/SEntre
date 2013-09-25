@@ -36,7 +36,11 @@ struct struct_executable Executable;
 
 void entre_dump_function()
 {
+#ifdef N64
+	Elf64_Sym * pSymTab;
+#else
 	Elf32_Sym * pSymTab;
+#endif
 	UINT32      nSymTab; 
 	char *      pStrTab;
 	UINT32      nStrTab;
@@ -45,7 +49,11 @@ void entre_dump_function()
 	ADDRESS addr;
 	int size;
 
+#ifdef N64
+	Elf64_Sym * fun;
+#else
 	Elf32_Sym * fun;
+#endif
 
 	pSymTab = Executable.pSymTab;
 	nSymTab = Executable.nSymTab; 
@@ -116,9 +124,15 @@ static void entre_function_sort(Elf32_Sym * sym, Elf32_Sym ** rank, int n)
  * the order is according the st_value value
  * *****************************************************************/
 #if 1
+#ifdef N64
+int entre_partition(Elf64_Sym ** rank, int low, int high)
+{
+	Elf64_Sym * tmp=rank[low];
+#else
 int entre_partition(Elf32_Sym ** rank, int low, int high)
 {
 	Elf32_Sym * tmp=rank[low];
+#endif
 	ADDRESS pivotkey=rank[low]->st_value;
 	while(low<high)
 	{
@@ -133,7 +147,11 @@ int entre_partition(Elf32_Sym ** rank, int low, int high)
 	return low;
 }
 
+#ifdef N64
+void entre_qSort(Elf64_Sym ** rank, int low, int high)
+#else
 void entre_qSort(Elf32_Sym ** rank, int low, int high)
+#endif
 {
 	int pivotloc;
 
@@ -145,11 +163,19 @@ void entre_qSort(Elf32_Sym ** rank, int low, int high)
 	}
 }
 
+#ifdef N64
+static void entre_function_sort(Elf64_Sym * sym, Elf64_Sym ** rank, int n)
+#else
 static void entre_function_sort(Elf32_Sym * sym, Elf32_Sym ** rank, int n)
+#endif
 {
     int i,j,k;
     ADDRESS min = 0, tmp;
+#ifdef N64
+    Elf64_Sym * sym_p;
+#else
     Elf32_Sym * sym_p;
+#endif
 				    
     for(i = 0; i< n; i++)
         rank[i] = sym + i;
@@ -172,7 +198,11 @@ Status entre_IRMarkFunctions(void)
 
     INDEX i,j;
 
+#ifdef N64
+    Elf64_Sym *pSymTab = Executable.pSymTab;
+#else
     Elf32_Sym *pSymTab = Executable.pSymTab;
+#endif
     UINT32     nSymTab = Executable.nSymTab;
     char      *pStrTab = Executable.pStrTab;
     UINT32     nStrTab = Executable.nStrTab;
@@ -205,15 +235,24 @@ Status entre_IRMarkFunctions(void)
     Executable.rel_offset = 0;
 
     /* temporary Symbol array used for function name sort. */
+#ifdef N64
+    Elf64_Sym *aSymTemp = (Elf64_Sym *) calloc(sizeof(Elf64_Sym), nSymTab);
+    Elf64_Sym **SymRank = (Elf64_Sym **) calloc(sizeof(Elf64_Sym *), nSymTab);
+#else
     Elf32_Sym *aSymTemp = (Elf32_Sym *) calloc(sizeof(Elf32_Sym), nSymTab);
     Elf32_Sym **SymRank = (Elf32_Sym **) calloc(sizeof(Elf32_Sym *), nSymTab);
+#endif
 
 	ENTRE_REACH_HERE();
 
  	/* for app with -shared -fPIC */
     for(i=1; i<nSymTab; i++)
 	{
+#ifdef N64
+        Elf64_Sym *pSymTabItem = pSymTab + i;
+#else
         Elf32_Sym *pSymTabItem = pSymTab + i;
+#endif
         unsigned char SymType = ELF32_ST_TYPE(pSymTabItem->st_info);
 
         if( SymType==STT_FUNC && pSymTabItem->st_value >= Executable.pCodeStart 
@@ -231,7 +270,11 @@ Status entre_IRMarkFunctions(void)
 
     for(i=1; i<nSymTab; i++)
     {
+#ifdef N64
+        Elf64_Sym *pSymTabItem = pSymTab + i;
+#else
         Elf32_Sym *pSymTabItem = pSymTab + i;
+#endif
         unsigned char SymType = ELF32_ST_TYPE(pSymTabItem->st_info);
 
         if( SymType==STT_FUNC && pSymTabItem->st_value >= Executable.pCodeStart 
@@ -291,7 +334,11 @@ Status entre_IRMarkFunctions(void)
     /* sort the function Symbols */
     entre_function_sort(aSymTemp, SymRank, Executable.nSymTab);
 	/* copy recoreded Function Symbol from aSymTemp to Executable.pSymTab orderly.*/
+#ifdef N64
+    Executable.pSymTab = (Elf64_Sym *) malloc(sizeof(Elf64_Sym)*Executable.nSymTab);
+#else
     Executable.pSymTab = (Elf32_Sym *) malloc(sizeof(Elf32_Sym)*Executable.nSymTab);
+#endif
     for(i=0; i<Executable.nSymTab; i++)
     {
         Executable.pSymTab[i] = *(SymRank[i]);
@@ -357,12 +404,19 @@ void entre_BinaryLoad(void* start_fp)
 
     INDEX i,j;
  
+#ifdef N64
+    Elf64_Ehdr *pElfHeader = (Elf64_Ehdr *) start_fp;    /* ELF Header address */
+    Elf64_Shdr *pSectionHeaderStart =(Elf64_Shdr *)((char*)pElfHeader + pElfHeader->e_shoff);  /* Section Header Table address */
+    /* Section Name String Table info */
+    Elf64_Shdr *pSectionHeaderItem = pSectionHeaderStart + pElfHeader->e_shstrndx;
+#else
     Elf32_Ehdr *pElfHeader = (Elf32_Ehdr *) start_fp;    /* ELF Header address */
-    UINT32      nSection = pElfHeader->e_shnum;    /* number of sections */
     Elf32_Shdr *pSectionHeaderStart =(Elf32_Shdr *)((char*)pElfHeader + pElfHeader->e_shoff);  /* Section Header Table address */
-
     /* Section Name String Table info */
     Elf32_Shdr *pSectionHeaderItem = pSectionHeaderStart + pElfHeader->e_shstrndx;
+#endif
+
+    UINT32      nSection = pElfHeader->e_shnum;    /* number of sections */
 
     char *pSectionNameStrTab = (char *)((char*)pElfHeader + pSectionHeaderItem->sh_offset);
 //    Executable.pSectionNameStrTab = (char *)malloc(sizeof(pSectionHeaderItem->sh_size));
@@ -385,8 +439,13 @@ void entre_BinaryLoad(void* start_fp)
         }
         else if(strcmp(pSectionName,".symtab")==0)
         { /* .symtab does not exists after loading , need copy */
+#ifdef N64
+            Executable.pSymTab = (Elf64_Sym *)((char *)pElfHeader + pSectionHeaderItem->sh_offset);  /* mmap address */
+            Executable.nSymTab = pSectionHeaderItem->sh_size / sizeof(Elf64_Sym);
+#else
             Executable.pSymTab = (Elf32_Sym *)((char *)pElfHeader + pSectionHeaderItem->sh_offset);  /* mmap address */
             Executable.nSymTab = pSectionHeaderItem->sh_size / sizeof(Elf32_Sym);
+#endif
         }
         else if(strcmp(pSectionName,".strtab")==0)
         { /* .strtab does not exists after loading , need copy */
@@ -395,8 +454,13 @@ void entre_BinaryLoad(void* start_fp)
         }
 		else if(strcmp(pSectionName,".dynsym")==0)
         { /* .dynsym exists when executing, get its virtual address */
+#ifdef N64
+            Executable.pDynamicSymTab = (Elf64_Sym *)pSectionHeaderItem->sh_addr;         /* virtual address */
+            Executable.nDynamicSymTab = pSectionHeaderItem->sh_size / sizeof(Elf64_Sym);
+#else
             Executable.pDynamicSymTab = (Elf32_Sym *)pSectionHeaderItem->sh_addr;         /* virtual address */
             Executable.nDynamicSymTab = pSectionHeaderItem->sh_size / sizeof(Elf32_Sym);
+#endif
         }
 		else if(strcmp(pSectionName,".dynstr")==0)
         { /* .dynstr exists when executing, get its virtual address */

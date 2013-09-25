@@ -25,7 +25,11 @@
 #include "global.h"
 
 /* SEntre_api_end */
+#ifdef N64
+#define IN_CODE_SIZE	14
+#else
 #define IN_CODE_SIZE	10
+#endif
 #define IN_CODE_BYTES	IN_CODE_SIZE*INSN_BYTES
 /* SEntre_api_begin */
 /***********************************************************************

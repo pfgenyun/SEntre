@@ -53,7 +53,9 @@ typedef enum
 #define SHIFT(insn)     (((insn) >> 6) & 0x1f)
 #define BROFFSET(insn)  ((insn) &0xffff)
 #define OFFSET(insn)    ((insn) &0xffff)
-#define TARGET(insn)    ((insn) &0x3ffffff)  
+//#define TARGET(insn)    ((insn) &0x3ffffff)  
+//#define TARGET(insn)    (((insn) &0x3ffffff) | (((insn & 0xf0000000) >> 2)))
+#define TARGET(insn)    (((insn) &0x3ffffff | 0x4000000))  
 
 #define INSN_AT(addr) (*((unsigned *)(addr)))
 
@@ -61,6 +63,7 @@ typedef enum
 #define INSN_S_REG(s)		((s)<<21)
 #define INSN_T_REG(t)		((t)<<16)
 #define INSN_D_REG(d)		((d)<<11)
+#define INSN_SHIFT_REG(shf) ((shf) << 6)
 #define INSN_SUB_OP(op)		((op)&0x3f)
 #define INSN_TARGET(t)		(((t)>>2)&0x3ffffff)
 /* SEntre_api_end */
@@ -68,7 +71,6 @@ typedef enum
 ADDRESS entre_offset_cvt(ADDRESS offset);
 ADDRESS entre_branch_target(ADDRESS pc, INSN_T br);
 ADDRESS entre_branch_offset_cvt(ADDRESS pc, ADDRESS target);
-inline INSN_T entre_make_addiu(REG_T d, REG_T s, int j);
 inline INSN_T entre_make_move(REG_T d, REG_T s);
 inline INSN_T entre_make_lui(REG_T d, unsigned c);
 inline INSN_T entre_make_inc_x(REG_T s, unsigned x);
@@ -80,6 +82,8 @@ inline INSN_T entre_make_ld(REG_T b, REG_T t, unsigned offset);
 inline INSN_T entre_make_sd(REG_T b, REG_T t, unsigned offset);
 inline INSN_T entre_make_b(INSN_T insn, unsigned broffset);
 inline INSN_T entre_make_addiu(REG_T d, REG_T s, int j);
+inline INSN_T entre_make_daddiu(REG_T d, REG_T s, int j);
+inline INSN_T entre_make_dsll(REG_T w, REG_T s, unsigned shf);
 /* SEntre_api_begin */
 
 /***********************************************************************

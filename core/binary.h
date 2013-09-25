@@ -44,12 +44,20 @@ struct struct_executable
     ADDRESS* pGot;  /* point to GOT entries */
     UINT32 nGot;    /* number of GOT entries */
 
+#ifdef N64
+    Elf64_Sym* pSymTab;   /* point to Symbol Table entries */
+#else
     Elf32_Sym* pSymTab;   /* point to Symbol Table entries */
+#endif
     UINT32 nSymTab;       /* number of Symbol Table entries */
     char* pStrTab;        /* point to String Table */
     UINT32 nStrTab;       /* size of String Table */
 
+#ifdef N64
+    Elf64_Sym* pDynamicSymTab;  /* point to Dynamic Symbol Table entries */
+#else
     Elf32_Sym* pDynamicSymTab;  /* point to Dynamic Symbol Table entries */
+#endif
     UINT32 nDynamicSymTab;      /* number of Dynamic Symbol Table entries*/
     char* pDynamicStrTab;       /* point to Dynamic String Table */
     UINT32 nDynamicStrTab;      /* size of Dynamic String Table */

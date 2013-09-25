@@ -28,21 +28,30 @@ SOURCE = entre.c top_level.c global.c binary.c basicblock.c \
 	 trace.c OOprofile.c bb_freq.c utils.c options.c os.c share_app.c \
 	 bb_num.c
 
+MABI = n32
 CC = gcc
-C_FLAG = -g -O0 -fPIC -shared 
+C_FLAG = -g -O0 -fPIC -shared -mabi=$(MABI)
 LINK_FLAG = -ldl 
 
 ##### Debug Flags
 #D_FLAG = -DDEBUG -DDUMP_FUNC -DDUMP_BB -DDUMP_CONTEXT -DDUMP_DIRTY_CALL -DDEBUG_REACH
 #D_FLAG = -DDEBUG -DDUMP_FUNC -DDUMP_BB
 #D_FLAG = -DDUMP_BB
-D_FLAG = 
+D_FLAG =
 
 ##### Function Flags 
 ##### for chrome don't define -DMAP
 ##### -DINSN_IN_DATE used for gdb, for large app, eg. GCC, don't define -DINSN_IN_DATE
 #F_FLAG = -DMAP -DINSN_IN_DATE
-F_FLAG = -DMAP -DAPI_MODE
+ifeq ($(MABI),64)
+    F_FLAG = -DMAP -DAPI_MODE -DN64
+endif
+ifeq ($(MABI),n32)
+    F_FLAG = -DMAP -DAPI_MODE -DN32
+endif
+ifeq ($(MABI),32)
+    F_FLAG = -DMAP -DAPI_MODE -DO32
+endif
 #F_FLAG = 
 
 #####Tool Flags

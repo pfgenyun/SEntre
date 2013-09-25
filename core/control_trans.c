@@ -31,7 +31,11 @@
 void entre_control_transfer()
 {
 	int i;
+#ifdef N64
+	INSN_T trans[8];
+#else
 	INSN_T trans[4];
+#endif
 	struct function * fun_main;
 	ADDRESS main_old_addr;
 	ADDRESS main_new_addr;
@@ -51,11 +55,23 @@ void entre_control_transfer()
 	main_new_addr -= IN_CODE_BYTES;		/* OOpfofile function begin INCODE not exec except main */
 #endif
 
+#ifdef N64
+   trans[0] = entre_make_lui(REG_T9, main_new_addr>>48);
+   trans[1] = entre_make_inc_x(REG_T9, ((main_new_addr>>32)&0xffff));
+   trans[2] = entre_make_dsll(REG_T9, REG_T9, 16);
+   trans[3] = entre_make_inc_x(REG_T9, ((main_new_addr>>16)&0xffff));
+   trans[4] = entre_make_dsll(REG_T9, REG_T9, 16);
+   trans[5] = entre_make_inc_x(REG_T9, (main_new_addr&0xffff));
+   trans[6] = entre_make_jr(REG_T9);
+   trans[7] = entre_make_nop();
+   for(i=0; i<8; i++)
+#else
 	trans[0] = entre_make_lui(REG_T9, main_new_addr>>16);
 	trans[1] = entre_make_inc_x(REG_T9, main_new_addr&0xffff);
 	trans[2] = entre_make_jr(REG_T9);
 	trans[3] = entre_make_nop();
 	for(i=0; i<4; i++)
+#endif
 		INSN_AT(main_old_addr + i*4) = trans[i];
 
 }

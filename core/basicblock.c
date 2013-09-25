@@ -28,8 +28,11 @@
 #include "function.h"
 #include "isa.h"
 
-
-Elf32_Sym *current_fun;
+#ifdef N64
+	Elf64_Sym *current_fun;
+#else
+	Elf32_Sym *current_fun;
+#endif
 
 struct bb all_bb[BB_SIZE];  /* contain all basic block */
 unsigned all_bb_size;       /* the basic block array size */
@@ -420,7 +423,11 @@ void entre_mark_bb(void)
 {
     int start_bb;
     int end_bb;
+#ifdef N64
+    Elf64_Sym *fun;
+#else
     Elf32_Sym *fun;
+#endif
 
 //    entre_init_addr_list();
 

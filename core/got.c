@@ -58,6 +58,21 @@ int entre_got_find_j_num_from_newAddr(ADDRESS newAddr)
     return j;
 }
 
+int entre_got_find_bal_num_from_newAddr(ADDRESS newAddr)
+{
+    int i, j;
+    for(i=0; GOT_NEW_ADDR(i)<=newAddr; i++)
+        ;
+    for(j=0; j<got[i-1].bPointNum; j++)
+    {
+        if(newAddr<got[i-1].fun_bP[j].new_bP)
+        {
+            break;
+        }
+    }
+    return j;
+}
+
 ADDRESS entre_got_map_oldAddr_2_newFunAddr(ADDRESS oldAddr)
 {
     int i, j;
@@ -80,6 +95,17 @@ ADDRESS entre_got_map_newAddr_2_oldFunAddr(ADDRESS newAddr)
 		    return GOT_OLD_ADDR(i);
 	}
 	return 0;
+}
+
+ADDRESS entre_got_map_oldAddr_2_oldFunAddr(ADDRESS oldAddr)
+{
+    int i, j;
+   for(i=0; i<got_n-1; i++)
+   {
+       if(oldAddr>=GOT_OLD_ADDR(i) && oldAddr<GOT_OLD_ADDR(i+1))
+           return GOT_OLD_ADDR(i);
+   }
+   return 0;
 }
 
 #if 1
@@ -181,6 +207,7 @@ void entre_got_init_instrument_point()
 	{
 		got[i].instrumentPointNum = 0;
 		got[i].jPointNum = 0;
+		got[i].bPointNum = 0;
 		got[i].funInstrumentP = (struct instrumentRecordTable *)malloc(INSTRUMENT_SIZE*sizeof(struct instrumentRecordTable));
 		if(got[i].funInstrumentP == NULL)
 		{
@@ -193,6 +220,12 @@ void entre_got_init_instrument_point()
 			printf("EE: MALLOC fun_jP ERROR in GOT INIT!\n");
 			exit(0);
 		}
+		got[i].fun_bP = (struct bal_RecordTable *)malloc(INSTRUMENT_SIZE*sizeof(struct bal_RecordTable));
+		if(got[i].fun_bP == NULL)
+		{
+			printf("EE: MALLOC fun_bP ERROR in GOT INIT!\n");
+			exit(0);
+		}
 	    for(j=0; j<INSTRUMENT_SIZE; j++)
 		{
 			got[i].funInstrumentP[j].oldInstrumentP = 0;
@@ -201,6 +234,15 @@ void entre_got_init_instrument_point()
 			got[i].fun_jP[j].new_jP = 0;
 		}
 	}
+}
+
+void entre_got_add_bal_point(ADDRESS oldAddr, ADDRESS newAddr)
+{
+    /* -1 is for got_n++ in the entre_got_add_entry() */
+    int numP = got[got_n-1].bPointNum;
+    got[got_n-1].fun_bP[numP].old_bP = oldAddr;
+    got[got_n-1].fun_bP[numP].new_bP = newAddr;
+    got[got_n-1].bPointNum++;
 }
 
 void entre_got_add_jump_point(ADDRESS oldAddr, ADDRESS newAddr)

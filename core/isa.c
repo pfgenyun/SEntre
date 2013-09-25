@@ -115,6 +115,13 @@ inline int entre_is_lw(INSN_T insn)
 		return 0;
 }
 
+inline int entre_is_bal(INSN_T insn)
+{
+   if(MAIN_OP(insn) == 1 && (T_REG(insn) == 17))
+       return 1;
+   else
+       return 0;
+}
 
 inline int entre_is_b(INSN_T insn)
 {
@@ -211,6 +218,20 @@ inline INSN_T entre_make_b(INSN_T insn, unsigned broffset)
 	return new_insn;
 }
 
+inline INSN_T entre_make_dsll(REG_T w, REG_T s, unsigned shf)
+{
+   INSN_T insn;
+   insn = INSN_MAIN_OP(0) | INSN_D_REG(s) | INSN_T_REG(w) | INSN_SHIFT_REG(shf & 0x1f) | 56;
+   return insn;
+}
+
+inline INSN_T entre_make_daddiu(REG_T d, REG_T s, int j)
+{
+   INSN_T insn;
+   insn = INSN_MAIN_OP(25) | INSN_S_REG(s) | INSN_T_REG(d) | (0x0000ffff&j);
+   return insn;
+}
+
 inline INSN_T entre_make_addiu(REG_T d, REG_T s, int j)
 {
 	INSN_T insn;
@@ -267,18 +288,30 @@ inline INSN_T entre_make_jr(REG_T s)
 	return insn;
 }
 
+inline INSN_T entre_make_lw(REG_T b, REG_T t, unsigned offset)
+{
+	INSN_T insn;
+	insn = INSN_MAIN_OP(35) | INSN_S_REG(b) | INSN_T_REG(t) | (0x0000ffff&offset);
+	return insn;
+}
+
 inline INSN_T entre_make_ld(REG_T b, REG_T t, unsigned offset)
 {
 	INSN_T insn;
-//	insn = INSN_MAIN_OP(55) | INSN_S_REG(b) | INSN_T_REG(t) | (0x0000ffff&offset);
-	insn = INSN_MAIN_OP(35) | INSN_S_REG(b) | INSN_T_REG(t) | (0x0000ffff&offset);
+	insn = INSN_MAIN_OP(55) | INSN_S_REG(b) | INSN_T_REG(t) | (0x0000ffff&offset);
 	return insn;
 }
 
 inline INSN_T entre_make_sd(REG_T b, REG_T t, unsigned offset)
 {
 	INSN_T insn;
-//	insn = INSN_MAIN_OP(63) | INSN_S_REG(b) | INSN_T_REG(t) | (0x0000ffff&offset);
+	insn = INSN_MAIN_OP(63) | INSN_S_REG(b) | INSN_T_REG(t) | (0x0000ffff&offset);
+	return insn;
+}
+
+inline INSN_T entre_make_sw(REG_T b, REG_T t, unsigned offset)
+{
+	INSN_T insn;
 	insn = INSN_MAIN_OP(43) | INSN_S_REG(b) | INSN_T_REG(t) | (0x0000ffff&offset);
 	return insn;
 }
@@ -347,7 +380,11 @@ ADDRESS entre_offset_cvt(ADDRESS offset)
 
 ADDRESS entre_broffset_cvt(ADDRESS broffset)
 {
+#ifdef N64
+    ADDRESS mask = 0xffffffffffff0000;
+#else
     ADDRESS mask = 0xffff0000;
+#endif
     ADDRESS ad;
 
     if((broffset>>15) == 1)

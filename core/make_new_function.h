@@ -26,7 +26,13 @@
 #include "global.h"
 
 /* SEntre_api_end */
+#ifdef N64
+#define LOAD_T9_NUM  6
+#define BAL_T9_NUM  8
+#else
+#define BAL_T9_NUM  4
 #define LOAD_T9_NUM  2
+#endif
 #define J_JAL_T9_NUM 4
 #define LOAD_T9_BYTES  LOAD_T9_NUM*INSN_BYTES
 #define INSTRUMENT_OMIT_SIZE  1000

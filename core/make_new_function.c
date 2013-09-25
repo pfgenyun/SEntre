@@ -43,6 +43,7 @@ ADDRESS entre_map_newAddr_2_oldInsnAddr(ADDRESS newAddr)
 {
 	int numPoint;
 	int jump_num;
+	int bal_num;
 	ADDRESS oldFunAddr;
 	ADDRESS newFunAddr;
 	ADDRESS oldInsnAddr;
@@ -51,10 +52,12 @@ ADDRESS entre_map_newAddr_2_oldInsnAddr(ADDRESS newAddr)
     newFunAddr = entre_got_map_oldAddr_2_newFunAddr(oldFunAddr);
 	numPoint = entre_got_find_instrument_num_from_newAddr(newAddr);
 	jump_num = entre_got_find_j_num_from_newAddr(newAddr);
+	bal_num = entre_got_find_bal_num_from_newAddr(newAddr);
 	oldInsnAddr = oldFunAddr 
 		          + (newAddr - newFunAddr) 
 		          - numPoint*IN_CODE_BYTES
 				  - jump_num*J_JAL_T9_NUM*INSN_BYTES
+				  - bal_num*BAL_T9_NUM*INSN_BYTES
 	              - LOAD_T9_BYTES;
 
 	return oldInsnAddr;
@@ -199,6 +202,49 @@ int entre_jump_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr)
 	return lr_num;
 }
 
+/* calculate the num of instrumentation between the fun start address
+ * and the target address */
+int entre_bal_num(struct function * fun, ADDRESS target_addr, ADDRESS b_addr)
+{
+   int lr_num = 0;
+   ADDRESS addr_i;
+   ADDRESS start_addr;
+   ADDRESS end_addr;
+   ADDRESS fun_start_addr = FUNCTION_START_ADDRESS(fun);
+   
+   if(target_addr >= entre_function_next_address(fun) || 
+      target_addr < fun_start_addr )
+   {
+       entre_my_error("JUMP EE: address does not in function!");
+   }
+
+   if(target_addr > b_addr)
+   {
+       start_addr = b_addr;
+       end_addr = target_addr;
+       /*when branch down, the first and the end instruction will be omit*/
+       for(addr_i=start_addr+INSN_BYTES; addr_i<=end_addr; addr_i+=INSN_BYTES)
+       {
+           INSN_T insn = INSN_AT(addr_i);
+           if(entre_is_bal(insn))
+               lr_num++;
+       }
+   }
+   else
+   {
+       start_addr = target_addr;
+       end_addr = b_addr;
+       /*when branch up, the first and the end instruction will be calculated*/
+       for(addr_i=start_addr; addr_i<=end_addr; addr_i+=INSN_BYTES)
+       {
+           INSN_T insn = INSN_AT(addr_i);
+           if(entre_is_bal(insn))
+               lr_num++;
+       }
+   }
+   return lr_num;
+}
+
 /* when a instrument instruction(lw or sw) lies in a 
  * branch delay slot, it cannot be instrumented */
 int entre_can_instrument_here(ADDRESS instrument_addr)
@@ -249,8 +295,17 @@ void entre_make_a_new_function(struct function * fun)
 #endif
 
 	INSN_T load_t9[LOAD_T9_NUM];
+#ifdef N64
+    load_t9[0] = entre_make_lui(REG_T9, fun_start_addr>>48);
+    load_t9[1] = entre_make_inc_x(REG_T9, ((fun_start_addr>>32)&0xffff));
+    load_t9[2] = entre_make_dsll(REG_T9, REG_T9, 16);
+    load_t9[3] = entre_make_inc_x(REG_T9, ((fun_start_addr>>16)&0xffff));
+    load_t9[4] = entre_make_dsll(REG_T9, REG_T9, 16);
+    load_t9[5] = entre_make_inc_x(REG_T9, (fun_start_addr&0xffff));
+#else
 	load_t9[0] = entre_make_lui(REG_T9, fun_start_addr>>16);
 	load_t9[1] = entre_make_inc_x(REG_T9, fun_start_addr&0xffff);
+#endif
 	entre_cc_add_code(load_t9, LOAD_T9_NUM);
 
 	
@@ -328,6 +383,30 @@ void entre_make_a_new_function(struct function * fun)
 #endif
 			addr_start = addr_end;
 		}
+       	if(entre_is_bal(insn))
+       	{
+#ifdef DEBUG
+            printf("bal insn addr:0x%x\tin function:%s\n", addr_end, fun->f_name);
+#endif
+            entre_cc_add_code((INSN_T*)addr_start, (addr_end - addr_start) / INSN_BYTES);
+            INSN_T bal_t9[BAL_T9_NUM];
+            bal_t9[0] = entre_make_nop();
+            bal_t9[1] = entre_make_nop();
+            bal_t9[2] = entre_make_nop();
+            bal_t9[3] = entre_make_nop();
+#ifdef N64
+            bal_t9[4] = entre_make_nop();
+            bal_t9[5] = entre_make_nop();
+            bal_t9[6] = entre_make_nop();
+            bal_t9[7] = entre_make_nop();
+#endif
+            entre_cc_add_code((INSN_T *)bal_t9, BAL_T9_NUM);
+#ifdef MAP 
+            ccAddr_i = entre_cc_get_top_address();
+            entre_got_add_bal_point(addr_end, ccAddr_i);
+#endif
+            addr_start = addr_end;
+       	}
         if((addr_end > Executable.PltStart) && (addr_end <= Executable.PltEnd))
         {   
 			entre_cc_add_code((INSN_T*)addr_start, (addr_end - addr_start) / INSN_BYTES);

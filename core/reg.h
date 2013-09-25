@@ -31,14 +31,22 @@ typedef enum
     REG_A1,
 	REG_A2,
 	REG_A3,
+#ifdef N64
+    REG_A4,		//4-7
+    REG_A5,
+	REG_A6,
+	REG_A7,
+#endif
 	REG_T0,		//8-15
 	REG_T1,		
 	REG_T2,		
 	REG_T3,		
+#ifndef N64
 	REG_T4,		
 	REG_T5,		
 	REG_T6,		
 	REG_T7,	
+#endif
 	REG_S0,		//16-23
 	REG_S1,
 	REG_S2,

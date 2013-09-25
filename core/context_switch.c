@@ -40,10 +40,18 @@ ADDRESS entre_make_context_switch_code(ADDRESS target_addr)
     insn_i = 0;
 
 	/* 36 position was used 33 in fact. the remaining 3 was used in in_code function. */
+#ifdef N64
+    scode[insn_i++] = entre_make_daddiu(REG_SP, REG_SP, (-CONTEXT_STACK_SIZE));	/* stack space */
+#else
     scode[insn_i++] = entre_make_addiu(REG_SP, REG_SP, (-CONTEXT_STACK_SIZE));	/* stack space */
+#endif
     for(i=0; i<32; i++)
     {
+#ifdef N64
         scode[insn_i++] = entre_make_sd(REG_SP, (REG_T)i, (i+1)*8);		/* record context on stack */
+#else
+        scode[insn_i++] = entre_make_sw(REG_SP, (REG_T)i, (i+1)*8);		/* record context on stack */
+#endif
     }
 	for(i=32; i<64; i++)
     {
@@ -52,31 +60,60 @@ ADDRESS entre_make_context_switch_code(ADDRESS target_addr)
 
     scode[insn_i++] = entre_make_mflo(REG_T1);		/* record context on stack */
     scode[insn_i++] = entre_make_mfhi(REG_T2);		/* record context on stack */
+#ifdef N64
     scode[insn_i++] = entre_make_sd(REG_SP, REG_T1, CONTEXT_STACK_LO*8);		/* record context on stack */
     scode[insn_i++] = entre_make_sd(REG_SP, REG_T2, CONTEXT_STACK_HI*8);		/* record context on stack */
+#else
+    scode[insn_i++] = entre_make_sw(REG_SP, REG_T1, CONTEXT_STACK_LO*8);		/* record context on stack */
+    scode[insn_i++] = entre_make_sw(REG_SP, REG_T2, CONTEXT_STACK_HI*8);		/* record context on stack */
+#endif
     
 	scode[insn_i++] = entre_make_move(REG_A0, REG_SP);				/* parameter pass to entre_main_entry */
+#ifndef N64
     scode[insn_i++] = entre_make_sd(REG_SP, REG_SP, 0);				/* parameter stored into stack */
+#endif
+#ifdef N64
+    scode[insn_i++] = entre_make_lui(REG_T9, target_addr>>48);
+    scode[insn_i++] = entre_make_inc_x(REG_T9, ((target_addr>>32)&0xffff));
+    scode[insn_i++] = entre_make_dsll(REG_T9, REG_T9, 16);
+    scode[insn_i++] = entre_make_inc_x(REG_T9, ((target_addr>>16)&0xffff));
+    scode[insn_i++] = entre_make_dsll(REG_T9, REG_T9, 16);
+    scode[insn_i++] = entre_make_inc_x(REG_T9, (target_addr&0xffff));
+#else
 	scode[insn_i++] = entre_make_lui(REG_T9,target_addr>>16);
 	scode[insn_i++] = entre_make_inc_x(REG_T9, target_addr&0xffff);
+#endif
 	scode[insn_i++] = entre_make_jalr(REG_T9);
 	scode[insn_i++] = entre_make_nop();
 
+#ifdef N64
     scode[insn_i++] = entre_make_ld(REG_SP, REG_T2, CONTEXT_STACK_HI*8);		/* record context on stack */
     scode[insn_i++] = entre_make_ld(REG_SP, REG_T1, CONTEXT_STACK_LO*8);		/* record context on stack */
+#else
+    scode[insn_i++] = entre_make_lw(REG_SP, REG_T2, CONTEXT_STACK_HI*8);		/* record context on stack */
+    scode[insn_i++] = entre_make_lw(REG_SP, REG_T1, CONTEXT_STACK_LO*8);		/* record context on stack */
+#endif
     scode[insn_i++] = entre_make_mthi(REG_T2);		/* record context on stack */
     scode[insn_i++] = entre_make_mtlo(REG_T1);		/* record context on stack */
 
 	for(i=0; i<32; i++)
 	{
+#ifdef N64
 	    scode[insn_i++] = entre_make_ld(REG_SP, (REG_T)i, (i+1)*8);
+#else
+	    scode[insn_i++] = entre_make_lw(REG_SP, (REG_T)i, (i+1)*8);
+#endif
 	}
 	for(i=32; i<64; i++)
 	{
 	    scode[insn_i++] = entre_make_l_d(REG_SP, (REG_T)(i-32), (i+1)*8);
 	}
 	scode[insn_i++] = entre_make_jr(REG_RA);
+#ifdef N64
+	scode[insn_i++] = entre_make_daddiu(REG_SP, REG_SP, CONTEXT_STACK_SIZE);		/* exe before jr */
+#else
 	scode[insn_i++] = entre_make_addiu(REG_SP, REG_SP, CONTEXT_STACK_SIZE);		/* exe before jr */
+#endif
 //	scode[insn_i++] = entre_make_nop();
 
     context_addr = entre_cc_get_top_address();		/* copy this code to cc */
@@ -117,6 +154,32 @@ void entre_dump_context(struct context * context)
 */
 
 
+#ifdef N64
+void entre_dump_context(struct context * context)
+{
+	printf("\t\t\t\tstack: %-16llx\tzero: %-16llx\t\n	\
+			at: %-16llx\tv0: %-16llx\tv1: %-16llx\t\n	\
+			a0: %-16llx\ta1: %-16llx\ta2: %-16llx\t\n	\
+			a3: %-16llx\tt0: %-16llx\tt1: %-16llx\t\n	\
+			t2: %-16llx\tt3: %-16llx\ta4: %-16llx\t\n	\
+			a5: %-16llx\ta6: %-16llx\ta7: %-16llx\t\n	\
+			s0: %-16llx\ts1: %-16llx\ts2: %-16llx\t\n	\
+			s3: %-16llx\ts4: %-16llx\ts5: %-16llx\t\n	\
+			s6: %-16llx\ts7: %-16llx\tt8: %-16llx\t\n	\
+			t9: %-16llx\tk0: %-16llx\tk1: %-16llx\t\n	\
+			gp: %-16llx\tsp: %-16llx\tfp: %-16llx\t\n	\
+			ra: %-16llx\told_t9: %-llx\told_sp: %-llx\told_ra: %-llx\n",
+		context->stack, context->zero, context->at, context->v0, context->v1,
+		context->a0, context->a1, context->a2, context->a3,
+		context->t0, context->t1, context->t2, context->t3,
+		context->a4, context->a5, context->a6, context->a7,
+		context->s0, context->s1, context->s2, context->s3,
+		context->s4, context->s5, context->s6, context->s7,
+		context->t8, context->t9, context->k0, context->k1,
+		context->gp, context->sp, context->fp, context->ra,
+		context->old_t9, context->sp, context->old_ra);
+}
+#else
 void entre_dump_context(struct context * context)
 {
 	printf("\t\t\t\tstack: %-16llx\tzero: %-16llx\t\n	\
@@ -141,6 +204,7 @@ void entre_dump_context(struct context * context)
 		context->gp, context->sp, context->fp, context->ra,
 		context->old_t9, context->sp, context->old_ra);
 }
+#endif
 
 
 

@@ -28,7 +28,11 @@
 //#define SCODE_SIZE (73+8)
 //#define CONTEXT_STACK_NUM	(32+3+1+2)
 
+#ifdef N64
+#define SCODE_SIZE (73+64+8+4)
+#else
 #define SCODE_SIZE (73+64+8)
+#endif
 #define CONTEXT_STACK_NUM	(32+3+1+32+2)
 #define CONTEXT_STACK_LO	(32+1+32)
 #define CONTEXT_STACK_HI	(32+1+32+1)
@@ -49,14 +53,22 @@ struct context
     UINT64  a1;    
     UINT64  a2;     
     UINT64  a3;    
+#ifdef N64
+    UINT64  a4;    
+    UINT64  a5;    
+    UINT64  a6;     
+    UINT64  a7;    
+#endif
     UINT64  t0;    
     UINT64  t1;    
     UINT64  t2;    
     UINT64  t3;    
+#ifndef N64
     UINT64  t4;    
     UINT64  t5;    
     UINT64  t6;     
     UINT64  t7;    
+#endif
     UINT64  s0;    
     UINT64  s1;    
     UINT64  s2;    

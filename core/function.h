@@ -38,7 +38,11 @@ struct function
 };
 
 void entre_init_function();
+#ifdef N64
+void entre_init_one_function(Elf64_Sym *, unsigned, unsigned);
+#else
 void entre_init_one_function(Elf32_Sym *, unsigned, unsigned);
+#endif
 inline int entre_function_num();
 ADDRESS entre_function_start_address(struct function * fun);
 ADDRESS entre_function_next_address(struct function * fun);
