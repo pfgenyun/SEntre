@@ -192,7 +192,7 @@ void entre_jal_b_redirect(struct function * fun)
 
         if(entre_is_jal(insn) || entre_is_j(insn))
         {
-			old_target = TARGET(insn)<<2;
+			old_target = ((TARGET(insn)<<2) | ((addr_i) & 0xf0000000));
 			if(old_target >= entre_function_next_address(fun) || old_target < fun_start_addr )
 			{
 				new_target = entre_got_find_final(old_target);

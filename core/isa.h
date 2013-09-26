@@ -53,9 +53,7 @@ typedef enum
 #define SHIFT(insn)     (((insn) >> 6) & 0x1f)
 #define BROFFSET(insn)  ((insn) &0xffff)
 #define OFFSET(insn)    ((insn) &0xffff)
-//#define TARGET(insn)    ((insn) &0x3ffffff)  
-//#define TARGET(insn)    (((insn) &0x3ffffff) | (((insn & 0xf0000000) >> 2)))
-#define TARGET(insn)    (((insn) &0x3ffffff | 0x4000000))  
+#define TARGET(insn)    ((insn) &0x3ffffff)  
 
 #define INSN_AT(addr) (*((unsigned *)(addr)))
 

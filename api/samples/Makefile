@@ -28,7 +28,7 @@ SOURCE = entre.c top_level.c global.c binary.c basicblock.c \
 	 trace.c OOprofile.c bb_freq.c utils.c options.c os.c share_app.c \
 	 bb_num.c
 
-MABI = n32
+MABI = 32
 CC = gcc
 C_FLAG = -g -O0 -fPIC -shared -mabi=$(MABI)
 LINK_FLAG = -ldl 
