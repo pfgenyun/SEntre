@@ -33,18 +33,21 @@ struct instrumentRecordTable
 {
     ADDRESS oldInstrumentP;	//address of instrument point in origin address space
 	ADDRESS newInstrumentP;	//addresss of instrument point in codecache 
+	struct instrumentRecordTable *next;
 };
 
 struct jump_RecordTable
 {
     ADDRESS old_jP; //address of instrument point in origin address space
     ADDRESS new_jP; //addresss of instrument point in codecache 
+	struct jump_RecordTable *next;
 };
 
 struct bal_RecordTable
 {
     ADDRESS old_bP; //address of instrument point in origin address space
     ADDRESS new_bP; //addresss of instrument point in codecache 
+	struct bal_RecordTable *next;
 };
 
 /* copy code from original palce to codecache, got is used to record 

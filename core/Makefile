@@ -26,8 +26,8 @@ SOURCE = entre.c top_level.c global.c binary.c basicblock.c \
 	 isa.c in_code.c make_new_function.c control_trans.c redirect.c \
 	 utils.c options.c os.c share_app.c
 
-MABI = n32
-CC = gcc-4.4
+MABI = 32
+CC = gcc
 C_FLAG = -g -O0 -fPIC -shared -mabi=$(MABI)
 LINK_FLAG = -ldl 
 

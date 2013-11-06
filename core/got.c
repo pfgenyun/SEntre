@@ -19,6 +19,7 @@
 
 
 #include <stdlib.h>
+#include <string.h>
 #include "make_new_function.h"
 #include "global.h"
 #include "got.h"
@@ -30,47 +31,68 @@ int got_n;
 
 int entre_got_find_instrument_num_from_newAddr(ADDRESS newAddr)
 {
-    int i, j;
-	for(i=0; GOT_NEW_ADDR(i)<=newAddr; i++)
+    int i, j = 0;
+	struct instrumentRecordTable *cur = NULL;
+
+	for(i=0; GOT_NEW_ADDR(i) <= newAddr; i++)
 	    ;
-	for(j=0; j<got[i-1].instrumentPointNum; j++)
+
+	if(got[i-1].instrumentPointNum == 0)
+		return 0;
+
+	cur = got[i-1].funInstrumentP;
+	while(cur != NULL)
 	{
-		if(newAddr<got[i-1].funInstrumentP[j].newInstrumentP)
-		{
+		if(newAddr < cur->newInstrumentP)
 			break;
-		}
+		cur = cur->next;
+		j++;
 	}
 	return j;
 }
 
 int entre_got_find_j_num_from_newAddr(ADDRESS newAddr)
 {
-    int i, j;
+    int i, j = 0;
+	struct jump_RecordTable *cur = NULL;
+
     for(i=0; GOT_NEW_ADDR(i)<=newAddr; i++)
         ;
-    for(j=0; j<got[i-1].jPointNum; j++)
-    {
-        if(newAddr<got[i-1].fun_jP[j].new_jP)
-        {
-            break;
-        }
-    }
-    return j;
+
+	if(got[i-1].jPointNum == 0)
+		return 0;
+
+	cur = got[i-1].fun_jP;
+	while(cur != NULL)
+	{
+		if(newAddr < cur->new_jP)
+			break;
+		cur = cur->next;
+		j++;
+	}
+	return j;
 }
 
 int entre_got_find_bal_num_from_newAddr(ADDRESS newAddr)
 {
     int i, j;
+	struct bal_RecordTable *cur = NULL;
+
     for(i=0; GOT_NEW_ADDR(i)<=newAddr; i++)
         ;
-    for(j=0; j<got[i-1].bPointNum; j++)
-    {
-        if(newAddr<got[i-1].fun_bP[j].new_bP)
-        {
-            break;
-        }
-    }
-    return j;
+
+	if(got[i-1].bPointNum == 0)
+		return 0;
+
+	cur = got[i-1].fun_bP;
+	while(cur != NULL)
+	{
+		if(newAddr < cur->new_bP)
+			break;
+		cur = cur->next;
+		j++;
+	}
+	return j;
 }
 
 ADDRESS entre_got_map_oldAddr_2_newFunAddr(ADDRESS oldAddr)
@@ -201,72 +223,125 @@ ADDRESS entre_got_find_orig(ADDRESS old_address)
 
 void entre_got_init_instrument_point()
 {
-	int i, j;
+	int i;
 
 	for(i=0; i<got_size; i++)
 	{
 		got[i].instrumentPointNum = 0;
 		got[i].jPointNum = 0;
 		got[i].bPointNum = 0;
-		got[i].funInstrumentP = (struct instrumentRecordTable *)malloc(INSTRUMENT_SIZE*sizeof(struct instrumentRecordTable));
-		if(got[i].funInstrumentP == NULL)
-		{
-		    printf("EE: MALLOC ERROR in GOT INIT!\n");
-			exit(0);
-		}
-		got[i].fun_jP = (struct jump_RecordTable *)malloc(INSTRUMENT_SIZE*sizeof(struct jump_RecordTable));
-		if(got[i].fun_jP == NULL)
-		{
-			printf("EE: MALLOC fun_jP ERROR in GOT INIT!\n");
-			exit(0);
-		}
-		got[i].fun_bP = (struct bal_RecordTable *)malloc(INSTRUMENT_SIZE*sizeof(struct bal_RecordTable));
-		if(got[i].fun_bP == NULL)
-		{
-			printf("EE: MALLOC fun_bP ERROR in GOT INIT!\n");
-			exit(0);
-		}
-	    for(j=0; j<INSTRUMENT_SIZE; j++)
-		{
-			got[i].funInstrumentP[j].oldInstrumentP = 0;
-			got[i].funInstrumentP[j].newInstrumentP = 0;
-			got[i].fun_jP[j].old_jP = 0;
-			got[i].fun_jP[j].new_jP = 0;
-		}
 	}
 }
 
 void entre_got_add_bal_point(ADDRESS oldAddr, ADDRESS newAddr)
 {
     /* -1 is for got_n++ in the entre_got_add_entry() */
-    int numP = got[got_n-1].bPointNum;
-    got[got_n-1].fun_bP[numP].old_bP = oldAddr;
-    got[got_n-1].fun_bP[numP].new_bP = newAddr;
+    if(got[got_n-1].bPointNum == 0)
+    {   
+        got[got_n-1].fun_bP = (struct bal_RecordTable *)malloc(sizeof(struct bal_RecordTable));
+		if(got[got_n-1].fun_bP == NULL)
+		{
+			printf("EE: MALLOC fun_bP ERROR!\n");
+			exit(0);
+		}
+		memset(got[got_n-1].fun_bP, 0, sizeof(struct bal_RecordTable));
+        got[got_n-1].fun_bP->old_bP = oldAddr;
+        got[got_n-1].fun_bP->new_bP = newAddr;
+        got[got_n-1].fun_bP->next = NULL;
+    }   
+    else
+    {   
+        struct bal_RecordTable *cur = NULL;
+        for(cur = got[got_n-1].fun_bP; cur->next != NULL; cur = cur->next)
+            ;   
+        struct bal_RecordTable *temp = (struct bal_RecordTable *)malloc(sizeof(struct bal_RecordTable));
+		if(temp == NULL)
+		{
+			printf("EE: MALLOC temp ERROR!\n");
+			exit(0);
+		}
+		memset(temp, 0, sizeof(struct bal_RecordTable));
+        temp->old_bP = oldAddr;
+        temp->new_bP = newAddr;
+		temp->next = cur->next;
+		cur->next = temp;
+	}
     got[got_n-1].bPointNum++;
 }
 
 void entre_got_add_jump_point(ADDRESS oldAddr, ADDRESS newAddr)
 {
     /* -1 is for got_n++ in the entre_got_add_entry() */
-    int numP = got[got_n-1].jPointNum;
-    got[got_n-1].fun_jP[numP].old_jP = oldAddr;
-    got[got_n-1].fun_jP[numP].new_jP = newAddr;
+    if(got[got_n-1].jPointNum == 0)
+    {   
+        got[got_n-1].fun_jP = (struct jump_RecordTable *)malloc(sizeof(struct jump_RecordTable));
+		if(got[got_n-1].fun_jP == NULL)
+		{
+			printf("EE: MALLOC fun_jP ERROR!\n");
+			exit(0);
+		}
+		memset(got[got_n-1].fun_jP, 0, sizeof(struct jump_RecordTable));
+        got[got_n-1].fun_jP->old_jP = oldAddr;
+        got[got_n-1].fun_jP->new_jP = newAddr;
+        got[got_n-1].fun_jP->next = NULL;
+    }   
+    else
+    {   
+        struct jump_RecordTable *cur = NULL;
+        for(cur = got[got_n-1].fun_jP; cur->next != NULL; cur = cur->next)
+            ;   
+        struct jump_RecordTable *temp = (struct jump_RecordTable *)malloc(sizeof(struct jump_RecordTable));
+		if(temp == NULL)
+		{
+			printf("EE: MALLOC temp ERROR!\n");
+			exit(0);
+		}
+		memset(temp, 0, sizeof(struct jump_RecordTable));
+        temp->old_jP = oldAddr;
+        temp->new_jP = newAddr;
+		temp->next = cur->next;
+		cur->next = temp;
+	}
     got[got_n-1].jPointNum++;
 }  
 
 void entre_got_add_instrument_point(ADDRESS oldAddr, ADDRESS newAddr)
 {
+	int i;
+
     /* -1 is for got_n++ in the entre_got_add_entry() */
-	int numP = got[got_n-1].instrumentPointNum;
-    got[got_n-1].funInstrumentP[numP].oldInstrumentP = oldAddr;
-    got[got_n-1].funInstrumentP[numP].newInstrumentP = newAddr;
+	struct instrumentRecordTable *cur = NULL;
 
+	if(got[got_n-1].instrumentPointNum == 0)
+	{
+		got[got_n-1].funInstrumentP = (struct instrumentRecordTable *)malloc(sizeof(struct instrumentRecordTable));
+		if(got[got_n-1].funInstrumentP == NULL)
+		{
+			printf("EE: MALLOC funInstrumentP ERROR!\n");
+			exit(0);
+		}
+		memset(got[got_n-1].funInstrumentP, 0, sizeof(struct instrumentRecordTable));
+		got[got_n-1].funInstrumentP->oldInstrumentP = oldAddr;
+		got[got_n-1].funInstrumentP->newInstrumentP = newAddr;
+		got[got_n-1].funInstrumentP->next = NULL;
+	}
+	else
+	{
+		for(cur = got[got_n-1].funInstrumentP, i = 0; cur->next != NULL; cur = cur->next, i++)
+			;
+		struct instrumentRecordTable *temp = (struct instrumentRecordTable *)malloc(sizeof(struct instrumentRecordTable));
+		if(temp == NULL)
+		{
+			printf("EE: MALLOC temp ERROR!\n");
+			exit(0);
+		}
+		memset(temp, 0, sizeof(struct instrumentRecordTable));
+		temp->oldInstrumentP = oldAddr;
+		temp->newInstrumentP = newAddr;
+		temp->next = cur->next;
+		cur->next = temp;
+	}
 	got[got_n-1].instrumentPointNum++;
-
-//    printf("old instrumentP:%x new instrumentP %x instrument num:%d in got\n", 
-//			got[got_n-1].funInstrumentP[numP].oldInstrumentP, 
-//			got[got_n-1].funInstrumentP[numP].newInstrumentP, 
-//			got[got_n-1].instrumentPointNum);
 }
 
 void entre_got_add_entry(ADDRESS old_addr, ADDRESS new_addr)
