@@ -484,16 +484,30 @@ void entre_dump_bb()
 	length = strlen(short_name);
 	for(i=0; i<length; i++)
 	    output_file[i] = short_name[i];
-	strcpy(&output_file[i], "_bb.sentre");
+#ifdef OUT_SVG
+	strcpy(&output_file[i], "_bb.sentre.svg");
 
+	fp = fopen(output_file, "w");
+	fprintf(fp, "<?xml version=\"1.0\" standalone=\"no\"?>\n");
+	fprintf(fp, "<svg width=\"1000000\" height=\"10000\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n");
+	int x=20, y=20;
+	FOR_EACH_BB(bb_p, i)
+	{
+		fprintf(fp, "<text style=\"font-size:30;stroke:none;fill:rgb(0,0,0);\" x=\"%d\" y=\"%d\">\n", x, y);
+		fprintf(fp, "Fun:%s, start:0x%x, end:0x%x, insn_num:%d, counter:%d\n",  bb_p->fun_name, bb_p->start, bb_p->start + bb_p->insn_num * 4, bb_p->insn_num, bb_p->counter);
+		fprintf(fp, "</text>\n");
+		fprintf(fp, "<rect x=\"%d\" y=\"%d\" width=\"%d\" height=\"10\" style=\"file:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9\"/>\n", x + 700, y - 10, bb_p->counter);
+		y += 20;
+	}
+	fprintf(fp, "</svg>");
+#else
+	strcpy(&output_file[i], "_bb.sentre");
 	fp = fopen(output_file, "w");
 	FOR_EACH_BB(bb_p, i)
 	{
-//		printf("start: %x\tinsn_num: %d\tin_point: %x\ti1: %x\ti2: %x\tcounter: %ld\n",
-//	bb_p->start, bb_p->insn_num, bb_p->in_point, bb_p->i1, bb_p->i2, bb_p->counter);
-		fprintf(fp, "start: %x\tend: %x \tinsn_num: %d \tcounter: %-14d\tfun_name: %s\n",
-	bb_p->start, bb_p->start + bb_p->insn_num * 4, bb_p->insn_num, bb_p->counter, bb_p->fun_name);
+		fprintf(fp, "start: %x\tend: %x \tinsn_num: %d \tcounter: %-14d\tfun_name: %s\n", bb_p->start, bb_p->start + bb_p->insn_num * 4, bb_p->insn_num, bb_p->counter, bb_p->fun_name);
 	}
+#endif
 	fclose(fp);
 }
 

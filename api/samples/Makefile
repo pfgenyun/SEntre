@@ -44,13 +44,13 @@ D_FLAG =
 ##### -DINSN_IN_DATE used for gdb, for large app, eg. GCC, don't define -DINSN_IN_DATE
 #F_FLAG = -DMAP -DINSN_IN_DATE
 ifeq ($(MABI),64)
-    F_FLAG = -DMAP -DAPI_MODE -DN64
+    F_FLAG = -DMAP -DAPI_MODE -DOUT_SVG -DN64
 endif
 ifeq ($(MABI),n32)
-    F_FLAG = -DMAP -DAPI_MODE -DN32
+    F_FLAG = -DMAP -DAPI_MODE -DOUT_SVG -DN32
 endif
 ifeq ($(MABI),32)
-    F_FLAG = -DMAP -DAPI_MODE -DO32
+    F_FLAG = -DMAP -DAPI_MODE -DOUT_SVG -DO32
 endif
 #F_FLAG = 
 
