@@ -71,7 +71,7 @@ void entre_global_file_close()
         fprintf(stdtrace, "<text style=\"font-size:30;stroke:none;fill:rgb(0,0,0);\" x=\"%d\" y=\"%d\">\n", x, y); 
         fprintf(stdtrace, "Fun:%s, insn addr:0x%x, access addr:0x%x, mem_access_insn:%x, counter:%d\n", trace_t->fun_name, trace_t->insn_addr, trace_t->access_addr, trace_t->mem_access_insn, trace_t->counter);
         fprintf(stdtrace, "</text>\n");
-       	fprintf(stdtrace, "<rect x=\"%d\" y=\"%d\" width=\"%d\" height=\"10\" style=\"file:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9\"/>\n", x + 800, y - 10, trace_t->counter);
+       	fprintf(stdtrace, "<rect x=\"%d\" y=\"%d\" width=\"%d\" height=\"10\" style=\"file:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9\"/>\n", x + 850, y - 10, trace_t->counter);
         y += 20; 
     }   
     fprintf(stdtrace, "</svg>");

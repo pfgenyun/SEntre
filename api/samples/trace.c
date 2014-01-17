@@ -129,7 +129,7 @@ void entre_trace_add(ADDRESS addr, INSN_T insn, ADDRESS access_addr)
 	cur = entre_get_trace_index(addr);
 	if(cur == -1) {
 		all_trace[trace_n].counter = 1;
-		all_trace[trace_n].insn_addr = addr;
+		all_trace[trace_n].insn_addr = entre_map_newAddr_2_oldInsnAddr(addr);
 		all_trace[trace_n].mem_access_insn = insn;
 		all_trace[trace_n].access_addr = access_addr;
 		all_trace[trace_n].fun_name = entre_map_newAddr_2_oldFunName(addr);
