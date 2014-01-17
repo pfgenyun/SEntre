@@ -484,10 +484,9 @@ void entre_dump_bb()
 	length = strlen(short_name);
 	for(i=0; i<length; i++)
 	    output_file[i] = short_name[i];
-#ifdef OUT_SVG
-	strcpy(&output_file[i], "_bb.sentre.svg");
-
+	strcpy(&output_file[i], "_bb.sentre");
 	fp = fopen(output_file, "w");
+#ifdef OUT_SVG
 	fprintf(fp, "<?xml version=\"1.0\" standalone=\"no\"?>\n");
 	fprintf(fp, "<svg width=\"1000000\" height=\"10000\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n");
 	int x=20, y=20;
@@ -501,8 +500,6 @@ void entre_dump_bb()
 	}
 	fprintf(fp, "</svg>");
 #else
-	strcpy(&output_file[i], "_bb.sentre");
-	fp = fopen(output_file, "w");
 	FOR_EACH_BB(bb_p, i)
 	{
 		fprintf(fp, "start: %x\tend: %x \tinsn_num: %d \tcounter: %-14d\tfun_name: %s\n", bb_p->start, bb_p->start + bb_p->insn_num * 4, bb_p->insn_num, bb_p->counter, bb_p->fun_name);

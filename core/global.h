@@ -48,6 +48,19 @@
     #define ENTRE_REACH_HERE() 
 #endif
 
+struct trace
+{
+    unsigned int counter;
+    ADDRESS insn_addr;
+    ADDRESS access_addr;
+    INSN_T mem_access_insn;
+    char *fun_name;
+};
+
+#define TRACE_SIZE (1*MEGA_1) * 5
+struct trace all_trace[TRACE_SIZE];
+unsigned int trace_n;
+
 enum STATUS
 {
     NORMAL  =	0x00,

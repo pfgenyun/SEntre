@@ -24,6 +24,7 @@
 #include "global.h"
 #include "context_switch.h"
 
+extern void entre_init_trace(void);
 void entre_trace_record(struct context * context);
 ADDRESS entre_get_mem_access_addr(struct context * context);
 

@@ -26,6 +26,49 @@
 //#include "isa.h"
 //#include "in_code.h"
 
+void entre_init_trace(void)
+{
+	int i;
+
+	trace_n = 0;
+	for(i = 0; i < TRACE_SIZE; i++)
+	{
+		all_trace[i].counter = 0;
+		all_trace[i].insn_addr = 0;
+		all_trace[i].access_addr = 0;
+		all_trace[i].mem_access_insn = 0;
+		all_trace[i].fun_name = '\0';
+	}
+}
+
+int entre_get_trace_index(ADDRESS addr)
+{
+    int low, high, mid;
+
+    low = 0;
+    high = trace_n - 1;
+    mid = 0;
+
+    if(addr == all_trace[low].insn_addr)
+        return low;
+    if(addr == all_trace[high].insn_addr)
+        return high;
+    
+    while(low <= high)
+    {   
+        mid = low + (high - low)/2;
+        if(addr == all_trace[mid].insn_addr)
+            return mid;
+    
+        if(all_trace[mid].insn_addr > addr)
+            high = mid - 1;
+        else
+            low = mid + 1;
+    }   
+
+    if(low > high)
+        return -1; 
+}
 
 ADDRESS entre_get_mem_access_addr(struct context * context)
 {
@@ -79,6 +122,23 @@ ADDRESS entre_get_mem_access_addr(struct context * context)
 	return access_addr;
 }
 
+void entre_trace_add(ADDRESS addr, INSN_T insn, ADDRESS access_addr)
+{
+	int cur;
+
+	cur = entre_get_trace_index(addr);
+	if(cur == -1) {
+		all_trace[trace_n].counter = 1;
+		all_trace[trace_n].insn_addr = addr;
+		all_trace[trace_n].mem_access_insn = insn;
+		all_trace[trace_n].access_addr = access_addr;
+		all_trace[trace_n].fun_name = entre_map_newAddr_2_oldFunName(addr);
+		trace_n++;
+	}   
+	else
+      	all_trace[cur].counter++;
+}
+
 #ifdef TRACE
 void entre_trace_record(struct context * context)
 {
@@ -96,84 +156,102 @@ void entre_trace_record(struct context * context)
 	if(entre_is_lw(mem_access_insn))
 	{
 		access_addr = entre_get_mem_access_addr(context);
-//		printf("lw   4\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
-//				mem_access_insn, insn_addr, access_addr);
-		fprintf(stdtrace, "lw   4\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
+#ifdef OUT_SVG
+		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#else
+		fprintf(stdtrace, "lw   4\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
-//		fflush(stdtrace);
-  }
+#endif
+	}
 	else if(entre_is_sw(mem_access_insn))
 	{
 		access_addr = entre_get_mem_access_addr(context);
-//		printf("sw   4\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
-//				mem_access_insn, insn_addr, access_addr);
-		fprintf(stdtrace, "sw   4\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
+#ifdef OUT_SVG
+		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#else
+		fprintf(stdtrace, "sw   4\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
-		fflush(stdtrace);
+#endif
 	}
 	else if(entre_is_lh(mem_access_insn))
 	{
 		access_addr = entre_get_mem_access_addr(context);
-//		printf("lh   2\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
-//				mem_access_insn, insn_addr, access_addr);
-		fprintf(stdtrace, "lh   2\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
+#ifdef OUT_SVG
+		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#else
+		fprintf(stdtrace, "lh   2\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
+#endif
 	}
 	else if(entre_is_sh(mem_access_insn))
 	{
 		access_addr = entre_get_mem_access_addr(context);
-//		printf("sh   2\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
-//				mem_access_insn, insn_addr, access_addr);
-		fprintf(stdtrace, "sh   2\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
+#ifdef OUT_SVG
+		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#else
+		fprintf(stdtrace, "sh   2\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
-  }
-  else if(entre_is_lb(mem_access_insn))
-  {
+#endif
+  	}
+  	else if(entre_is_lb(mem_access_insn))
+  	{
 	  	access_addr = entre_get_mem_access_addr(context);
-//		printf("lb   1\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
-//				mem_access_insn, insn_addr, access_addr);
-		fprintf(stdtrace, "lb   1\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
+#ifdef OUT_SVG
+		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#else
+		fprintf(stdtrace, "lb   1\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
-  }
-  else if(entre_is_sb(mem_access_insn))
-  {
+#endif
+  	}
+  	else if(entre_is_sb(mem_access_insn))
+  	{
 	  	access_addr = entre_get_mem_access_addr(context);
-//		printf("sb   1\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
-//				mem_access_insn, insn_addr, access_addr);
-		fprintf(stdtrace, "sb   1\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
+#ifdef OUT_SVG
+		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#else
+		fprintf(stdtrace, "sb   1\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
-  }
-  else if(entre_is_lwc1(mem_access_insn))
-  {
+#endif
+  	}
+  	else if(entre_is_lwc1(mem_access_insn))
+  	{
 	  	access_addr = entre_get_mem_access_addr(context);
-//		printf("lwc1 4\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
-//				mem_access_insn, insn_addr, access_addr);
-		fprintf(stdtrace, "lwc1 4\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
-  			mem_access_insn, insn_addr, access_addr);
-  }
-  else if(entre_is_swc1(mem_access_insn))
-  {
-  	access_addr = entre_get_mem_access_addr(context);
-//		printf("swc1 4\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
-//				mem_access_insn, insn_addr, access_addr);
-		fprintf(stdtrace, "swc1 4\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
+#ifdef OUT_SVG
+		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#else
+		fprintf(stdtrace, "lwc1   4\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
-  }
-  else if(entre_is_ldc1(mem_access_insn))
-  {
-  	access_addr = entre_get_mem_access_addr(context);
-//		printf("ldc1 8\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
-//				mem_access_insn, insn_addr, access_addr);
-		fprintf(stdtrace, "ldc1 8\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
+#endif
+  	}
+  	else if(entre_is_swc1(mem_access_insn))
+  	{
+  		access_addr = entre_get_mem_access_addr(context);
+#ifdef OUT_SVG
+		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#else
+		fprintf(stdtrace, "swc1   4\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
-  }
-  else if(entre_is_sdc1(mem_access_insn))
-  {
-  	access_addr = entre_get_mem_access_addr(context);
-//		printf("sdc1 8\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
-//				mem_access_insn, insn_addr, access_addr);
-		fprintf(stdtrace, "sdc1 8\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
+#endif
+  	}
+  	else if(entre_is_ldc1(mem_access_insn))
+  	{
+  		access_addr = entre_get_mem_access_addr(context);
+#ifdef OUT_SVG
+		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#else
+		fprintf(stdtrace, "ldc1   8\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
+#endif
+  	}
+  	else if(entre_is_sdc1(mem_access_insn))
+  	{
+  		access_addr = entre_get_mem_access_addr(context);
+#ifdef OUT_SVG
+		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#else
+		fprintf(stdtrace, "sdc1   8\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
+				mem_access_insn, insn_addr, access_addr);
+#endif
 	}
 	else
 	{
@@ -185,3 +263,4 @@ void entre_trace_record(struct context * context)
 {
 }
 #endif
+

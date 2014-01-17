@@ -43,14 +43,15 @@ D_FLAG =
 ##### for chrome don't define -DMAP
 ##### -DINSN_IN_DATE used for gdb, for large app, eg. GCC, don't define -DINSN_IN_DATE
 #F_FLAG = -DMAP -DINSN_IN_DATE
+FFLAG = -DMAP -DAPI_MODE -DOUT_SVG
 ifeq ($(MABI),64)
-    F_FLAG = -DMAP -DAPI_MODE -DOUT_SVG -DN64
+    F_FLAG = ${FFLAG} -DN64
 endif
 ifeq ($(MABI),n32)
-    F_FLAG = -DMAP -DAPI_MODE -DOUT_SVG -DN32
+    F_FLAG = ${FFLAG} -DN32
 endif
 ifeq ($(MABI),32)
-    F_FLAG = -DMAP -DAPI_MODE -DOUT_SVG -DO32
+    F_FLAG = ${FFLAG} -DO32
 endif
 #F_FLAG = 
 

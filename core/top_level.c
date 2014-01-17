@@ -66,6 +66,9 @@ Status entre_optimize(int fp)
     entre_init_function();
     entre_init_mark_bb();
     entre_mark_bb();
+#ifdef OUT_SVG
+	entre_init_trace();
+#endif
 
 #ifdef DUMP_BB
     entre_dump_bb();
