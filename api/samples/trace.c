@@ -140,6 +140,51 @@ void entre_trace_add(ADDRESS addr, INSN_T insn, ADDRESS access_addr)
 }
 
 #ifdef TRACE
+#ifdef OUT_TRACE_STACK
+int XPos = 100, YPos = 1000, Old_XPos = 0, Old_YPos = 0;
+int svg_mark = 0;
+int svg_count = 0;
+ADDRESS temp_addr = 0;
+
+void entre_svg_out(ADDRESS access)
+{
+    if(svg_mark == 1 && access > 0x70000000) {
+        if(Old_XPos == 0 && Old_YPos == 0) {
+            Old_XPos = XPos;
+            Old_YPos = YPos;
+        }
+        else {
+            fprintf(stdtrace, "<path d=\"M %d %d L %d %d\" fill=\"blue\" stroke=\"red\" stroke-width=\"3\" />\n", Old_XPos, Old_YPos, XPos, YPos - (access - temp_addr));
+			if(svg_count == 5) {
+        		fprintf(stdtrace, "<text style=\"font-size:30;stroke:none;fill:rgb(0,0,0);\" x=\"%d\" y=\"%d\">\n", XPos, YPos - (access - temp_addr) - 10);
+		        fprintf(stdtrace, "0x%x\n", access);
+				fprintf(stdtrace, "</text>\n");
+				svg_count = 0;
+			}
+            Old_XPos = XPos;
+            Old_YPos = YPos - (access - temp_addr);
+        }
+		svg_count++;
+        XPos += 20;
+    }
+}
+#endif
+
+#ifdef OUT_TRACE_STACK
+void entre_get_svg(ADDRESS access)
+{
+	if(svg_mark == 1)
+		return;
+    if(svg_mark == 0 && access > 0x70000000) {
+        temp_addr = access;
+        svg_mark = 1;
+        fprintf(stdtrace, "<text style=\"font-size:30;stroke:none;fill:rgb(0,0,0);\" x=\"%d\" y=\"%d\">\n", XPos - 100, YPos);
+        fprintf(stdtrace, "0x%x\n", temp_addr);
+        fprintf(stdtrace, "</text>\n");
+    }
+}
+#endif
+
 void entre_trace_record(struct context * context)
 {
 	ADDRESS insn_addr = context->ra + IN_CODE_LW_NUM;
@@ -157,7 +202,12 @@ void entre_trace_record(struct context * context)
 	{
 		access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
-		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#ifdef OUT_TRACE_STACK
+		entre_get_svg(access_addr);
+        entre_svg_out(access_addr);
+#else
+        entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#endif
 #else
 		fprintf(stdtrace, "lw   4\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
@@ -167,7 +217,12 @@ void entre_trace_record(struct context * context)
 	{
 		access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
+#ifdef OUT_TRACE_STACK
+		entre_get_svg(access_addr);
+        entre_svg_out(access_addr);
+#else
 		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#endif
 #else
 		fprintf(stdtrace, "sw   4\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
@@ -177,7 +232,12 @@ void entre_trace_record(struct context * context)
 	{
 		access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
+#ifdef OUT_TRACE_STACK
+		entre_get_svg(access_addr);
+        entre_svg_out(access_addr);
+#else
 		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#endif
 #else
 		fprintf(stdtrace, "lh   2\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
@@ -187,7 +247,12 @@ void entre_trace_record(struct context * context)
 	{
 		access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
+#ifdef OUT_TRACE_STACK
+		entre_get_svg(access_addr);
+        entre_svg_out(access_addr);
+#else
 		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#endif
 #else
 		fprintf(stdtrace, "sh   2\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
@@ -197,7 +262,12 @@ void entre_trace_record(struct context * context)
   	{
 	  	access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
+#ifdef OUT_TRACE_STACK
+		entre_get_svg(access_addr);
+        entre_svg_out(access_addr);
+#else
 		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#endif
 #else
 		fprintf(stdtrace, "lb   1\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
@@ -207,7 +277,12 @@ void entre_trace_record(struct context * context)
   	{
 	  	access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
+#ifdef OUT_TRACE_STACK
+		entre_get_svg(access_addr);
+        entre_svg_out(access_addr);
+#else
 		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#endif
 #else
 		fprintf(stdtrace, "sb   1\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
@@ -217,7 +292,12 @@ void entre_trace_record(struct context * context)
   	{
 	  	access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
+#ifdef OUT_TRACE_STACK
+		entre_get_svg(access_addr);
+        entre_svg_out(access_addr);
+#else
 		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#endif
 #else
 		fprintf(stdtrace, "lwc1   4\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
@@ -227,7 +307,12 @@ void entre_trace_record(struct context * context)
   	{
   		access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
+#ifdef OUT_TRACE_STACK
+		entre_get_svg(access_addr);
+        entre_svg_out(access_addr);
+#else
 		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#endif
 #else
 		fprintf(stdtrace, "swc1   4\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
@@ -237,7 +322,12 @@ void entre_trace_record(struct context * context)
   	{
   		access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
+#ifdef OUT_TRACE_STACK
+		entre_get_svg(access_addr);
+        entre_svg_out(access_addr);
+#else
 		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#endif
 #else
 		fprintf(stdtrace, "ldc1   8\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);
@@ -247,7 +337,12 @@ void entre_trace_record(struct context * context)
   	{
   		access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
+#ifdef OUT_TRACE_STACK
+		entre_get_svg(access_addr);
+        entre_svg_out(access_addr);
+#else
 		entre_trace_add(insn_addr, mem_access_insn, access_addr);
+#endif
 #else
 		fprintf(stdtrace, "sdc1   8\t\tinsn: 0x%x\tinsn_addr: 0x%x\taccess_addr: 0x%x\t\n",
 				mem_access_insn, insn_addr, access_addr);

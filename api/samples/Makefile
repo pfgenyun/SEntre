@@ -43,7 +43,8 @@ D_FLAG =
 ##### for chrome don't define -DMAP
 ##### -DINSN_IN_DATE used for gdb, for large app, eg. GCC, don't define -DINSN_IN_DATE
 #F_FLAG = -DMAP -DINSN_IN_DATE
-FFLAG = -DMAP -DAPI_MODE -DOUT_SVG
+#FFLAG = -DMAP -DAPI_MODE -DOUT_SVG
+FFLAG = -DMAP -DAPI_MODE -DOUT_SVG -DOUT_TRACE_STACK
 ifeq ($(MABI),64)
     F_FLAG = ${FFLAG} -DN64
 endif
@@ -56,10 +57,10 @@ endif
 #F_FLAG = 
 
 #####Tool Flags
-#TOOL_FLAG = -DTRACE
+TOOL_FLAG = -DTRACE
 #TOOL_FLAG = -DOOprofile
 #TOOL_FLAG = -DBB_FREQ -DDEBUG
-TOOL_FLAG = -DBB_FREQ
+#TOOL_FLAG = -DBB_FREQ
 #TOOL_FLAG =
  
 BUILD_HOME = ~/.SEntre/
