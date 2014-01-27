@@ -140,7 +140,7 @@ void entre_trace_add(ADDRESS addr, INSN_T insn, ADDRESS access_addr)
 }
 
 #ifdef TRACE
-#ifdef OUT_TRACE_STACK
+#if defined(OUT_TRACE_STACK) || defined(OUT_TRACE_HEAP)
 int XPos = 100, YPos = 1000, Old_XPos = 0, Old_YPos = 0;
 int svg_mark = 0;
 int svg_count = 0;
@@ -148,7 +148,12 @@ ADDRESS temp_addr = 0;
 
 void entre_svg_out(ADDRESS access)
 {
+#ifdef OUT_TRACE_STACK
     if(svg_mark == 1 && access > 0x70000000) {
+#endif
+#ifdef OUT_TRACE_HEAP
+    if(svg_mark == 1 && access > 0x20000000 && access < 0x70000000) {
+#endif
         if(Old_XPos == 0 && Old_YPos == 0) {
             Old_XPos = XPos;
             Old_YPos = YPos;
@@ -170,12 +175,17 @@ void entre_svg_out(ADDRESS access)
 }
 #endif
 
-#ifdef OUT_TRACE_STACK
+#if defined(OUT_TRACE_STACK) || defined(OUT_TRACE_HEAP)
 void entre_get_svg(ADDRESS access)
 {
 	if(svg_mark == 1)
 		return;
+#ifdef OUT_TRACE_STACK
     if(svg_mark == 0 && access > 0x70000000) {
+#endif
+#ifdef OUT_TRACE_HEAP
+    if(svg_mark == 0 && access > 0x20000000 && access < 0x70000000) {
+#endif
         temp_addr = access;
         svg_mark = 1;
         fprintf(stdtrace, "<text style=\"font-size:30;stroke:none;fill:rgb(0,0,0);\" x=\"%d\" y=\"%d\">\n", XPos - 100, YPos);
@@ -202,7 +212,7 @@ void entre_trace_record(struct context * context)
 	{
 		access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
-#ifdef OUT_TRACE_STACK
+#if defined(OUT_TRACE_STACK) || defined(OUT_TRACE_HEAP)
 		entre_get_svg(access_addr);
         entre_svg_out(access_addr);
 #else
@@ -217,7 +227,7 @@ void entre_trace_record(struct context * context)
 	{
 		access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
-#ifdef OUT_TRACE_STACK
+#if defined(OUT_TRACE_STACK) || defined(OUT_TRACE_HEAP)
 		entre_get_svg(access_addr);
         entre_svg_out(access_addr);
 #else
@@ -232,7 +242,7 @@ void entre_trace_record(struct context * context)
 	{
 		access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
-#ifdef OUT_TRACE_STACK
+#if defined(OUT_TRACE_STACK) || defined(OUT_TRACE_HEAP)
 		entre_get_svg(access_addr);
         entre_svg_out(access_addr);
 #else
@@ -247,7 +257,7 @@ void entre_trace_record(struct context * context)
 	{
 		access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
-#ifdef OUT_TRACE_STACK
+#if defined(OUT_TRACE_STACK) || defined(OUT_TRACE_HEAP)
 		entre_get_svg(access_addr);
         entre_svg_out(access_addr);
 #else
@@ -262,7 +272,7 @@ void entre_trace_record(struct context * context)
   	{
 	  	access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
-#ifdef OUT_TRACE_STACK
+#if defined(OUT_TRACE_STACK) || defined(OUT_TRACE_HEAP)
 		entre_get_svg(access_addr);
         entre_svg_out(access_addr);
 #else
@@ -277,7 +287,7 @@ void entre_trace_record(struct context * context)
   	{
 	  	access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
-#ifdef OUT_TRACE_STACK
+#if defined(OUT_TRACE_STACK) || defined(OUT_TRACE_HEAP)
 		entre_get_svg(access_addr);
         entre_svg_out(access_addr);
 #else
@@ -292,7 +302,7 @@ void entre_trace_record(struct context * context)
   	{
 	  	access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
-#ifdef OUT_TRACE_STACK
+#if defined(OUT_TRACE_STACK) || defined(OUT_TRACE_HEAP)
 		entre_get_svg(access_addr);
         entre_svg_out(access_addr);
 #else
@@ -307,7 +317,7 @@ void entre_trace_record(struct context * context)
   	{
   		access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
-#ifdef OUT_TRACE_STACK
+#if defined(OUT_TRACE_STACK) || defined(OUT_TRACE_HEAP)
 		entre_get_svg(access_addr);
         entre_svg_out(access_addr);
 #else
@@ -322,7 +332,7 @@ void entre_trace_record(struct context * context)
   	{
   		access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
-#ifdef OUT_TRACE_STACK
+#if defined(OUT_TRACE_STACK) || defined(OUT_TRACE_HEAP)
 		entre_get_svg(access_addr);
         entre_svg_out(access_addr);
 #else
@@ -337,7 +347,7 @@ void entre_trace_record(struct context * context)
   	{
   		access_addr = entre_get_mem_access_addr(context);
 #ifdef OUT_SVG
-#ifdef OUT_TRACE_STACK
+#if defined(OUT_TRACE_STACK) || defined(OUT_TRACE_HEAP)
 		entre_get_svg(access_addr);
         entre_svg_out(access_addr);
 #else

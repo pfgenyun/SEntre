@@ -56,7 +56,7 @@ void entre_global_file_open()
 #ifdef OUT_SVG
     fprintf(stdtrace, "<?xml version=\"1.0\" standalone=\"no\"?>\n");
     fprintf(stdtrace, "<svg width=\"1000000\" height=\"1000000\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n");
-#ifdef OUT_TRACE_STACK
+#if defined(OUT_TRACE_STACK) || (OUT_TRACE_HEAP)
     fprintf(stdtrace, "<path d=\"M 100 1000 L 100000 1000\" fill=\"red\" stroke=\"blue\" stroke-width=\"3\" />\n");
     fprintf(stdtrace, "<path d=\"M 100 1000 L 100 10\" fill=\"red\" stroke=\"blue\" stroke-width=\"3\" />\n");
     fprintf(stdtrace, "<path d=\"M 100 1000 L 100 2000\" fill=\"red\" stroke=\"blue\" stroke-width=\"3\" />\n");
