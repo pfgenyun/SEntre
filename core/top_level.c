@@ -120,7 +120,9 @@ void entre_collection()
 
 #ifndef OOprofile
 #ifndef BB_FREQ
+#ifndef TRACE
 	entre_dump_api();
+#endif
 #endif
 #endif
 #endif

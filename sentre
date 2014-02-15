@@ -1,0 +1,114 @@
+#! /bin/sh
+#sentre is a script to control SEntre
+# sentre --help and sentre --version have info
+#
+# Authors: meiwenbin
+#
+# NOTE: This script should be as shell independent as possible
+
+# print help message
+do_help()
+{
+	echo "sentre: usage:
+	-?/--help				help message
+	-v/--version				show version
+	-t/--trace				trace tool
+	-ts/--trace_svg				trace svg
+	-tss/--trace_svg_stack			trace svg stack
+	-tsh/--trace_svg_heap			trace svg heap
+	-b/--bb					basicblock tool
+	-bs/--bb_svg				basicblock svg"
+}
+
+# check for --version, --help.
+check_options()
+{
+    for i in $@; do
+        arg=`printf %s $i | awk -F= '{print $1}'`
+        case "$arg" in
+            -\?|--help)
+                do_help
+                exit 0
+                ;;   
+
+            -v|--version)
+                echo -n "SEntre 1.0
+"
+                exit 0
+                ;;   
+            -t|--trace)
+				LD_PRELOAD=~/.SEntre/sentre_trace.so
+				export LD_PRELOAD
+				if test -z $3; then
+				./$2
+				fi
+				if test ! -z $3; then
+				./$2 $3
+				fi
+				exit 0
+				;;
+            -ts|--trace_svg)
+				LD_PRELOAD=~/.SEntre/sentre_trace_out.so
+				export LD_PRELOAD
+				if test -z $3; then
+				./$2
+				fi
+				if test ! -z $3; then
+				./$2 $3
+				fi
+				exit 0
+				;;
+            -tss|--trace_svg_stack)
+				LD_PRELOAD=~/.SEntre/sentre_trace_out_stack.so
+				export LD_PRELOAD
+				if test -z $3; then
+				./$2
+				fi
+				if test ! -z $3; then
+				./$2 $3
+				fi
+				exit 0
+				;;
+            -tsh|--trace_svg_heap)
+				LD_PRELOAD=~/.SEntre/sentre_trace_out_heap.so
+				if test -z $3; then
+				./$2
+				fi
+				if test ! -z $3; then
+				./$2 $3
+				fi
+				export LD_PRELOAD
+				exit 0
+				;;
+            -b|--bb)
+				LD_PRELOAD=~/.SEntre/sentre_bb.so
+				export LD_PRELOAD
+				if test -z $3; then
+				./$2
+				fi
+				if test ! -z $3; then
+				./$2 $3
+				fi
+				exit 0
+				;;
+            -bs|--bb_svg)
+				LD_PRELOAD=~/.SEntre/sentre_bb_out.so
+				export LD_PRELOAD
+				if test -z $3; then
+				./$2
+				fi
+				if test ! -z $3; then
+				./$2 $3
+				fi
+				exit 0
+				;;
+        esac 
+    done 
+}
+
+if test -z "$1"; then
+	do_help
+	exit 0
+fi
+
+check_options $@
